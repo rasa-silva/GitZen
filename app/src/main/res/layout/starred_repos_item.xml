@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/starred_repos_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    android:layout_weight="1"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/repo_full_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/repo_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="4dp"
+        android:paddingStart="4dp"
+        android:textSize="12sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/repo_stars"
+
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:drawablePadding="8dp"
+            android:drawableStart="@drawable/ic_star_border_white_24px"
+            android:gravity="bottom"
+            android:scaleX="0.8"
+            android:scaleY="0.8"
+            tools:text="aaaaaaaaaa" />
+
+        <TextView
+            android:id="@+id/repo_pushed_time"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:drawablePadding="8dp"
+            android:drawableStart="@drawable/ic_access_time_white_24dp"
+            android:gravity="bottom"
+            android:scaleX="0.8"
+            android:scaleY="0.8"
+            tools:text="bbbbbbbbbb" />
+
+        <TextView
+            android:id="@+id/repo_language"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:drawablePadding="8dp"
+            android:drawableStart="@drawable/ic_language_white_24px"
+            android:gravity="bottom"
+            android:scaleX="0.8"
+            android:scaleY="0.8"
+            tools:text="ccccccc" />
+    </LinearLayout>
+</LinearLayout>

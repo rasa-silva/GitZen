@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swiperefresh"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardUseCompatPadding="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="Bio cardview"
+                    android:padding="8dp"
+                    android:text="@string/user_details_card_bio"
+                    android:textAlignment="viewStart"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textColor="@color/cardview_light_background"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    tools:text="Bio" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="8dp">
+
+                    <ImageView
+                        android:id="@+id/avatar"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:contentDescription="User avatar"
+                        android:src="@drawable/ic_account_circle_white_24px" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingEnd="8dp"
+                        android:paddingStart="8dp">
+
+                        <TextView
+                            android:id="@+id/userid"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                            tools:text="Stubbed login" />
+
+                        <TextView
+                            android:id="@+id/username"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            tools:text="Stubbed user name" />
+
+                        <TextView
+                            android:id="@+id/created_at"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawablePadding="8dp"
+                            android:drawableStart="@drawable/ic_access_time_white_24dp"
+                            android:gravity="bottom"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            tools:text="created_at value" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/followers"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="16sp"
+                        android:paddingEnd="16sp"
+                        android:text="@string/numberOfFollowers"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        tools:text="followers" />
+
+                    <Button
+                        android:id="@+id/following"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="16sp"
+                        android:paddingEnd="16sp"
+                        android:text="@string/numberOfFollowing"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        tools:text="following" />
+
+                    <Button
+                        android:id="@+id/gists"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="16sp"
+                        android:paddingEnd="16sp"
+                        android:text="@string/numberOfGists"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        tools:text="gists" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardUseCompatPadding="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="Code cardview"
+                    android:padding="8dp"
+                    android:text="@string/user_details_card_code"
+                    android:textAlignment="viewStart"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/cardview_light_background"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    tools:text="Code" />
+
+                <TextView
+                    android:id="@+id/repo_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Repos"
+                    android:textSize="18sp"
+                    tools:text="repos" />
+
+
+            </LinearLayout>
+
+
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
+</android.support.v4.widget.SwipeRefreshLayout>
