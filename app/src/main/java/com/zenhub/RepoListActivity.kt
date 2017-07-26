@@ -1,7 +1,9 @@
 package com.zenhub
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
@@ -12,7 +14,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -93,7 +94,9 @@ class RepoListRecyclerViewAdapter : RecyclerView.Adapter<RepoListRecyclerViewAda
         init {
             itemView.setOnClickListener {
                 val textView = itemView.findViewById<TextView>(R.id.repo_full_name)
-                Toast.makeText(ctx, "Clicked on ${textView.text}", Toast.LENGTH_SHORT).show()
+                val intent = Intent(ctx, RepoActivity::class.java)
+                intent.putExtra("REPO_FULL_NAME", textView.text.toString())
+                ContextCompat.startActivity(ctx, intent, null)
             }
         }
     }

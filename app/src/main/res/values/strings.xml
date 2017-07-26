@@ -15,5 +15,6 @@
     <string name="user_details_card_bio">Bio</string>
     <string name="user_details_card_code">Code</string>
     <string name="numberOfGists">%d Gists</string>
+    <string name="title_activity_repo">Repository Details</string>
 
 </resources>

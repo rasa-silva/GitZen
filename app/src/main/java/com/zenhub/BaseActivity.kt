@@ -30,7 +30,7 @@ open class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         navigationView.setNavigationItemSelectedListener(this)
 
         val refreshLayout = findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
-        refreshLayout.setOnRefreshListener {
+        refreshLayout?.setOnRefreshListener {
             requestDataRefresh()
         }
     }

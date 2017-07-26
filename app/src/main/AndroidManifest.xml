@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.zenhub">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -22,14 +22,16 @@
         <activity
             android:name=".StarredReposActivity"
             android:label="@string/title_activity_starred_repos"
-            android:parentActivityName=".ZenHub">
-        </activity>
+            android:parentActivityName=".ZenHub"></activity>
         <activity android:name=".BaseActivity" />
         <activity
             android:name=".OwnReposActivity"
             android:label="@string/title_activity_own_repos"
-            android:parentActivityName=".ZenHub">
-        </activity>
+            android:parentActivityName=".ZenHub"></activity>
+        <activity
+            android:name=".RepoActivity"
+            android:label="@string/title_activity_repo"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
