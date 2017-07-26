@@ -24,7 +24,7 @@ class ZenHub : BaseActivity() {
     }
 
     override fun requestDataRefresh() {
-        Log.d("XXX", "Refreshing list...")
+        Log.d("ZenHub", "Refreshing list...")
         gitHubService.userDetails(STUBBED_USER).enqueue(userDetailsCallback)
     }
 }
@@ -32,11 +32,11 @@ class ZenHub : BaseActivity() {
 class OnUserDetailsResponse(val activity: ZenHub) : Callback<User> {
 
     override fun onFailure(call: Call<User>?, t: Throwable?) {
-        Log.d("XXX", "Failed: ${t.toString()}")
+        Log.d("ZenHub", "Failed: ${t.toString()}")
     }
 
     override fun onResponse(call: Call<User>?, response: Response<User>?) {
-        Log.d("XXX", "UserDetails reponse")
+        Log.d("ZenHub", "UserDetails reponse")
         //TODO Deal with non 200OK response
         val picasso = Picasso.with(activity.applicationContext)
         picasso.setIndicatorsEnabled(true)

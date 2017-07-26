@@ -22,7 +22,7 @@ class StarredReposActivity : RepoListActivity() {
     val repoListCallback = OnRepoListResponse(adapter, this)
 
     override fun requestDataRefresh() {
-        Log.d("XXX", "Refreshing list...")
+        Log.d("ZenHub", "Refreshing list...")
         gitHubService.listStarred(STUBBED_USER).enqueue(repoListCallback)
     }
 }
@@ -32,7 +32,7 @@ class OwnReposActivity : RepoListActivity() {
     val repoListCallback = OnRepoListResponse(adapter, this)
 
     override fun requestDataRefresh() {
-        Log.d("XXX", "Refreshing list...")
+        Log.d("ZenHub", "Refreshing list...")
         gitHubService.listRepos(STUBBED_USER).enqueue(repoListCallback)
     }
 }
@@ -102,11 +102,11 @@ class RepoListRecyclerViewAdapter : RecyclerView.Adapter<RepoListRecyclerViewAda
 class OnRepoListResponse(val adapter: RepoListRecyclerViewAdapter,
                          val activity: RepoListActivity) : Callback<List<Repository>> {
     override fun onFailure(call: Call<List<Repository>>?, t: Throwable?) {
-        Log.d("XXX", "Failed: ${t.toString()}")
+        Log.d("ZenHub", "Failed: ${t.toString()}")
     }
 
     override fun onResponse(call: Call<List<Repository>>?, response: Response<List<Repository>>?) {
-        Log.d("XXX", "Repo list size: ${response?.body()?.size}")
+        Log.d("ZenHub", "Repo list size: ${response?.body()?.size}")
         response?.body()?.let { adapter.updateDataSet(it) }
 
         val refreshLayout = activity.findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
