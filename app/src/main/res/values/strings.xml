@@ -8,6 +8,7 @@
     <string name="home">Home</string>
     <string name="starred">Starred</string>
     <string name="title_activity_starred_repos">Starred Repositories</string>
+    <string name="title_activity_own_repos">My Repositories</string>
     <string name="numberOfFollowers">%d Followers</string>
     <string name="numberOfFollowing">Following %d</string>
     <string name="user_details_card_social">Social</string>

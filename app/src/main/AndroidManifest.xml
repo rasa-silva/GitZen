@@ -25,6 +25,11 @@
             android:parentActivityName=".ZenHub">
         </activity>
         <activity android:name=".BaseActivity" />
+        <activity
+            android:name=".OwnReposActivity"
+            android:label="@string/title_activity_own_repos"
+            android:parentActivityName=".ZenHub">
+        </activity>
     </application>
 
 </manifest>

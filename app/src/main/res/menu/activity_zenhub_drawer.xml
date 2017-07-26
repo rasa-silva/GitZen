@@ -9,6 +9,10 @@
             android:icon="@drawable/ic_home_white_24px"
             android:title="@string/home" />
         <item
+            android:id="@+id/nav_repos"
+            android:icon="@drawable/ic_repo_white_24px"
+            android:title="@string/title_activity_own_repos" />
+        <item
             android:id="@+id/nav_starred"
             android:icon="@drawable/ic_stars_white_24px"
             android:title="@string/starred" />

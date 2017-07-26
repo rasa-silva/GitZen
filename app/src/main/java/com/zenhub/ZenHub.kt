@@ -20,12 +20,12 @@ class ZenHub : BaseActivity() {
         setContentView(R.layout.zenhub_activity)
         super.onCreateDrawer()
 
-        getUserDetails(userDetailsCallback)
+        requestDataRefresh()
     }
 
     override fun requestDataRefresh() {
-        Log.d("XXX", "Refreshing list due to swipe")
-        getUserDetails(userDetailsCallback)
+        Log.d("XXX", "Refreshing list...")
+        gitHubService.userDetails(STUBBED_USER).enqueue(userDetailsCallback)
     }
 }
 

@@ -1,7 +1,6 @@
 package com.zenhub
 
 import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -13,6 +12,9 @@ val STUBBED_USER = "rasa-silva"
 val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH)
 
 interface GitHubService {
+
+    @GET("users/{username}/repos")
+    fun listRepos(@Path("username") user: String): Call<List<Repository>>
 
     @GET("users/{username}/starred")
     fun listStarred(@Path("username") user: String): Call<List<Repository>>
@@ -31,17 +33,9 @@ class User(val login: String, val avatar_url: String, val name: String,
            val created_at: String)
 
 
-val retrofit = Retrofit.Builder()
+val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl("https://api.github.com/")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-val gitHubService = retrofit.create(GitHubService::class.java)
-
-fun getStarredRepos(callback: Callback<List<Repository>>) {
-    gitHubService.listStarred(STUBBED_USER).enqueue(callback)
-}
-
-fun getUserDetails(callback: Callback<User>) {
-    gitHubService.userDetails(STUBBED_USER).enqueue(callback)
-}
+val gitHubService: GitHubService = retrofit.create(GitHubService::class.java)

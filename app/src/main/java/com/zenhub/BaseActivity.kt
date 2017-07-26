@@ -45,8 +45,9 @@ open class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.nav_starred -> startActivity(Intent(this, StarredReposActivity::class.java))
             R.id.nav_home -> startActivity(Intent(this, ZenHub::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+            R.id.nav_repos -> startActivity(Intent(this, OwnReposActivity::class.java))
+            R.id.nav_starred -> startActivity(Intent(this, StarredReposActivity::class.java))
         }
 
         drawerLayout.closeDrawer(GravityCompat.START)

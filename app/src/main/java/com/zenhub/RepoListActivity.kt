@@ -17,37 +17,54 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-val dataSet = mutableListOf<Repository>()
+class StarredReposActivity : RepoListActivity() {
 
-
-class StarredReposActivity : BaseActivity() {
-
-    val onResponseCallback = OnResponse(this)
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.starred_repos_activity)
-        super.onCreateDrawer()
-
-        val recyclerView = findViewById<RecyclerView>(R.id.list)
-        val layoutManager = LinearLayoutManager(this)
-        recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = TestRecyclerViewAdapter()
-        recyclerView.addItemDecoration(DividerItemDecoration(recyclerView.context, layoutManager.orientation))
-
-        getStarredRepos(onResponseCallback)
-    }
+    val repoListCallback = OnRepoListResponse(adapter, this)
 
     override fun requestDataRefresh() {
-        Log.d("XXX", "Refreshing list due to swipe")
-        getStarredRepos(onResponseCallback)
+        Log.d("XXX", "Refreshing list...")
+        gitHubService.listStarred(STUBBED_USER).enqueue(repoListCallback)
     }
 }
 
-class TestRecyclerViewAdapter : RecyclerView.Adapter<TestRecyclerViewAdapter.ViewHolder>() {
+class OwnReposActivity : RepoListActivity() {
+
+    val repoListCallback = OnRepoListResponse(adapter, this)
+
+    override fun requestDataRefresh() {
+        Log.d("XXX", "Refreshing list...")
+        gitHubService.listRepos(STUBBED_USER).enqueue(repoListCallback)
+    }
+}
+
+abstract class RepoListActivity : BaseActivity() {
+
+    val adapter = RepoListRecyclerViewAdapter()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.repo_list_activity)
+        super.onCreateDrawer()
+
+        findViewById<RecyclerView>(R.id.list).let {
+            val layoutManager = LinearLayoutManager(it.context)
+            it.layoutManager = layoutManager
+            it.adapter = adapter
+            it.addItemDecoration(DividerItemDecoration(it.context, layoutManager.orientation))
+        }
+
+        requestDataRefresh()
+    }
+
+    abstract override fun requestDataRefresh()
+}
+
+class RepoListRecyclerViewAdapter : RecyclerView.Adapter<RepoListRecyclerViewAdapter.ViewHolder>() {
+
+    val dataSet = mutableListOf<Repository>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.starred_repos_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.repo_list_item, parent, false)
         return ViewHolder(parent.context, view)
     }
 
@@ -66,6 +83,11 @@ class TestRecyclerViewAdapter : RecyclerView.Adapter<TestRecyclerViewAdapter.Vie
         return dataSet.size
     }
 
+    fun updateDataSet(newDataSet: List<Repository>) {
+        dataSet.clear()
+        dataSet.addAll(newDataSet)
+        notifyDataSetChanged()
+    }
 
     class ViewHolder(ctx: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {
         init {
@@ -77,17 +99,16 @@ class TestRecyclerViewAdapter : RecyclerView.Adapter<TestRecyclerViewAdapter.Vie
     }
 }
 
-class OnResponse(val activity: StarredReposActivity) : Callback<List<Repository>> {
+class OnRepoListResponse(val adapter: RepoListRecyclerViewAdapter,
+                         val activity: RepoListActivity) : Callback<List<Repository>> {
     override fun onFailure(call: Call<List<Repository>>?, t: Throwable?) {
         Log.d("XXX", "Failed: ${t.toString()}")
     }
 
     override fun onResponse(call: Call<List<Repository>>?, response: Response<List<Repository>>?) {
-        Log.d("XXX", "Starred size: ${response?.body()?.size}")
-        dataSet.clear()
-        response?.body()?.let { dataSet.addAll(it) }
-        val recyclerView = activity.findViewById<RecyclerView>(R.id.list)
-        recyclerView.adapter.notifyDataSetChanged()
+        Log.d("XXX", "Repo list size: ${response?.body()?.size}")
+        response?.body()?.let { adapter.updateDataSet(it) }
+
         val refreshLayout = activity.findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
         refreshLayout.isRefreshing = false
     }
