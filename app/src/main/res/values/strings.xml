@@ -5,6 +5,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="home">Home</string>
     <string name="starred">Starred</string>
     <string name="title_activity_starred_repos">Starred Repositories</string>
     <string name="numberOfFollowers">%d Followers</string>
