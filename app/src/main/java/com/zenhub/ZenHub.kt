@@ -1,6 +1,7 @@
 package com.zenhub
 
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.widget.SwipeRefreshLayout
 import android.text.format.DateUtils
 import android.util.Log
@@ -37,7 +38,14 @@ class OnUserDetailsResponse(val activity: ZenHub) : Callback<User> {
 
     override fun onResponse(call: Call<User>?, response: Response<User>?) {
         Log.d("ZenHub", "UserDetails reponse")
-        //TODO Deal with non 200OK response
+
+        if (response?.isSuccessful == false) {
+            val layout = activity.findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
+            val snackbar = Snackbar.make(layout, "Failed: ${response.errorBody()?.string()}.", Snackbar.LENGTH_LONG)
+            snackbar.show()
+            return
+        }
+
         val picasso = Picasso.with(activity.applicationContext)
         picasso.setIndicatorsEnabled(true)
         val avatarView = activity.findViewById<ImageView>(R.id.avatar)
