@@ -2,7 +2,7 @@
 <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/swiperefresh"
+    android:id="@+id/readme_swiperefresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -24,7 +24,7 @@
             tools:text="Repo full name" />
 
         <WebView
-            android:id="@+id/webview"
+            android:id="@+id/readme_webview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/transparent">

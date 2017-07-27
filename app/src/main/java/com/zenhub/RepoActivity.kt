@@ -1,6 +1,6 @@
 package com.zenhub
 
-import android.content.Context
+import android.app.Activity
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.view.PagerAdapter
@@ -19,20 +19,16 @@ import retrofit2.Response
 
 class RepoActivity : BaseActivity() {
 
-    private val repoDetailsCallback = OnRepoDetailsResponse(this)
-    private val readmeCallback = OnReadmeResponse(this)
-    lateinit var fullRepoName: String
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.repo_activity)
         super.onCreateDrawer()
 
-        fullRepoName = intent.getStringExtra("REPO_FULL_NAME")
+        val fullRepoName = intent.getStringExtra("REPO_FULL_NAME")
         supportActionBar?.title = fullRepoName
 
         val viewPager = findViewById<ViewPager>(R.id.pager)
-        viewPager.adapter = RepoDetailsPagerAdapter(this)
+        viewPager.adapter = RepoDetailsPagerAdapter(this, fullRepoName)
         val tabLayout = findViewById<TabLayout>(R.id.tablayout)
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -47,15 +43,9 @@ class RepoActivity : BaseActivity() {
 
         requestDataRefresh()
     }
-
-    override fun requestDataRefresh() {
-        Log.d("ZenHub", "Refreshing repo information...")
-        gitHubService.repoDetails(fullRepoName).enqueue(repoDetailsCallback)
-        gitHubServiceRaw.repoReadme(fullRepoName).enqueue(readmeCallback)
-    }
 }
 
-class RepoDetailsPagerAdapter(context: Context) : PagerAdapter() {
+class RepoDetailsPagerAdapter(context: Activity, val fullRepoName: String) : PagerAdapter() {
 
     val inflater = LayoutInflater.from(context)
 
@@ -74,11 +64,24 @@ class RepoDetailsPagerAdapter(context: Context) : PagerAdapter() {
                 val view = inflater.inflate(R.layout.repo_content_readme, container, false)
                 //Fix the fight between the refreshLayout swipe and the webview scroll
                 //TODO NestedScrollView?
-                val refreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
-                val webView = view.findViewById<WebView>(R.id.webview)
+                val refreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.readme_swiperefresh)
+                val webView = view.findViewById<WebView>(R.id.readme_webview)
                 refreshLayout.viewTreeObserver.addOnScrollChangedListener {
                     refreshLayout.isEnabled = webView.scrollY == 0
                 }
+
+                //We have several swiperefresh layouts on this activity so we need to do this for each
+                val onRepoDetailsResponse = OnRepoDetailsResponse(container)
+                val onReadmeResponse = OnReadmeResponse(container)
+                refreshLayout?.setOnRefreshListener {
+                    Log.d("ZenHub", "Refreshing repo information...")
+                    gitHubService.repoDetails(fullRepoName).enqueue(onRepoDetailsResponse)
+                    gitHubServiceRaw.repoReadme(fullRepoName).enqueue(onReadmeResponse)
+                }
+
+                gitHubService.repoDetails(fullRepoName).enqueue(onRepoDetailsResponse)
+                gitHubServiceRaw.repoReadme(fullRepoName).enqueue(onReadmeResponse)
+
                 view
             }
             else -> inflater.inflate(R.layout.repo_content, container, false)
@@ -92,7 +95,7 @@ class RepoDetailsPagerAdapter(context: Context) : PagerAdapter() {
     }
 }
 
-class OnRepoDetailsResponse(val activity: RepoActivity) : Callback<RepositoryDetails> {
+class OnRepoDetailsResponse(val parent: ViewGroup) : Callback<RepositoryDetails> {
     override fun onFailure(call: Call<RepositoryDetails>?, t: Throwable?) {
         Log.d("ZenHub", "Failed: ${t.toString()}")
     }
@@ -100,13 +103,13 @@ class OnRepoDetailsResponse(val activity: RepoActivity) : Callback<RepositoryDet
     override fun onResponse(call: Call<RepositoryDetails>, response: Response<RepositoryDetails>) {
         Log.d("ZenHub", "RepoDetails reponse")
         //TODO Deal with non 200OK response
-        activity.findViewById<TextView>(R.id.fullName).text = response.body()?.full_name
+        parent.findViewById<TextView>(R.id.fullName).text = response.body()?.full_name
     }
 }
 
-class OnReadmeResponse(val activity: RepoActivity) : Callback<ResponseBody> {
+class OnReadmeResponse(val parent: ViewGroup) : Callback<ResponseBody> {
 
-    val styleSheet = "<style>body{color: #fff; background-color: #000;}</style>"
+    val styleSheet = "<style>body{color: #ffffff; background-color: #303030;} a {color: #3f51b5;}</style>"
 
     override fun onFailure(call: Call<ResponseBody>?, t: Throwable?) {
         Log.d("ZenHub", "Failed: ${t.toString()}")
@@ -115,12 +118,12 @@ class OnReadmeResponse(val activity: RepoActivity) : Callback<ResponseBody> {
     override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
         Log.d("ZenHub", "readme reponse")
         //TODO Deal with non 200OK response
-        val webView = activity.findViewById<WebView>(R.id.webview)
+        val webView = parent.findViewById<WebView>(R.id.readme_webview)
         val content = styleSheet + response.body()?.string()
         webView.loadData(content, "text/html", null)
 
-        val refreshLayout = activity.findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
-        refreshLayout?.isRefreshing = false
+        val refreshLayout = parent.findViewById<SwipeRefreshLayout>(R.id.readme_swiperefresh)
+        refreshLayout.isRefreshing = false
     }
 
 }
