@@ -4,16 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="32dp"
     android:gravity="bottom"
     android:orientation="horizontal"
     android:padding="8dp"
-    android:layout_marginTop="32dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <ImageView
         android:id="@+id/avatarImage"
         android:layout_width="64dp"
         android:layout_height="64dp"
+        android:contentDescription="User avatar"
         android:paddingTop="16dp"
         app:srcCompat="@drawable/ic_account_circle_white_24px" />
 
@@ -23,7 +24,7 @@
         android:layout_height="wrap_content"
         android:paddingEnd="8dp"
         android:paddingStart="8dp"
-        android:text="Unknown"
+        android:text="@string/unknown_user_name"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         tools:text="Unknown User" />
 </LinearLayout>
