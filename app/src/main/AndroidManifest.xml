@@ -22,16 +22,16 @@
         <activity
             android:name=".StarredReposActivity"
             android:label="@string/title_activity_starred_repos"
-            android:parentActivityName=".ZenHub"></activity>
+            android:parentActivityName=".ZenHub" />
         <activity android:name=".BaseActivity" />
         <activity
             android:name=".OwnReposActivity"
             android:label="@string/title_activity_own_repos"
-            android:parentActivityName=".ZenHub"></activity>
+            android:parentActivityName=".ZenHub"/>
         <activity
-            android:name=".RepoActivity"
+            android:name=".repodetails.RepoActivity"
             android:label="@string/title_activity_repo"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

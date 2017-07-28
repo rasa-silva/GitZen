@@ -14,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.zenhub.repodetails.RepoActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -23,7 +24,7 @@ class StarredReposActivity : RepoListActivity() {
     val repoListCallback = OnRepoListResponse(adapter, this)
 
     override fun requestDataRefresh() {
-        Log.d("ZenHub", "Refreshing list...")
+        Log.d(LOGTAG, "Refreshing list...")
         gitHubService.listStarred(STUBBED_USER).enqueue(repoListCallback)
     }
 }
@@ -33,7 +34,7 @@ class OwnReposActivity : RepoListActivity() {
     val repoListCallback = OnRepoListResponse(adapter, this)
 
     override fun requestDataRefresh() {
-        Log.d("ZenHub", "Refreshing list...")
+        Log.d(LOGTAG, "Refreshing list...")
         gitHubService.listRepos(STUBBED_USER).enqueue(repoListCallback)
     }
 }
@@ -105,11 +106,11 @@ class RepoListRecyclerViewAdapter : RecyclerView.Adapter<RepoListRecyclerViewAda
 class OnRepoListResponse(val adapter: RepoListRecyclerViewAdapter,
                          val activity: RepoListActivity) : Callback<List<Repository>> {
     override fun onFailure(call: Call<List<Repository>>?, t: Throwable?) {
-        Log.d("ZenHub", "Failed: ${t.toString()}")
+        Log.d(LOGTAG, "Failed: ${t.toString()}")
     }
 
     override fun onResponse(call: Call<List<Repository>>?, response: Response<List<Repository>>?) {
-        Log.d("ZenHub", "Repo list size: ${response?.body()?.size}")
+        Log.d(LOGTAG, "Repo list size: ${response?.body()?.size}")
         response?.body()?.let { adapter.updateDataSet(it) }
 
         val refreshLayout = activity.findViewById<SwipeRefreshLayout>(R.id.swiperefresh)

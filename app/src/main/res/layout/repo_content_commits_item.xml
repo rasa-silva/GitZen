@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/repo_list_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:contentDescription="User avatar"
+        android:src="@drawable/ic_account_circle_white_24px" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/commit_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="8dp"
+            android:gravity="bottom"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            tools:text="aaaaaaaaaa" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/committer"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:drawablePadding="8dp"
+                android:drawableStart="@drawable/ic_account_circle_white_24px"
+                android:gravity="bottom"
+                android:scaleX="0.8"
+                android:scaleY="0.8"
+                tools:text="committer name" />
+
+            <TextView
+                android:id="@+id/pushed_time"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:drawablePadding="8dp"
+                android:drawableStart="@drawable/ic_access_time_white_24dp"
+                android:gravity="bottom"
+                android:scaleX="0.8"
+                android:scaleY="0.8"
+                tools:text="bbbbbbbbbb" />
+
+            <!--<TextView-->
+                <!--android:id="@+id/yyy"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:drawablePadding="8dp"-->
+                <!--android:drawableStart="@drawable/ic_language_white_24px"-->
+                <!--android:gravity="bottom"-->
+                <!--android:scaleX="0.8"-->
+                <!--android:scaleY="0.8"-->
+                <!--tools:text="cccc" />-->
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

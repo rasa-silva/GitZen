@@ -1,4 +1,4 @@
-package com.zenhub
+package com.zenhub.repodetails
 
 import android.app.Activity
 import android.os.Bundle
@@ -6,12 +6,16 @@ import android.support.design.widget.TabLayout
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.widget.TextView
+import com.zenhub.*
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -49,14 +53,9 @@ class RepoDetailsPagerAdapter(context: Activity, val fullRepoName: String) : Pag
 
     val inflater = LayoutInflater.from(context)
 
-    override fun isViewFromObject(view: View?, obj: Any?): Boolean {
-        Log.d("ZenHub", "isViewFromObject called")
-        return view == obj
-    }
+    override fun isViewFromObject(view: View?, obj: Any?) = view == obj
 
-    override fun getCount(): Int {
-        return 3
-    }
+    override fun getCount() = 3
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val layout = when (position) {
@@ -74,13 +73,34 @@ class RepoDetailsPagerAdapter(context: Activity, val fullRepoName: String) : Pag
                 val onRepoDetailsResponse = OnRepoDetailsResponse(container)
                 val onReadmeResponse = OnReadmeResponse(container)
                 refreshLayout?.setOnRefreshListener {
-                    Log.d("ZenHub", "Refreshing repo information...")
+                    Log.d(LOGTAG, "Refreshing repo information...")
                     gitHubService.repoDetails(fullRepoName).enqueue(onRepoDetailsResponse)
                     gitHubServiceRaw.repoReadme(fullRepoName).enqueue(onReadmeResponse)
                 }
 
                 gitHubService.repoDetails(fullRepoName).enqueue(onRepoDetailsResponse)
                 gitHubServiceRaw.repoReadme(fullRepoName).enqueue(onReadmeResponse)
+
+                view
+            }
+            1 -> {
+                val view = inflater.inflate(R.layout.repo_content_commits, container, false)
+                val refreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.commits_swiperefresh)
+                val recyclerViewAdapter = CommitsRecyclerViewAdapter()
+                val onCommitsResponse = OnCommitsResponse(recyclerViewAdapter, container)
+                refreshLayout?.setOnRefreshListener {
+                    Log.d(LOGTAG, "Refreshing repo information...")
+                    gitHubService.commits(fullRepoName).enqueue(onCommitsResponse)
+                }
+
+                view.findViewById<RecyclerView>(R.id.list).let {
+                    val layoutManager = LinearLayoutManager(it.context)
+                    it.layoutManager = layoutManager
+                    it.adapter = recyclerViewAdapter
+                    it.addItemDecoration(DividerItemDecoration(it.context, layoutManager.orientation))
+                }
+
+                gitHubService.commits(fullRepoName).enqueue(onCommitsResponse)
 
                 view
             }
@@ -97,11 +117,11 @@ class RepoDetailsPagerAdapter(context: Activity, val fullRepoName: String) : Pag
 
 class OnRepoDetailsResponse(val parent: ViewGroup) : Callback<RepositoryDetails> {
     override fun onFailure(call: Call<RepositoryDetails>?, t: Throwable?) {
-        Log.d("ZenHub", "Failed: ${t.toString()}")
+        Log.d(LOGTAG, "Failed: ${t.toString()}")
     }
 
     override fun onResponse(call: Call<RepositoryDetails>, response: Response<RepositoryDetails>) {
-        Log.d("ZenHub", "RepoDetails reponse")
+        Log.d(LOGTAG, "RepoDetails reponse")
         //TODO Deal with non 200OK response
         parent.findViewById<TextView>(R.id.fullName).text = response.body()?.full_name
     }
@@ -112,11 +132,11 @@ class OnReadmeResponse(val parent: ViewGroup) : Callback<ResponseBody> {
     val styleSheet = "<style>body{color: #ffffff; background-color: #303030;} a {color: #3f51b5;}</style>"
 
     override fun onFailure(call: Call<ResponseBody>?, t: Throwable?) {
-        Log.d("ZenHub", "Failed: ${t.toString()}")
+        Log.d(LOGTAG, "Failed: ${t.toString()}")
     }
 
     override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-        Log.d("ZenHub", "readme reponse")
+        Log.d(LOGTAG, "readme reponse")
         //TODO Deal with non 200OK response
         val webView = parent.findViewById<WebView>(R.id.readme_webview)
         val content = styleSheet + response.body()?.string()
@@ -125,5 +145,4 @@ class OnReadmeResponse(val parent: ViewGroup) : Callback<ResponseBody> {
         val refreshLayout = parent.findViewById<SwipeRefreshLayout>(R.id.readme_swiperefresh)
         refreshLayout.isRefreshing = false
     }
-
 }

@@ -30,6 +30,9 @@ interface GitHubService {
     @GET("repos/{fullname}/readme")
     @Headers("Accept: application/vnd.github.v3.html")
     fun repoReadme(@Path("fullname", encoded = true) fullname: String): Call<ResponseBody>
+
+    @GET("repos/{fullname}/commits")
+    fun commits(@Path("fullname", encoded = true) fullname: String): Call<List<Commit>>
 }
 
 class Repository(val name: String, val full_name: String,
@@ -45,6 +48,9 @@ class User(val login: String, val avatar_url: String, val name: String,
            val followers: Int, val following: Int,
            val created_at: String)
 
+class Committer(val name: String, val date: String)
+class CommitInfo(val message: String, val comment_count: Int, val committer: Committer)
+class Commit(val commit: CommitInfo)
 
 val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl("https://api.github.com/")
