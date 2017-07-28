@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">ZenHub</string>
+
+    <string name="navigation_drawer_open">Abrir gaveta de navegação</string>
+    <string name="navigation_drawer_close">Fechar gaveta de navegação</string>
+
+    <string name="action_settings">Configurações</string>
+    <string name="home">Início</string>
+    <string name="starred">Favorito</string>
+    <string name="title_activity_starred_repos">Repositórios Favoritos</string>
+    <string name="title_activity_own_repos">Meu Repositório</string>
+    <string name="numberOfFollowers">%d Seguidores</string>
+    <string name="numberOfFollowing">Seguindo %d</string>
+    <string name="user_details_card_social">Social</string>
+    <string name="user_details_card_bio">Bio</string>
+    <string name="user_details_card_code">Código</string>
+    <string name="numberOfGists">%d Gists</string>
+    <string name="title_activity_repo">Detalhes do Repositório</string>
+
+</resources>
