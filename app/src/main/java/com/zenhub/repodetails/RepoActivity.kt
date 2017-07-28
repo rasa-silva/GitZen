@@ -133,7 +133,7 @@ class OnReadmeResponse(val parent: ViewGroup) : Callback<ResponseBody> {
     <style>
         body {color: #ffffff; background-color: #303030;}
         a {color: #3f51b5;}
-        pre {overflow: auto; width: 95%;}
+        pre {overflow: auto; width: 99%; background-color: #424242;}
     </style>"""
 
     override fun onFailure(call: Call<ResponseBody>?, t: Throwable?) {
