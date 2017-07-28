@@ -29,7 +29,8 @@ class CommitsRecyclerViewAdapter : RecyclerView.Adapter<CommitsRecyclerViewAdapt
         val commit = dataSet[position]
 
         val avatarView = holder.itemView.findViewById<ImageView>(R.id.avatar)
-        Application.picasso.load(commit.committer.avatar_url).into(avatarView)
+        Application.picasso.load(commit.committer.avatar_url)
+                .transform(RoundedTransformation()).into(avatarView)
 
         val date = dateFormat.parse(commit.commit.committer.date)
         val fuzzy_date = DateUtils.getRelativeTimeSpanString(date.time, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS)

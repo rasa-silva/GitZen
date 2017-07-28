@@ -48,7 +48,7 @@ class OnUserDetailsResponse(val activity: ZenHub) : Callback<User> {
         }
 
         val avatarView = activity.findViewById<ImageView>(R.id.avatar)
-        Application.picasso.load(response?.body()?.avatar_url).into(avatarView)
+        Application.picasso.load(response?.body()?.avatar_url).transform(RoundedTransformation()).into(avatarView)
         val login = activity.findViewById<TextView>(R.id.userid)
         login.text = response?.body()?.login
         val name = activity.findViewById<TextView>(R.id.username)
