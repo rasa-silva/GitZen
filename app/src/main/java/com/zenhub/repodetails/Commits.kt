@@ -8,11 +8,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
-import com.zenhub.Commit
-import com.zenhub.LOGTAG
-import com.zenhub.R
-import com.zenhub.dateFormat
+import com.zenhub.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,13 +27,16 @@ class CommitsRecyclerViewAdapter : RecyclerView.Adapter<CommitsRecyclerViewAdapt
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val commit = dataSet[position]
+
+        val avatarView = holder.itemView.findViewById<ImageView>(R.id.avatar)
+        Application.picasso.load(commit.committer.avatar_url).into(avatarView)
+
         val date = dateFormat.parse(commit.commit.committer.date)
         val fuzzy_date = DateUtils.getRelativeTimeSpanString(date.time, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS)
         holder.itemView.findViewById<TextView>(R.id.commit_message).text = commit.commit.message
-        holder.itemView.findViewById<TextView>(R.id.committer).text = commit.commit.committer.name
+        holder.itemView.findViewById<TextView>(R.id.committer).text = commit.committer.login
         holder.itemView.findViewById<TextView>(R.id.pushed_time).text = fuzzy_date
-//        holder.itemView.findViewById<TextView>(R.id.repo_stars).text = commit.stargazers_count.toString()
-//        holder.itemView.findViewById<TextView>(R.id.repo_language).text = commit.language
+        holder.itemView.findViewById<TextView>(R.id.comments).text = commit.commit.comment_count.toString()
     }
 
     override fun getItemCount(): Int {

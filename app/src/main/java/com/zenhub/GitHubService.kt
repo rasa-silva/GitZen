@@ -48,9 +48,10 @@ class User(val login: String, val avatar_url: String, val name: String,
            val followers: Int, val following: Int,
            val created_at: String)
 
-class Committer(val name: String, val date: String)
-class CommitInfo(val message: String, val comment_count: Int, val committer: Committer)
-class Commit(val commit: CommitInfo)
+class Committer(val login: String, val avatar_url: String)
+class CommitInfo(val message: String, val comment_count: Int, val committer: CommitCommitter)
+class CommitCommitter(val date: String)
+class Commit(val commit: CommitInfo, val committer: Committer)
 
 val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl("https://api.github.com/")

@@ -7,7 +7,6 @@ import android.text.format.DateUtils
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
-import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -16,7 +15,7 @@ const val LOGTAG = "ZenHub"
 
 class ZenHub : BaseActivity() {
 
-    val userDetailsCallback = OnUserDetailsResponse(this)
+    private val userDetailsCallback = OnUserDetailsResponse(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,10 +47,8 @@ class OnUserDetailsResponse(val activity: ZenHub) : Callback<User> {
             return
         }
 
-        val picasso = Picasso.with(activity.applicationContext)
-        picasso.setIndicatorsEnabled(true)
         val avatarView = activity.findViewById<ImageView>(R.id.avatar)
-        picasso.load(response?.body()?.avatar_url).into(avatarView)
+        Application.picasso.load(response?.body()?.avatar_url).into(avatarView)
         val login = activity.findViewById<TextView>(R.id.userid)
         login.text = response?.body()?.login
         val name = activity.findViewById<TextView>(R.id.username)

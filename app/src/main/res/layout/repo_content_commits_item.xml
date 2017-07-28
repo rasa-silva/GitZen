@@ -26,9 +26,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="8dp"
-            android:gravity="bottom"
+            android:paddingEnd="8dp"
+            android:gravity="top"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            tools:text="aaaaaaaaaa" />
+            tools:text="commit message" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -41,10 +44,11 @@
                 android:layout_height="match_parent"
                 android:drawablePadding="8dp"
                 android:drawableStart="@drawable/ic_account_circle_white_24px"
-                android:gravity="bottom"
+                android:gravity="center_vertical"
                 android:scaleX="0.8"
                 android:scaleY="0.8"
-                tools:text="committer name" />
+                android:textSize="18sp"
+                tools:text="committer" />
 
             <TextView
                 android:id="@+id/pushed_time"
@@ -52,21 +56,23 @@
                 android:layout_height="match_parent"
                 android:drawablePadding="8dp"
                 android:drawableStart="@drawable/ic_access_time_white_24dp"
-                android:gravity="bottom"
+                android:gravity="center_vertical"
                 android:scaleX="0.8"
                 android:scaleY="0.8"
-                tools:text="bbbbbbbbbb" />
+                android:textSize="18sp"
+                tools:text="pushed time" />
 
-            <!--<TextView-->
-                <!--android:id="@+id/yyy"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:drawablePadding="8dp"-->
-                <!--android:drawableStart="@drawable/ic_language_white_24px"-->
-                <!--android:gravity="bottom"-->
-                <!--android:scaleX="0.8"-->
-                <!--android:scaleY="0.8"-->
-                <!--tools:text="cccc" />-->
+            <TextView
+                android:id="@+id/comments"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:drawablePadding="8dp"
+                android:drawableStart="@drawable/ic_comment_white_24px"
+                android:gravity="center_vertical"
+                android:scaleX="0.8"
+                android:scaleY="0.8"
+                android:textSize="18sp"
+                tools:text="123" />
 
         </LinearLayout>
     </LinearLayout>
