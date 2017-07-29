@@ -51,13 +51,13 @@ class CommitsRecyclerViewAdapter : RecyclerView.Adapter<CommitsRecyclerViewAdapt
         val commit = dataSet[position]
 
         val avatarView = holder.itemView.findViewById<ImageView>(R.id.avatar)
-        Application.picasso.load(commit.committer.avatar_url)
-                .transform(RoundedTransformation()).into(avatarView)
+        commit.committer?.let { Application.picasso.load(it.avatar_url)
+                .transform(RoundedTransformation()).into(avatarView) }
 
         val date = dateFormat.parse(commit.commit.committer.date)
         val fuzzy_date = DateUtils.getRelativeTimeSpanString(date.time, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS)
         holder.itemView.findViewById<TextView>(R.id.commit_message).text = commit.commit.message
-        holder.itemView.findViewById<TextView>(R.id.committer).text = commit.committer.login
+        holder.itemView.findViewById<TextView>(R.id.committer).text = commit.committer?.login ?: "<unknown>"
         holder.itemView.findViewById<TextView>(R.id.pushed_time).text = fuzzy_date
         holder.itemView.findViewById<TextView>(R.id.comments).text = commit.commit.comment_count.toString()
     }
