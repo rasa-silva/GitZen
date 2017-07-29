@@ -2,6 +2,8 @@ package com.zenhub.repodetails
 
 import android.content.Context
 import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.format.DateUtils
 import android.util.Log
@@ -15,7 +17,27 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+fun buildCommitsView(inflater: LayoutInflater, container: ViewGroup, fullRepoName: String): View {
+        val view = inflater.inflate(R.layout.repo_content_commits, container, false)
+        val refreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.commits_swiperefresh)
+        val recyclerViewAdapter = CommitsRecyclerViewAdapter()
+        val onCommitsResponse = OnCommitsResponse(recyclerViewAdapter, container)
+        refreshLayout?.setOnRefreshListener {
+            Log.d(Application.LOGTAG, "Refreshing repo information...")
+            gitHubService.commits(fullRepoName).enqueue(onCommitsResponse)
+        }
 
+        view.findViewById<RecyclerView>(R.id.list).let {
+            val layoutManager = LinearLayoutManager(it.context)
+            it.layoutManager = layoutManager
+            it.adapter = recyclerViewAdapter
+            it.addItemDecoration(DividerItemDecoration(it.context, layoutManager.orientation))
+        }
+
+        gitHubService.commits(fullRepoName).enqueue(onCommitsResponse)
+
+        return view
+}
 class CommitsRecyclerViewAdapter : RecyclerView.Adapter<CommitsRecyclerViewAdapter.ViewHolder>() {
 
     val dataSet = mutableListOf<Commit>()
@@ -66,11 +88,11 @@ class CommitsRecyclerViewAdapter : RecyclerView.Adapter<CommitsRecyclerViewAdapt
 class OnCommitsResponse(val adapter: CommitsRecyclerViewAdapter,
                         val parent: ViewGroup) : Callback<List<Commit>> {
     override fun onFailure(call: Call<List<Commit>>?, t: Throwable?) {
-        Log.d(LOGTAG, "Failed: ${t.toString()}")
+        Log.d(Application.LOGTAG, "Failed: ${t.toString()}")
     }
 
     override fun onResponse(call: Call<List<Commit>>?, response: Response<List<Commit>>?) {
-        Log.d(LOGTAG, "commits reponse")
+        Log.d(Application.LOGTAG, "commits reponse")
         response?.body()?.let { adapter.updateDataSet(it) }
 
         val refreshLayout = parent.findViewById<SwipeRefreshLayout>(R.id.commits_swiperefresh)

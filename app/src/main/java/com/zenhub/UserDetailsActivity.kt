@@ -11,8 +11,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-const val LOGTAG = "ZenHub"
-
 class ZenHub : BaseActivity() {
 
     private val userDetailsCallback = OnUserDetailsResponse(this)
@@ -26,7 +24,7 @@ class ZenHub : BaseActivity() {
     }
 
     override fun requestDataRefresh() {
-        Log.d(LOGTAG, "Refreshing list...")
+        Log.d(Application.LOGTAG, "Refreshing list...")
         gitHubService.userDetails(STUBBED_USER).enqueue(userDetailsCallback)
     }
 }
@@ -34,11 +32,11 @@ class ZenHub : BaseActivity() {
 class OnUserDetailsResponse(val activity: ZenHub) : Callback<User> {
 
     override fun onFailure(call: Call<User>?, t: Throwable?) {
-        Log.d(LOGTAG, "Failed: ${t.toString()}")
+        Log.d(Application.LOGTAG, "Failed: ${t.toString()}")
     }
 
     override fun onResponse(call: Call<User>?, response: Response<User>) {
-        Log.d(LOGTAG, "UserDetails reponse")
+        Log.d(Application.LOGTAG, "UserDetails reponse")
 
         if (!response.isSuccessful) {
             val layout = activity.findViewById<SwipeRefreshLayout>(R.id.swiperefresh)

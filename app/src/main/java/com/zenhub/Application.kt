@@ -1,7 +1,29 @@
 package com.zenhub
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.*
+
+import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
+
+@SuppressLint("StaticFieldLeak")
+class Application : android.app.Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+        context = applicationContext
+        picasso = Picasso.with(context)
+        picasso.setIndicatorsEnabled(true)
+    }
+
+    companion object {
+
+        lateinit var context: Context
+        lateinit var picasso: Picasso
+        var LOGTAG = "ZenHub"
+    }
+}
 
 class RoundedTransformation(private val radius: Float? = null, private val margin: Float = 0f) : Transformation {
 
