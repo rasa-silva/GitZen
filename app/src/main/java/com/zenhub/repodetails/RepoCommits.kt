@@ -1,6 +1,7 @@
 package com.zenhub.repodetails
 
 import android.content.Context
+import android.support.design.widget.Snackbar
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
@@ -91,9 +92,16 @@ class OnCommitsResponse(val adapter: CommitsRecyclerViewAdapter,
         Log.d(Application.LOGTAG, "Failed: ${t.toString()}")
     }
 
-    override fun onResponse(call: Call<List<Commit>>?, response: Response<List<Commit>>?) {
+    override fun onResponse(call: Call<List<Commit>>?, response: Response<List<Commit>>) {
         Log.d(Application.LOGTAG, "commits reponse")
-        response?.body()?.let { adapter.updateDataSet(it) }
+        if (!response.isSuccessful) {
+            val error = response.errorBody()?.string()
+            Log.e(Application.LOGTAG, "Failed response: $error")
+            val snackbar = Snackbar.make(parent, "Failed: $error.", Snackbar.LENGTH_INDEFINITE)
+            snackbar.show()
+            return
+        }
+        response.body()?.let { adapter.updateDataSet(it) }
 
         val refreshLayout = parent.findViewById<SwipeRefreshLayout>(R.id.commits_swiperefresh)
         refreshLayout.isRefreshing = false

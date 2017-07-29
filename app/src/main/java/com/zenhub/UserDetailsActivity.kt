@@ -40,7 +40,9 @@ class OnUserDetailsResponse(val activity: ZenHub) : Callback<User> {
 
         if (!response.isSuccessful) {
             val layout = activity.findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
-            val snackbar = Snackbar.make(layout, "Failed: ${response.errorBody()?.string()}.", Snackbar.LENGTH_LONG)
+            val error = response.errorBody()?.string()
+            Log.e(Application.LOGTAG, "Failed response: $error")
+            val snackbar = Snackbar.make(layout, "Failed: $error.", Snackbar.LENGTH_INDEFINITE)
             snackbar.show()
             return
         }
