@@ -7,6 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
+    android:gravity="center"
     android:orientation="horizontal">
 
     <ImageView
@@ -37,20 +38,20 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
             android:dividerPadding="4dp"
+            android:gravity="bottom"
             android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_account_circle_white_24px"
-                android:maxHeight="12sp"
-                android:maxWidth="12sp"
                 android:adjustViewBounds="true"
-                android:paddingStart="4dp"
+                android:contentDescription="committer_icon"
+                android:maxHeight="24sp"
+                android:maxWidth="24sp"
                 android:paddingEnd="4dp"
-                android:contentDescription="committer_icon" />
+                android:paddingStart="4dp"
+                android:src="@drawable/ic_account_circle_white_24px" />
 
             <TextView
                 android:id="@+id/committer"
@@ -62,10 +63,13 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_access_time_white_24dp"
-                android:paddingStart="4dp"
+                android:adjustViewBounds="true"
+                android:contentDescription="commit_date_icon"
+                android:maxHeight="24sp"
+                android:maxWidth="24sp"
                 android:paddingEnd="4dp"
-                android:contentDescription="commit_date_icon" />
+                android:paddingStart="4dp"
+                android:src="@drawable/ic_access_time_white_24dp" />
 
             <TextView
                 android:id="@+id/pushed_time"
@@ -77,10 +81,13 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_comment_white_24px"
-                android:paddingStart="4dp"
+                android:adjustViewBounds="true"
+                android:contentDescription="comments_icon"
+                android:maxHeight="24sp"
+                android:maxWidth="24sp"
                 android:paddingEnd="4dp"
-                android:contentDescription="comments_icon" />
+                android:paddingStart="4dp"
+                android:src="@drawable/ic_comment_white_24px" />
 
             <TextView
                 android:id="@+id/comments"
