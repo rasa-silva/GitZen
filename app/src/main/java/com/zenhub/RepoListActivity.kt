@@ -109,11 +109,13 @@ class OnRepoListResponse(val adapter: RepoListRecyclerViewAdapter,
         Log.d(Application.LOGTAG, "Failed: ${t.toString()}")
     }
 
-    override fun onResponse(call: Call<List<Repository>>?, response: Response<List<Repository>>?) {
-        Log.d(Application.LOGTAG, "Repo list size: ${response?.body()?.size}")
-        response?.body()?.let { adapter.updateDataSet(it) }
-
+    override fun onResponse(call: Call<List<Repository>>?, response: Response<List<Repository>>) {
+        Log.d(Application.LOGTAG, "Repo list size: ${response.body()?.size}")
         val refreshLayout = activity.findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
+        if (!response.isSuccessful)
+            showGitHubApiError(response.errorBody(), refreshLayout)
+        else
+            response.body()?.let { adapter.updateDataSet(it) }
         refreshLayout.isRefreshing = false
     }
 }

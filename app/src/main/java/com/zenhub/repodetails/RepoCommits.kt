@@ -1,7 +1,6 @@
 package com.zenhub.repodetails
 
 import android.content.Context
-import android.support.design.widget.Snackbar
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
@@ -19,26 +18,27 @@ import retrofit2.Callback
 import retrofit2.Response
 
 fun buildCommitsView(inflater: LayoutInflater, container: ViewGroup, fullRepoName: String): View {
-        val view = inflater.inflate(R.layout.repo_content_commits, container, false)
-        val refreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.commits_swiperefresh)
-        val recyclerViewAdapter = CommitsRecyclerViewAdapter()
-        val onCommitsResponse = OnCommitsResponse(recyclerViewAdapter, container)
-        refreshLayout?.setOnRefreshListener {
-            Log.d(Application.LOGTAG, "Refreshing repo information...")
-            gitHubService.commits(fullRepoName).enqueue(onCommitsResponse)
-        }
-
-        view.findViewById<RecyclerView>(R.id.list).let {
-            val layoutManager = LinearLayoutManager(it.context)
-            it.layoutManager = layoutManager
-            it.adapter = recyclerViewAdapter
-            it.addItemDecoration(DividerItemDecoration(it.context, layoutManager.orientation))
-        }
-
+    val view = inflater.inflate(R.layout.repo_content_commits, container, false)
+    val refreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.commits_swiperefresh)
+    val recyclerViewAdapter = CommitsRecyclerViewAdapter()
+    val onCommitsResponse = OnCommitsResponse(recyclerViewAdapter, container)
+    refreshLayout?.setOnRefreshListener {
+        Log.d(Application.LOGTAG, "Refreshing repo information...")
         gitHubService.commits(fullRepoName).enqueue(onCommitsResponse)
+    }
 
-        return view
+    view.findViewById<RecyclerView>(R.id.list).let {
+        val layoutManager = LinearLayoutManager(it.context)
+        it.layoutManager = layoutManager
+        it.adapter = recyclerViewAdapter
+        it.addItemDecoration(DividerItemDecoration(it.context, layoutManager.orientation))
+    }
+
+    gitHubService.commits(fullRepoName).enqueue(onCommitsResponse)
+
+    return view
 }
+
 class CommitsRecyclerViewAdapter : RecyclerView.Adapter<CommitsRecyclerViewAdapter.ViewHolder>() {
 
     val dataSet = mutableListOf<Commit>()
@@ -52,8 +52,10 @@ class CommitsRecyclerViewAdapter : RecyclerView.Adapter<CommitsRecyclerViewAdapt
         val commit = dataSet[position]
 
         val avatarView = holder.itemView.findViewById<ImageView>(R.id.avatar)
-        commit.committer?.let { Application.picasso.load(it.avatar_url)
-                .transform(RoundedTransformation()).into(avatarView) }
+        commit.committer?.let {
+            Application.picasso.load(it.avatar_url)
+                    .transform(RoundedTransformation()).into(avatarView)
+        }
 
         val date = dateFormat.parse(commit.commit.committer.date)
         val fuzzy_date = DateUtils.getRelativeTimeSpanString(date.time, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS)
@@ -85,7 +87,6 @@ class CommitsRecyclerViewAdapter : RecyclerView.Adapter<CommitsRecyclerViewAdapt
     }
 }
 
-
 class OnCommitsResponse(val adapter: CommitsRecyclerViewAdapter,
                         val parent: ViewGroup) : Callback<List<Commit>> {
     override fun onFailure(call: Call<List<Commit>>?, t: Throwable?) {
@@ -94,17 +95,10 @@ class OnCommitsResponse(val adapter: CommitsRecyclerViewAdapter,
 
     override fun onResponse(call: Call<List<Commit>>?, response: Response<List<Commit>>) {
         Log.d(Application.LOGTAG, "commits reponse")
-        if (!response.isSuccessful) {
-            val error = response.errorBody()?.string()
-            Log.e(Application.LOGTAG, "Failed response: $error")
-            val snackbar = Snackbar.make(parent, "Failed: $error.", Snackbar.LENGTH_INDEFINITE)
-            snackbar.show()
-            return
-        }
-        response.body()?.let { adapter.updateDataSet(it) }
-
-        val refreshLayout = parent.findViewById<SwipeRefreshLayout>(R.id.commits_swiperefresh)
-        refreshLayout.isRefreshing = false
+        if (!response.isSuccessful)
+            showGitHubApiError(response.errorBody(), parent)
+        else
+            response.body()?.let { adapter.updateDataSet(it) }
+        parent.findViewById<SwipeRefreshLayout>(R.id.commits_swiperefresh).isRefreshing = false
     }
-
 }

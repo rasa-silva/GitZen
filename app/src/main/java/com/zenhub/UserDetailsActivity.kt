@@ -1,7 +1,6 @@
 package com.zenhub
 
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v4.widget.SwipeRefreshLayout
 import android.text.format.DateUtils
 import android.util.Log
@@ -37,36 +36,31 @@ class OnUserDetailsResponse(val activity: ZenHub) : Callback<User> {
 
     override fun onResponse(call: Call<User>?, response: Response<User>) {
         Log.d(Application.LOGTAG, "UserDetails reponse")
+        val refreshLayout = activity.findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
 
         if (!response.isSuccessful) {
-            val layout = activity.findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
-            val error = response.errorBody()?.string()
-            Log.e(Application.LOGTAG, "Failed response: $error")
-            val snackbar = Snackbar.make(layout, "Failed: $error.", Snackbar.LENGTH_INDEFINITE)
-            snackbar.show()
-            return
+            showGitHubApiError(response.errorBody(), refreshLayout)
+        } else {
+            val responseBody = response.body()
+            val avatarView = activity.findViewById<ImageView>(R.id.avatar)
+            val roundedTransformation = RoundedTransformation()
+            Application.picasso.load(responseBody?.avatar_url).transform(roundedTransformation).into(avatarView)
+            val navDrawerAvatar = activity.findViewById<ImageView>(R.id.avatarImage)
+            Application.picasso.load(responseBody?.avatar_url).transform(roundedTransformation).into(navDrawerAvatar)
+            activity.findViewById<TextView>(R.id.userid).text = responseBody?.login
+            activity.findViewById<TextView>(R.id.username).text = responseBody?.name
+            val created = activity.findViewById<TextView>(R.id.created_at)
+            val date_created = dateFormat.parse(responseBody?.created_at)
+            created.text = DateUtils.formatDateTime(activity.applicationContext, date_created.time, DateUtils.FORMAT_SHOW_DATE)
+            val followers = activity.findViewById<TextView>(R.id.followers)
+            followers.text = activity.resources.getString(R.string.numberOfFollowers, responseBody?.followers)
+            val following = activity.findViewById<TextView>(R.id.following)
+            following.text = activity.resources.getString(R.string.numberOfFollowing, responseBody?.following)
+            val gists = activity.findViewById<TextView>(R.id.gists)
+            gists.text = activity.resources.getString(R.string.numberOfGists, responseBody?.public_gists)
+            activity.findViewById<TextView>(R.id.repo_count).text = responseBody?.public_repos.toString()
         }
 
-        val responseBody = response.body()
-        val avatarView = activity.findViewById<ImageView>(R.id.avatar)
-        val roundedTransformation = RoundedTransformation()
-        Application.picasso.load(responseBody?.avatar_url).transform(roundedTransformation).into(avatarView)
-        val navDrawerAvatar = activity.findViewById<ImageView>(R.id.avatarImage)
-        Application.picasso.load(responseBody?.avatar_url).transform(roundedTransformation).into(navDrawerAvatar)
-        activity.findViewById<TextView>(R.id.userid).text = responseBody?.login
-        activity.findViewById<TextView>(R.id.username).text = responseBody?.name
-        val created = activity.findViewById<TextView>(R.id.created_at)
-        val date_created = dateFormat.parse(responseBody?.created_at)
-        created.text = DateUtils.formatDateTime(activity.applicationContext, date_created.time, DateUtils.FORMAT_SHOW_DATE)
-        val followers = activity.findViewById<TextView>(R.id.followers)
-        followers.text = activity.resources.getString(R.string.numberOfFollowers, responseBody?.followers)
-        val following = activity.findViewById<TextView>(R.id.following)
-        following.text = activity.resources.getString(R.string.numberOfFollowing, responseBody?.following)
-        val gists = activity.findViewById<TextView>(R.id.gists)
-        gists.text = activity.resources.getString(R.string.numberOfGists, responseBody?.public_gists)
-        activity.findViewById<TextView>(R.id.repo_count).text = responseBody?.public_repos.toString()
-
-        val refreshLayout = activity.findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
         refreshLayout.isRefreshing = false
     }
 }

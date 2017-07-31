@@ -1,5 +1,8 @@
 package com.zenhub
 
+import android.support.design.widget.Snackbar
+import android.util.Log
+import android.view.View
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -53,6 +56,8 @@ class CommitInfo(val message: String, val comment_count: Int, val committer: Com
 class CommitCommitter(val date: String)
 class Commit(val commit: CommitInfo, val committer: Committer?)
 
+class ErrorMessage(val message: String)
+
 val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl("https://api.github.com/")
         .addConverterFactory(GsonConverterFactory.create())
@@ -65,3 +70,12 @@ val retrofitRaw: Retrofit = Retrofit.Builder()
         .build()
 
 val gitHubServiceRaw: GitHubService = retrofitRaw.create(GitHubService::class.java)
+
+fun showGitHubApiError(errorBody: ResponseBody?, parent: View) {
+    val error = errorBody?.string()
+    Log.e(Application.LOGTAG, "Failed response: $error")
+    val errorMessage = Application.GSON.fromJson<ErrorMessage>(error, ErrorMessage::class.java)
+    val snackbar = Snackbar.make(parent, errorMessage.message, Snackbar.LENGTH_INDEFINITE)
+    snackbar.view.setBackgroundColor(0xfffb4934.toInt())
+    snackbar.show()
+}

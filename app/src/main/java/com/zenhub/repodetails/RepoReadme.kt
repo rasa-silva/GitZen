@@ -64,12 +64,14 @@ class OnReadmeResponse(val parent: ViewGroup) : Callback<ResponseBody> {
 
     override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
         Log.d(Application.LOGTAG, "readme reponse")
-        //TODO Deal with non 200OK response
-        val webView = parent.findViewById<WebView>(R.id.readme_webview)
-        val content = styleSheet + response.body()?.string()
-        webView.loadDataWithBaseURL("https://github.com", content, "text/html", "UTF-8", null)
+        if (!response.isSuccessful)
+            showGitHubApiError(response.errorBody(), parent)
+        else {
+            val webView = parent.findViewById<WebView>(R.id.readme_webview)
+            val content = styleSheet + response.body()?.string()
+            webView.loadDataWithBaseURL("https://github.com", content, "text/html", "UTF-8", null)
+        }
 
-        val refreshLayout = parent.findViewById<SwipeRefreshLayout>(R.id.readme_swiperefresh)
-        refreshLayout.isRefreshing = false
+        parent.findViewById<SwipeRefreshLayout>(R.id.readme_swiperefresh).isRefreshing = false
     }
 }

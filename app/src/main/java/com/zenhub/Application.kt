@@ -3,6 +3,7 @@ package com.zenhub
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
+import com.google.gson.Gson
 
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
@@ -22,6 +23,7 @@ class Application : android.app.Application() {
         lateinit var context: Context
         lateinit var picasso: Picasso
         var LOGTAG = "ZenHub"
+        val GSON = Gson()
     }
 }
 
