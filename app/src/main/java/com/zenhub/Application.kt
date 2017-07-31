@@ -14,7 +14,7 @@ class Application : android.app.Application() {
         super.onCreate()
         context = applicationContext
         picasso = Picasso.with(context)
-        picasso.setIndicatorsEnabled(true)
+//        picasso.setIndicatorsEnabled(true)
     }
 
     companion object {
