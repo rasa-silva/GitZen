@@ -36,6 +36,10 @@ interface GitHubService {
 
     @GET("repos/{fullname}/commits")
     fun commits(@Path("fullname", encoded = true) fullname: String): Call<List<Commit>>
+
+    @GET("repos/{fullname}/contents/{path}")
+    fun repoContents(@Path("fullname", encoded = true) fullname: String,
+                     @Path("path") path: String): Call<List<RepoContentEntry>>
 }
 
 class Repository(val name: String, val full_name: String,
@@ -55,6 +59,8 @@ class Committer(val login: String, val avatar_url: String)
 class CommitInfo(val message: String, val comment_count: Int, val committer: CommitCommitter)
 class CommitCommitter(val date: String)
 class Commit(val commit: CommitInfo, val committer: Committer?)
+
+class RepoContentEntry(val name: String, val path: String, val size: Int, val type: String)
 
 class ErrorMessage(val message: String)
 

@@ -51,7 +51,7 @@ class RepoDetailsPagerAdapter(context: Activity, val fullRepoName: String) : Pag
         val layout = when (position) {
             0 -> buildReadmeView(inflater, container, fullRepoName)
             1 -> buildCommitsView(inflater, container, fullRepoName)
-            else -> inflater.inflate(R.layout.repo_content, container, false)
+            else -> buildContentsView(inflater, container, fullRepoName)
         }
         container.addView(layout)
         return layout
