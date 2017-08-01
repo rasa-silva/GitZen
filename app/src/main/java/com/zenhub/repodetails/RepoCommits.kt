@@ -24,7 +24,7 @@ fun buildCommitsView(inflater: LayoutInflater, container: ViewGroup, fullRepoNam
     val onCommitsResponse = OnCommitsResponse(recyclerViewAdapter, container)
     refreshLayout?.setOnRefreshListener {
         Log.d(Application.LOGTAG, "Refreshing repo information...")
-        gitHubService.commits(fullRepoName).enqueue(onCommitsResponse)
+        gitHubService.commits(onCommitsResponse.etag, fullRepoName).enqueue(onCommitsResponse)
     }
 
     view.findViewById<RecyclerView>(R.id.list).let {
@@ -34,7 +34,7 @@ fun buildCommitsView(inflater: LayoutInflater, container: ViewGroup, fullRepoNam
         it.addItemDecoration(DividerItemDecoration(it.context, layoutManager.orientation))
     }
 
-    gitHubService.commits(fullRepoName).enqueue(onCommitsResponse)
+    gitHubService.commits(onCommitsResponse.etag, fullRepoName).enqueue(onCommitsResponse)
 
     return view
 }
@@ -89,16 +89,24 @@ class CommitsRecyclerViewAdapter : RecyclerView.Adapter<CommitsRecyclerViewAdapt
 
 class OnCommitsResponse(val adapter: CommitsRecyclerViewAdapter,
                         val parent: ViewGroup) : Callback<List<Commit>> {
+
+    var etag: String? = null
+
     override fun onFailure(call: Call<List<Commit>>?, t: Throwable?) {
         Log.d(Application.LOGTAG, "Failed: ${t.toString()}")
     }
 
     override fun onResponse(call: Call<List<Commit>>?, response: Response<List<Commit>>) {
         Log.d(Application.LOGTAG, "commits reponse")
-        if (!response.isSuccessful)
-            showGitHubApiError(response.errorBody(), parent)
-        else
-            response.body()?.let { adapter.updateDataSet(it) }
+        when {
+            response.code() == 304 -> Unit
+            !response.isSuccessful -> showGitHubApiError(response.errorBody(), parent)
+            else -> {
+                etag = response.headers()["ETag"]
+                response.body()?.let { adapter.updateDataSet(it) }
+            }
+        }
+
         parent.findViewById<SwipeRefreshLayout>(R.id.commits_swiperefresh).isRefreshing = false
     }
 }

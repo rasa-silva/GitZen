@@ -27,30 +27,40 @@ fun buildReadmeView(inflater: LayoutInflater, container: ViewGroup, fullRepoName
     val onReadmeResponse = OnReadmeResponse(container)
     refreshLayout?.setOnRefreshListener {
         Log.d(Application.LOGTAG, "Refreshing repo information...")
-        gitHubService.repoDetails(fullRepoName).enqueue(onRepoDetailsResponse)
-        gitHubServiceRaw.repoReadme(fullRepoName).enqueue(onReadmeResponse)
+        gitHubService.repoDetails(onRepoDetailsResponse.etag, fullRepoName).enqueue(onRepoDetailsResponse)
+        gitHubServiceRaw.repoReadme(onReadmeResponse.etag, fullRepoName).enqueue(onReadmeResponse)
     }
 
-    gitHubService.repoDetails(fullRepoName).enqueue(onRepoDetailsResponse)
-    gitHubServiceRaw.repoReadme(fullRepoName).enqueue(onReadmeResponse)
+    gitHubService.repoDetails(onRepoDetailsResponse.etag, fullRepoName).enqueue(onRepoDetailsResponse)
+    gitHubServiceRaw.repoReadme(onReadmeResponse.etag, fullRepoName).enqueue(onReadmeResponse)
 
     return view
 }
 
 class OnRepoDetailsResponse(val parent: ViewGroup) : Callback<RepositoryDetails> {
+
+    var etag: String? = null
+
     override fun onFailure(call: Call<RepositoryDetails>?, t: Throwable?) {
         Log.d(Application.LOGTAG, "Failed: ${t.toString()}")
     }
 
     override fun onResponse(call: Call<RepositoryDetails>, response: Response<RepositoryDetails>) {
         Log.d(Application.LOGTAG, "RepoDetails reponse")
-        //TODO Deal with non 200OK response
-        parent.findViewById<TextView>(R.id.fullName).text = response.body()?.full_name
+        when {
+            response.code() == 304 -> Unit
+            !response.isSuccessful -> showGitHubApiError(response.errorBody(), parent)
+            else -> {
+                etag = response.headers()["ETag"]
+                parent.findViewById<TextView>(R.id.fullName).text = response.body()?.full_name
+            }
+        }
     }
 }
 
 class OnReadmeResponse(val parent: ViewGroup) : Callback<ResponseBody> {
 
+    var etag: String? = null
     val styleSheet = """
     <style>
         body {color: #ffffff; background-color: #303030;}
@@ -64,12 +74,15 @@ class OnReadmeResponse(val parent: ViewGroup) : Callback<ResponseBody> {
 
     override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
         Log.d(Application.LOGTAG, "readme reponse")
-        if (!response.isSuccessful)
-            showGitHubApiError(response.errorBody(), parent)
-        else {
-            val webView = parent.findViewById<WebView>(R.id.readme_webview)
-            val content = styleSheet + response.body()?.string()
-            webView.loadDataWithBaseURL("https://github.com", content, "text/html", "UTF-8", null)
+        when {
+            response.code() == 304 -> Unit
+            !response.isSuccessful -> showGitHubApiError(response.errorBody(), parent)
+            else -> {
+                etag = response.headers()["ETag"]
+                val webView = parent.findViewById<WebView>(R.id.readme_webview)
+                val content = styleSheet + response.body()?.string()
+                webView.loadDataWithBaseURL("https://github.com", content, "text/html", "UTF-8", null)
+            }
         }
 
         parent.findViewById<SwipeRefreshLayout>(R.id.readme_swiperefresh).isRefreshing = false

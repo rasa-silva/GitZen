@@ -22,7 +22,7 @@ fun buildContentsView(inflater: LayoutInflater, container: ViewGroup, fullRepoNa
     val onContentsResponse = OnContentsResponse(recyclerViewAdapter, container)
     refreshLayout?.setOnRefreshListener {
         Log.d(Application.LOGTAG, "Refreshing repo contents...")
-        gitHubService.repoContents(fullRepoName, "").enqueue(onContentsResponse)
+        gitHubService.repoContents(onContentsResponse.etag, fullRepoName, "").enqueue(onContentsResponse)
     }
 
     view.findViewById<RecyclerView>(R.id.list).let {
@@ -32,7 +32,7 @@ fun buildContentsView(inflater: LayoutInflater, container: ViewGroup, fullRepoNa
 //        it.addItemDecoration(DividerItemDecoration(it.context, layoutManager.orientation))
     }
 
-    gitHubService.repoContents(fullRepoName, "").enqueue(onContentsResponse)
+    gitHubService.repoContents(onContentsResponse.etag, fullRepoName, "").enqueue(onContentsResponse)
 
     return view
 }
@@ -88,16 +88,24 @@ class ContentsRecyclerViewAdapter : RecyclerView.Adapter<ContentsRecyclerViewAda
 
 class OnContentsResponse(val adapter: ContentsRecyclerViewAdapter,
                         val parent: ViewGroup) : Callback<List<RepoContentEntry>> {
+
+    var etag: String? = null
+
     override fun onFailure(call: Call<List<RepoContentEntry>>?, t: Throwable?) {
         Log.d(Application.LOGTAG, "Failed: ${t.toString()}")
     }
 
     override fun onResponse(call: Call<List<RepoContentEntry>>?, response: Response<List<RepoContentEntry>>) {
         Log.d(Application.LOGTAG, "contents reponse")
-        if (!response.isSuccessful)
-            showGitHubApiError(response.errorBody(), parent)
-        else
-            response.body()?.let { adapter.updateDataSet(it) }
+        when {
+            response.code() == 304 -> Unit
+            !response.isSuccessful -> showGitHubApiError(response.errorBody(), parent)
+            else -> {
+                etag = response.headers()["ETag"]
+                response.body()?.let { adapter.updateDataSet(it) }
+            }
+        }
+
         parent.findViewById<SwipeRefreshLayout>(R.id.contents_swiperefresh).isRefreshing = false
     }
 }

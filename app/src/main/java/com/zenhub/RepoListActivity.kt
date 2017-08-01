@@ -25,7 +25,7 @@ class StarredReposActivity : RepoListActivity() {
 
     override fun requestDataRefresh() {
         Log.d(Application.LOGTAG, "Refreshing list...")
-        gitHubService.listStarred(STUBBED_USER).enqueue(repoListCallback)
+        gitHubService.listStarred(repoListCallback.etag, STUBBED_USER).enqueue(repoListCallback)
     }
 }
 
@@ -35,7 +35,7 @@ class OwnReposActivity : RepoListActivity() {
 
     override fun requestDataRefresh() {
         Log.d(Application.LOGTAG, "Refreshing list...")
-        gitHubService.listRepos(STUBBED_USER).enqueue(repoListCallback)
+        gitHubService.listRepos(repoListCallback.etag, STUBBED_USER).enqueue(repoListCallback)
     }
 }
 
@@ -105,6 +105,9 @@ class RepoListRecyclerViewAdapter : RecyclerView.Adapter<RepoListRecyclerViewAda
 
 class OnRepoListResponse(val adapter: RepoListRecyclerViewAdapter,
                          val activity: RepoListActivity) : Callback<List<Repository>> {
+
+    var etag: String? = null
+
     override fun onFailure(call: Call<List<Repository>>?, t: Throwable?) {
         Log.d(Application.LOGTAG, "Failed: ${t.toString()}")
     }
@@ -112,10 +115,15 @@ class OnRepoListResponse(val adapter: RepoListRecyclerViewAdapter,
     override fun onResponse(call: Call<List<Repository>>?, response: Response<List<Repository>>) {
         Log.d(Application.LOGTAG, "Repo list size: ${response.body()?.size}")
         val refreshLayout = activity.findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
-        if (!response.isSuccessful)
-            showGitHubApiError(response.errorBody(), refreshLayout)
-        else
-            response.body()?.let { adapter.updateDataSet(it) }
+        when {
+            response.code() == 304 -> Unit
+            !response.isSuccessful -> showGitHubApiError(response.errorBody(), refreshLayout)
+            else -> {
+                etag = response.headers()["ETag"]
+                response.body()?.let { adapter.updateDataSet(it) }
+            }
+        }
+
         refreshLayout.isRefreshing = false
     }
 }
