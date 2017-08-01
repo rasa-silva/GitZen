@@ -64,7 +64,7 @@ class OnReadmeResponse(val parent: ViewGroup) : Callback<ResponseBody> {
     val styleSheet = """
     <style>
         body {color: #ffffff; background-color: #303030;}
-        a {color: #3f51b5;}
+        a {color: #458588;}
         pre {overflow: auto; width: 99%; background-color: #424242;}
     </style>"""
 
