@@ -146,14 +146,11 @@
                     android:textStyle="bold"
                     tools:text="Code" />
 
-                <TextView
-                    android:id="@+id/repo_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Repos"
-                    android:textSize="18sp"
-                    tools:text="repos" />
-
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/repo_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbars="vertical" />
 
             </LinearLayout>
 

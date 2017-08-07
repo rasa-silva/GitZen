@@ -41,7 +41,7 @@ object GitHubApi {
 
     private val callbacks = mutableMapOf<RequestType, OnApiResponse<*>>()
 
-    enum class RequestType {REPO_DETAILS, REPO_README}
+    enum class RequestType {REPO_DETAILS, REPO_README, OWN_REPOS }
 
     fun repoDetails(repoName: String, parentView: View,
                     block: (response: RepositoryDetails, rootView: View) -> Unit) {
@@ -55,6 +55,13 @@ object GitHubApi {
         val callback = callbacks[RequestType.REPO_README] ?: OnApiResponse(parentView, block)
         callbacks[RequestType.REPO_README] = callback
         service.repoReadme(callback.etag, repoName).enqueue(callback as Callback<ResponseBody>)
+    }
+
+    fun ownRepos(parentView: View,
+                 block: (response: List<Repository>, rootView: View) -> Unit) {
+        val callback = callbacks[RequestType.REPO_README] ?: OnApiResponse(parentView, block)
+        callbacks[RequestType.REPO_README] = callback
+        service.listRepos(callback.etag, STUBBED_USER).enqueue(callback as Callback<List<Repository>>)
     }
 }
 
