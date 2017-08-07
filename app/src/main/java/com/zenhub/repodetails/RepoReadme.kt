@@ -7,11 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.widget.TextView
-import com.zenhub.*
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.zenhub.Application
+import com.zenhub.R
+import com.zenhub.github.GitHubApi
+
+private val styleSheet = """
+    <style>
+        body {color: #ffffff; background-color: #303030;}
+        a {color: #458588;}
+        pre {overflow: auto; width: 99%; background-color: #424242;}
+    </style>"""
 
 fun buildReadmeView(inflater: LayoutInflater, container: ViewGroup, fullRepoName: String): View {
     val view = inflater.inflate(R.layout.repo_content_readme, container, false)
@@ -23,68 +28,21 @@ fun buildReadmeView(inflater: LayoutInflater, container: ViewGroup, fullRepoName
         refreshLayout.isEnabled = webView.scrollY == 0
     }
 
-    val onRepoDetailsResponse = OnRepoDetailsResponse(container)
-    val onReadmeResponse = OnReadmeResponse(container)
-    refreshLayout?.setOnRefreshListener {
-        Log.d(Application.LOGTAG, "Refreshing repo information...")
-        gitHubService.repoDetails(onRepoDetailsResponse.etag, fullRepoName).enqueue(onRepoDetailsResponse)
-        gitHubServiceRaw.repoReadme(onReadmeResponse.etag, fullRepoName).enqueue(onReadmeResponse)
-    }
-
-    gitHubService.repoDetails(onRepoDetailsResponse.etag, fullRepoName).enqueue(onRepoDetailsResponse)
-    gitHubServiceRaw.repoReadme(onReadmeResponse.etag, fullRepoName).enqueue(onReadmeResponse)
-
+    refreshLayout?.setOnRefreshListener { requestReadMeData(fullRepoName, container) }
+    requestReadMeData(fullRepoName, container)
     return view
 }
 
-class OnRepoDetailsResponse(val parent: ViewGroup) : Callback<RepositoryDetails> {
-
-    var etag: String? = null
-
-    override fun onFailure(call: Call<RepositoryDetails>?, t: Throwable?) {
-        Log.d(Application.LOGTAG, "Failed: ${t.toString()}")
+private fun requestReadMeData(fullRepoName: String, container: ViewGroup) {
+    Log.d(Application.LOGTAG, "Refreshing repo information...")
+    GitHubApi.repoDetails(fullRepoName, container) { response, rootView ->
+        rootView.findViewById<TextView>(R.id.fullName).text = response.body()?.full_name
     }
 
-    override fun onResponse(call: Call<RepositoryDetails>, response: Response<RepositoryDetails>) {
-        Log.d(Application.LOGTAG, "RepoDetails reponse")
-        when {
-            response.code() == 304 -> Unit
-            !response.isSuccessful -> showGitHubApiError(response.errorBody(), parent)
-            else -> {
-                etag = response.headers()["ETag"]
-                parent.findViewById<TextView>(R.id.fullName).text = response.body()?.full_name
-            }
-        }
-    }
-}
-
-class OnReadmeResponse(val parent: ViewGroup) : Callback<ResponseBody> {
-
-    var etag: String? = null
-    val styleSheet = """
-    <style>
-        body {color: #ffffff; background-color: #303030;}
-        a {color: #458588;}
-        pre {overflow: auto; width: 99%; background-color: #424242;}
-    </style>"""
-
-    override fun onFailure(call: Call<ResponseBody>?, t: Throwable?) {
-        Log.d(Application.LOGTAG, "Failed: ${t.toString()}")
-    }
-
-    override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-        Log.d(Application.LOGTAG, "readme reponse")
-        when {
-            response.code() == 304 -> Unit
-            !response.isSuccessful -> showGitHubApiError(response.errorBody(), parent)
-            else -> {
-                etag = response.headers()["ETag"]
-                val webView = parent.findViewById<WebView>(R.id.readme_webview)
-                val content = styleSheet + response.body()?.string()
-                webView.loadDataWithBaseURL("https://github.com", content, "text/html", "UTF-8", null)
-            }
-        }
-
-        parent.findViewById<SwipeRefreshLayout>(R.id.readme_swiperefresh).isRefreshing = false
+    GitHubApi.readMeData(fullRepoName, container) { response, rootView ->
+        val webView = rootView.findViewById<WebView>(R.id.readme_webview)
+        val content = styleSheet + response.body()?.string()
+        webView.loadDataWithBaseURL("https://github.com", content, "text/html", "UTF-8", null)
+        rootView.findViewById<SwipeRefreshLayout>(R.id.readme_swiperefresh).isRefreshing = false
     }
 }

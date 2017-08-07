@@ -6,6 +6,7 @@ import android.text.format.DateUtils
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import com.zenhub.github.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

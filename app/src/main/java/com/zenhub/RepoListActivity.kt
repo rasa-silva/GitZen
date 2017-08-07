@@ -14,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.zenhub.github.*
 import com.zenhub.repodetails.RepoActivity
 import retrofit2.Call
 import retrofit2.Callback

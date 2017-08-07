@@ -12,7 +12,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import com.zenhub.*
+import com.zenhub.Application
+import com.zenhub.R
+import com.zenhub.RoundedTransformation
+import com.zenhub.github.Commit
+import com.zenhub.github.dateFormat
+import com.zenhub.github.gitHubService
+import com.zenhub.github.showGitHubApiError
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
