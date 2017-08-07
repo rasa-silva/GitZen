@@ -36,12 +36,12 @@ fun buildReadmeView(inflater: LayoutInflater, container: ViewGroup, fullRepoName
 private fun requestReadMeData(fullRepoName: String, container: ViewGroup) {
     Log.d(Application.LOGTAG, "Refreshing repo information...")
     GitHubApi.repoDetails(fullRepoName, container) { response, rootView ->
-        rootView.findViewById<TextView>(R.id.fullName).text = response.body()?.full_name
+        rootView.findViewById<TextView>(R.id.fullName).text = response.full_name
     }
 
     GitHubApi.readMeData(fullRepoName, container) { response, rootView ->
         val webView = rootView.findViewById<WebView>(R.id.readme_webview)
-        val content = styleSheet + response.body()?.string()
+        val content = styleSheet + response.string()
         webView.loadDataWithBaseURL("https://github.com", content, "text/html", "UTF-8", null)
         rootView.findViewById<SwipeRefreshLayout>(R.id.readme_swiperefresh).isRefreshing = false
     }

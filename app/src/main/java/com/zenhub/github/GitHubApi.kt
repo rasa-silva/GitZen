@@ -44,14 +44,14 @@ object GitHubApi {
     enum class RequestType {REPO_DETAILS, REPO_README}
 
     fun repoDetails(repoName: String, parentView: View,
-                    block: (response: Response<RepositoryDetails>, rootView: View) -> Unit) {
+                    block: (response: RepositoryDetails, rootView: View) -> Unit) {
         val callback = callbacks[RequestType.REPO_DETAILS] ?: OnApiResponse(parentView, block)
         callbacks[RequestType.REPO_DETAILS] = callback
         service.repoDetails(callback.etag, repoName).enqueue(callback as Callback<RepositoryDetails>)
     }
 
     fun readMeData(repoName: String, parentView: View,
-                   block: (response: Response<ResponseBody>, rootView: View) -> Unit) {
+                   block: (response: ResponseBody, rootView: View) -> Unit) {
         val callback = callbacks[RequestType.REPO_README] ?: OnApiResponse(parentView, block)
         callbacks[RequestType.REPO_README] = callback
         service.repoReadme(callback.etag, repoName).enqueue(callback as Callback<ResponseBody>)
@@ -59,7 +59,7 @@ object GitHubApi {
 }
 
 class OnApiResponse<T>(private val parentView: View,
-                       private val block: (response: Response<T>, rootView: View) -> Unit) : Callback<T> {
+                       private val block: (response: T, rootView: View) -> Unit) : Callback<T> {
 
     var etag: String? = null
 
@@ -69,7 +69,7 @@ class OnApiResponse<T>(private val parentView: View,
         when {
             response.code() == 304 -> Unit
             !response.isSuccessful -> showGitHubApiError(response.errorBody(), parentView)
-            else -> block.invoke(response, parentView)
+            else -> response.body()?.let { block.invoke(it, parentView) }
         }
     }
 
