@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity
-            android:name=".ZenHub"
+            android:name=".UserDetailsActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,12 +23,12 @@
         <activity
             android:name=".StarredReposActivity"
             android:label="@string/title_activity_starred_repos"
-            android:parentActivityName=".ZenHub" />
+            android:parentActivityName=".UserDetailsActivity" />
         <activity android:name=".BaseActivity" />
         <activity
             android:name=".OwnReposActivity"
             android:label="@string/title_activity_own_repos"
-            android:parentActivityName=".ZenHub"/>
+            android:parentActivityName=".UserDetailsActivity"/>
         <activity
             android:name=".repodetails.RepoActivity"
             android:label="@string/title_activity_repo"

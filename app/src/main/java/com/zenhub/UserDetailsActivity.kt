@@ -14,7 +14,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ZenHub : BaseActivity() {
+class UserDetailsActivity : BaseActivity() {
 
     val adapter = RepoListRecyclerViewAdapter()
     private val userDetailsCallback = OnUserDetailsResponse(this)
@@ -46,7 +46,7 @@ class ZenHub : BaseActivity() {
     }
 }
 
-class OnUserDetailsResponse(val activity: ZenHub) : Callback<User> {
+class OnUserDetailsResponse(val activity: UserDetailsActivity) : Callback<User> {
 
     var etag: String? = null
 
