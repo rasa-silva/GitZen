@@ -59,8 +59,8 @@ object GitHubApi {
 
     fun ownRepos(parentView: View,
                  block: (response: List<Repository>, rootView: View) -> Unit) {
-        val callback = callbacks[RequestType.REPO_README] ?: OnApiResponse(parentView, block)
-        callbacks[RequestType.REPO_README] = callback
+        val callback = callbacks[RequestType.OWN_REPOS] ?: OnApiResponse(parentView, block)
+        callbacks[RequestType.OWN_REPOS] = callback
         service.listRepos(callback.etag, STUBBED_USER).enqueue(callback as Callback<List<Repository>>)
     }
 }
@@ -74,7 +74,7 @@ class OnApiResponse<T>(private val parentView: View,
         Log.d(Application.LOGTAG, "Response for ${call.request().url()}")
         etag = response.headers()["ETag"]
         when {
-            response.code() == 304 -> Unit
+            response.code() == 304 -> Log.d(Application.LOGTAG, "Response was 304. Ignoring data.")
             !response.isSuccessful -> showGitHubApiError(response.errorBody(), parentView)
             else -> response.body()?.let { block.invoke(it, parentView) }
         }
