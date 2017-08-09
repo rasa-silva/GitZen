@@ -71,7 +71,7 @@ class OnApiResponse<T>(private val parentView: View,
     var etag: String? = null
 
     override fun onResponse(call: Call<T>, response: Response<T>) {
-        Log.d(Application.LOGTAG, "Response for ${call.request().url()}")
+        Log.d(Application.LOGTAG, "Response for ${call.request().url()} is a ${response.code()}")
         etag = response.headers()["ETag"]
         when {
             response.isSuccessful || response.code() == 304 -> block.invoke(response.body(), parentView)
