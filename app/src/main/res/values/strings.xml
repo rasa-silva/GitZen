@@ -18,5 +18,6 @@
     <string name="numberOfGists">%d Gists</string>
     <string name="title_activity_repo">Repository Details</string>
     <string name="unknown_user_name">Unknown User</string>
+    <string name="previous_dir">Previous dir</string>
 
 </resources>

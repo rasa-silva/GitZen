@@ -19,22 +19,22 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView
+            <ImageView
                 android:id="@+id/back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8sp"
-                android:text="Back"
-                android:textSize="20sp"
-                tools:text="Go back" />
+                android:padding="8sp"
+                android:contentDescription="Previous dir"
+                android:src="@drawable/ic_subdirectory_arrow_left_white_24px" />
 
             <TextView xmlns:tools="http://schemas.android.com/tools"
                 android:id="@+id/current_path"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8sp"
-                android:text="Current path"
-                android:textSize="20sp"
+                android:padding="8sp"
+                android:drawableStart="@drawable/ic_folder_white_24px"
+                android:drawablePadding="4sp"
+                android:textSize="18sp"
                 tools:text="Current path" />
         </LinearLayout>
 

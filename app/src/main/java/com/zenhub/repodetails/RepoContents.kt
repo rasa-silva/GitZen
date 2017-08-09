@@ -33,7 +33,13 @@ fun buildContentsView(inflater: LayoutInflater, container: ViewGroup, fullRepoNa
         val layoutManager = LinearLayoutManager(it.context)
         it.layoutManager = layoutManager
         it.adapter = recyclerViewAdapter
-//        it.addItemDecoration(DividerItemDecoration(it.context, layoutManager.orientation))
+    }
+
+    val currentPath = view.findViewById<TextView>(R.id.current_path)
+    currentPath.text = "/"
+
+    view.findViewById<ImageView>(R.id.back).setOnClickListener {
+        Toast.makeText(inflater.context, "Going back from ${currentPath.text}", Toast.LENGTH_SHORT).show()
     }
 
     gitHubService.repoContents(onContentsResponse.etag, fullRepoName, "").enqueue(onContentsResponse)
