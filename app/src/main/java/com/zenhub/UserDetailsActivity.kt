@@ -40,8 +40,12 @@ class UserDetailsActivity : BaseActivity() {
 
         val recyclerView = findViewById<RecyclerView>(R.id.repo_list)
         GitHubApi.ownRepos(recyclerView, {response, _ ->
-            val top3Repos = response.sortedByDescending { it.pushed_at }.take(3)
-            adapter.updateDataSet(top3Repos)
+            if (response == null) {
+                Log.d(Application.LOGTAG, "Response is null. Will not update contents.")
+            } else {
+                val top3Repos = response.sortedByDescending { it.pushed_at }.take(3)
+                adapter.updateDataSet(top3Repos)
+            }
         })
     }
 }

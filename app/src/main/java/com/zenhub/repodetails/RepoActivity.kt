@@ -22,7 +22,7 @@ class RepoActivity : BaseActivity() {
         supportActionBar?.title = fullRepoName
 
         val viewPager = findViewById<ViewPager>(R.id.pager)
-        viewPager.adapter = RepoDetailsPagerAdapter(this, fullRepoName)
+        viewPager.adapter = RepoDetailsPagerAdapter(this, viewPager, fullRepoName)
         val tabLayout = findViewById<TabLayout>(R.id.tablayout)
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -39,9 +39,14 @@ class RepoActivity : BaseActivity() {
     }
 }
 
-class RepoDetailsPagerAdapter(context: Activity, val fullRepoName: String) : PagerAdapter() {
+class RepoDetailsPagerAdapter(context: Activity,
+                              container: ViewPager,
+                              fullRepoName: String) : PagerAdapter() {
 
     val inflater = LayoutInflater.from(context)
+    val readMeView = buildReadmeView(inflater, container, fullRepoName)
+    val commitsView = buildCommitsView(inflater, container, fullRepoName)
+    val contentsView = buildContentsView(inflater, container, fullRepoName)
 
     override fun isViewFromObject(view: View?, obj: Any?) = view == obj
 
@@ -49,9 +54,9 @@ class RepoDetailsPagerAdapter(context: Activity, val fullRepoName: String) : Pag
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val layout = when (position) {
-            0 -> buildReadmeView(inflater, container, fullRepoName)
-            1 -> buildCommitsView(inflater, container, fullRepoName)
-            else -> buildContentsView(inflater, container, fullRepoName)
+            0 -> readMeView
+            1 -> commitsView
+            else -> contentsView
         }
         container.addView(layout)
         return layout

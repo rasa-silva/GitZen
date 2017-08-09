@@ -44,21 +44,21 @@ object GitHubApi {
     enum class RequestType {REPO_DETAILS, REPO_README, OWN_REPOS }
 
     fun repoDetails(repoName: String, parentView: View,
-                    block: (response: RepositoryDetails, rootView: View) -> Unit) {
+                    block: (response: RepositoryDetails?, rootView: View) -> Unit) {
         val callback = callbacks[RequestType.REPO_DETAILS] ?: OnApiResponse(parentView, block)
         callbacks[RequestType.REPO_DETAILS] = callback
         service.repoDetails(callback.etag, repoName).enqueue(callback as Callback<RepositoryDetails>)
     }
 
     fun readMeData(repoName: String, parentView: View,
-                   block: (response: ResponseBody, rootView: View) -> Unit) {
+                   block: (response: ResponseBody?, rootView: View) -> Unit) {
         val callback = callbacks[RequestType.REPO_README] ?: OnApiResponse(parentView, block)
         callbacks[RequestType.REPO_README] = callback
         service.repoReadme(callback.etag, repoName).enqueue(callback as Callback<ResponseBody>)
     }
 
     fun ownRepos(parentView: View,
-                 block: (response: List<Repository>, rootView: View) -> Unit) {
+                 block: (response: List<Repository>?, rootView: View) -> Unit) {
         val callback = callbacks[RequestType.OWN_REPOS] ?: OnApiResponse(parentView, block)
         callbacks[RequestType.OWN_REPOS] = callback
         service.listRepos(callback.etag, STUBBED_USER).enqueue(callback as Callback<List<Repository>>)
@@ -66,7 +66,7 @@ object GitHubApi {
 }
 
 class OnApiResponse<T>(private val parentView: View,
-                       private val block: (response: T, rootView: View) -> Unit) : Callback<T> {
+                       private val block: (response: T?, rootView: View) -> Unit) : Callback<T> {
 
     var etag: String? = null
 
@@ -74,9 +74,9 @@ class OnApiResponse<T>(private val parentView: View,
         Log.d(Application.LOGTAG, "Response for ${call.request().url()}")
         etag = response.headers()["ETag"]
         when {
-            response.code() == 304 -> Log.d(Application.LOGTAG, "Response was 304. Ignoring data.")
-            !response.isSuccessful -> showGitHubApiError(response.errorBody(), parentView)
-            else -> response.body()?.let { block.invoke(it, parentView) }
+            response.isSuccessful || response.code() == 304 -> block.invoke(response.body(), parentView)
+            else -> showGitHubApiError(response.errorBody(), parentView)
+
         }
     }
 

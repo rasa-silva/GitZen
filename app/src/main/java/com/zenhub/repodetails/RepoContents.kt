@@ -23,7 +23,7 @@ fun buildContentsView(inflater: LayoutInflater, container: ViewGroup, fullRepoNa
     val view = inflater.inflate(R.layout.repo_content_contents, container, false)
     val refreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.contents_swiperefresh)
     val recyclerViewAdapter = ContentsRecyclerViewAdapter()
-    val onContentsResponse = OnContentsResponse(recyclerViewAdapter, container)
+    val onContentsResponse = OnContentsResponse(recyclerViewAdapter, refreshLayout)
     refreshLayout?.setOnRefreshListener {
         Log.d(Application.LOGTAG, "Refreshing repo contents...")
         gitHubService.repoContents(onContentsResponse.etag, fullRepoName, "").enqueue(onContentsResponse)
@@ -107,6 +107,7 @@ class OnContentsResponse(val adapter: ContentsRecyclerViewAdapter,
             }
         }
 
-        parent.findViewById<SwipeRefreshLayout>(R.id.contents_swiperefresh).isRefreshing = false
+        val refreshLayout = parent.findViewById<SwipeRefreshLayout>(R.id.contents_swiperefresh)
+        refreshLayout.isRefreshing = false
     }
 }
