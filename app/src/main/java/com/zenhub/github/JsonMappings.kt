@@ -18,6 +18,10 @@ class CommitInfo(val message: String, val comment_count: Int, val committer: Com
 class CommitCommitter(val date: String)
 class Commit(val sha: String, val commit: CommitInfo, val committer: Committer?)
 
+class CommitStats(val additions: Int, val deletions: Int, val total: Int)
+class CommitFile(val filename: String, val patch: String)
+class CommitDetails(val commit: CommitInfo, val stats: CommitStats, val files: List<CommitFile>)
+
 class RepoContentEntry(val name: String, val path: String, val size: Int, val type: String)
 
 class ErrorMessage(val message: String)

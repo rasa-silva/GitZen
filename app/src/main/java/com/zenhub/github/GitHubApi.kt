@@ -64,6 +64,10 @@ object GitHubApi {
         service.repoContents(repoName, path).enqueue(OnApiResponse(parentView, block))
     }
 
+    fun commitDetails(repoName: String, sha: String, parentView: View,
+                      block: (response: CommitDetails?, rootView: View) -> Unit) {
+        service.commit(repoName, sha).enqueue(OnApiResponse(parentView, block))
+    }
 }
 
 class OnApiResponse<T>(private val parentView: View,

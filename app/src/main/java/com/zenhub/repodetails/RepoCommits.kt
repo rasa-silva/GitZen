@@ -1,6 +1,8 @@
 package com.zenhub.repodetails
 
 import android.content.Context
+import android.content.Intent
+import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
@@ -23,7 +25,7 @@ import com.zenhub.github.dateFormat
 fun buildCommitsView(inflater: LayoutInflater, container: ViewGroup, fullRepoName: String): View {
     val view = inflater.inflate(R.layout.repo_content_commits, container, false)
     val refreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.commits_swiperefresh)
-    val recyclerViewAdapter = CommitsRecyclerViewAdapter()
+    val recyclerViewAdapter = CommitsRecyclerViewAdapter(fullRepoName)
     refreshLayout?.setOnRefreshListener { requestData(fullRepoName, container, recyclerViewAdapter) }
 
     view.findViewById<RecyclerView>(R.id.list).let {
@@ -46,13 +48,13 @@ private fun requestData(fullRepoName: String, container: ViewGroup, adapter: Com
     }
 }
 
-class CommitsRecyclerViewAdapter : RecyclerView.Adapter<CommitsRecyclerViewAdapter.ViewHolder>() {
+class CommitsRecyclerViewAdapter(private val repoName: String) : RecyclerView.Adapter<CommitsRecyclerViewAdapter.ViewHolder>() {
 
     val dataSet = mutableListOf<Commit>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.repo_content_commits_item, parent, false)
-        return ViewHolder(parent.context, view)
+        return ViewHolder(parent.context, view, repoName)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -84,13 +86,17 @@ class CommitsRecyclerViewAdapter : RecyclerView.Adapter<CommitsRecyclerViewAdapt
         notifyDataSetChanged()
     }
 
-    class ViewHolder(ctx: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(ctx: Context, itemView: View, repoName: String) : RecyclerView.ViewHolder(itemView) {
 
         var sha: String = ""
 
         init {
             itemView.setOnClickListener {
                 Toast.makeText(ctx, "Will show commit $sha", Toast.LENGTH_SHORT).show()
+                val intent = Intent(ctx, RepoCommitDetails::class.java)
+                intent.putExtra("REPO_FULL_NAME", repoName)
+                intent.putExtra("COMMIT_SHA", sha)
+                ContextCompat.startActivity(ctx, intent, null)
             }
         }
     }
