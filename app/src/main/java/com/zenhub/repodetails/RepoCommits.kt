@@ -58,6 +58,8 @@ class CommitsRecyclerViewAdapter : RecyclerView.Adapter<CommitsRecyclerViewAdapt
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val commit = dataSet[position]
 
+        holder.sha = commit.sha
+
         val avatarView = holder.itemView.findViewById<ImageView>(R.id.avatar)
         commit.committer?.let {
             Application.picasso.load(it.avatar_url)
@@ -83,9 +85,12 @@ class CommitsRecyclerViewAdapter : RecyclerView.Adapter<CommitsRecyclerViewAdapt
     }
 
     class ViewHolder(ctx: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        var sha: String = ""
+
         init {
             itemView.setOnClickListener {
-                Toast.makeText(ctx, "Will show commit details", Toast.LENGTH_SHORT).show()
+                Toast.makeText(ctx, "Will show commit $sha", Toast.LENGTH_SHORT).show()
             }
         }
     }
