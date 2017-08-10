@@ -28,11 +28,13 @@ class RepoCommitDetails : BaseActivity() {
     override fun requestDataRefresh() {
         Log.d(Application.LOGTAG, "Refreshing commit details...")
         val refreshLayout = findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
-        GitHubApi.commitDetails(repoName, commitSha, refreshLayout) { response, rootView ->
-            val message = refreshLayout.findViewById<TextView>(R.id.commit_message)
-            message.text = response?.commit?.message
-            val sha = refreshLayout.findViewById<TextView>(R.id.commit_sha)
-            sha.text = commitSha
+        GitHubApi.commitDetails(repoName, commitSha, refreshLayout) { response, _ ->
+            response?.let {
+                val message = refreshLayout.findViewById<TextView>(R.id.commit_message)
+                message.text = response.commit.message
+                val sha = refreshLayout.findViewById<TextView>(R.id.commit_sha)
+                sha.text = commitSha
+            }
             refreshLayout.isRefreshing = false
         }
     }
