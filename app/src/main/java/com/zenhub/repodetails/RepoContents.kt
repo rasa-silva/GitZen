@@ -26,7 +26,7 @@ fun buildContentsView(inflater: LayoutInflater, container: ViewGroup, fullRepoNa
     val onContentsResponse = OnContentsResponse(recyclerViewAdapter, refreshLayout)
     refreshLayout?.setOnRefreshListener {
         Log.d(Application.LOGTAG, "Refreshing repo contents...")
-        gitHubService.repoContents(onContentsResponse.etag, fullRepoName, "").enqueue(onContentsResponse)
+        gitHubService.repoContents(fullRepoName, "").enqueue(onContentsResponse)
     }
 
     view.findViewById<RecyclerView>(R.id.list).let {
@@ -42,7 +42,7 @@ fun buildContentsView(inflater: LayoutInflater, container: ViewGroup, fullRepoNa
         Toast.makeText(inflater.context, "Going back from ${currentPath.text}", Toast.LENGTH_SHORT).show()
     }
 
-    gitHubService.repoContents(onContentsResponse.etag, fullRepoName, "").enqueue(onContentsResponse)
+    gitHubService.repoContents(fullRepoName, "").enqueue(onContentsResponse)
 
     return view
 }
@@ -94,7 +94,7 @@ class ContentsRecyclerViewAdapter : RecyclerView.Adapter<ContentsRecyclerViewAda
 }
 
 class OnContentsResponse(val adapter: ContentsRecyclerViewAdapter,
-                        val parent: ViewGroup) : Callback<List<RepoContentEntry>> {
+                         val parent: ViewGroup) : Callback<List<RepoContentEntry>> {
 
     var etag: String? = null
 

@@ -4,6 +4,8 @@ import android.support.design.widget.Snackbar
 import android.util.Log
 import android.view.View
 import com.zenhub.Application
+import okhttp3.Cache
+import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -36,48 +38,43 @@ object GitHubApi {
     private val service: GitHubService = Retrofit.Builder()
             .baseUrl("https://api.github.com/")
             .addConverterFactory(GsonConverterFactory.create())
+            .client(OkHttpClient.Builder()
+                    .cache(Cache(Application.context.cacheDir, 1024 * 1024L))
+                    .addInterceptor(LoggingInterceptor())
+                    .build())
             .build()
             .create(GitHubService::class.java)
 
-    private val callbacks = mutableMapOf<RequestType, OnApiResponse<*>>()
-
-    enum class RequestType {REPO_DETAILS, REPO_README, OWN_REPOS }
-
     fun repoDetails(repoName: String, parentView: View,
                     block: (response: RepositoryDetails?, rootView: View) -> Unit) {
-        val callback = callbacks[RequestType.REPO_DETAILS] ?: OnApiResponse(parentView, block)
-        callbacks[RequestType.REPO_DETAILS] = callback
-        service.repoDetails(callback.etag, repoName).enqueue(callback as Callback<RepositoryDetails>)
+        service.repoDetails(repoName).enqueue(OnApiResponse(parentView, block))
     }
 
     fun readMeData(repoName: String, parentView: View,
                    block: (response: ResponseBody?, rootView: View) -> Unit) {
-        val callback = callbacks[RequestType.REPO_README] ?: OnApiResponse(parentView, block)
-        callbacks[RequestType.REPO_README] = callback
-        service.repoReadme(callback.etag, repoName).enqueue(callback as Callback<ResponseBody>)
+        service.repoReadme(repoName).enqueue(OnApiResponse(parentView, block))
     }
 
     fun ownRepos(parentView: View,
                  block: (response: List<Repository>?, rootView: View) -> Unit) {
-        val callback = callbacks[RequestType.OWN_REPOS] ?: OnApiResponse(parentView, block)
-        callbacks[RequestType.OWN_REPOS] = callback
-        service.listRepos(callback.etag, STUBBED_USER).enqueue(callback as Callback<List<Repository>>)
+        service.listRepos(STUBBED_USER).enqueue(OnApiResponse(parentView, block))
     }
+
+    fun commits(repoName: String, parentView: View,
+                block: (response: List<Commit>?, rootView: View) -> Unit) {
+        service.commits(repoName).enqueue(OnApiResponse(parentView, block))
+    }
+
+
 }
 
 class OnApiResponse<T>(private val parentView: View,
                        private val block: (response: T?, rootView: View) -> Unit) : Callback<T> {
 
-    var etag: String? = null
-
     override fun onResponse(call: Call<T>, response: Response<T>) {
         Log.d(Application.LOGTAG, "Response for ${call.request().url()} is a ${response.code()}")
-        etag = response.headers()["ETag"]
-        when {
-            response.isSuccessful || response.code() == 304 -> block.invoke(response.body(), parentView)
-            else -> showGitHubApiError(response.errorBody(), parentView)
-
-        }
+        if (response.isSuccessful) block.invoke(response.body(), parentView)
+        else showGitHubApiError(response.errorBody(), parentView)
     }
 
     override fun onFailure(call: Call<T>, t: Throwable) {

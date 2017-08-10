@@ -26,7 +26,7 @@ class StarredReposActivity : RepoListActivity() {
 
     override fun requestDataRefresh() {
         Log.d(Application.LOGTAG, "Refreshing list...")
-        gitHubService.listStarred(repoListCallback.etag, STUBBED_USER).enqueue(repoListCallback)
+        gitHubService.listStarred(STUBBED_USER).enqueue(repoListCallback)
     }
 }
 
@@ -36,7 +36,7 @@ class OwnReposActivity : RepoListActivity() {
 
     override fun requestDataRefresh() {
         Log.d(Application.LOGTAG, "Refreshing list...")
-        gitHubService.listRepos(repoListCallback.etag, STUBBED_USER).enqueue(repoListCallback)
+        gitHubService.listRepos(STUBBED_USER).enqueue(repoListCallback)
     }
 }
 

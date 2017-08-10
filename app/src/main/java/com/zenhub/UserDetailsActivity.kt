@@ -36,7 +36,7 @@ class UserDetailsActivity : BaseActivity() {
 
     override fun requestDataRefresh() {
         Log.d(Application.LOGTAG, "Refreshing list...")
-        gitHubService.userDetails(userDetailsCallback.etag, STUBBED_USER).enqueue(userDetailsCallback)
+        gitHubService.userDetails(STUBBED_USER).enqueue(userDetailsCallback)
 
         val recyclerView = findViewById<RecyclerView>(R.id.repo_list)
         GitHubApi.ownRepos(recyclerView, {response, _ ->

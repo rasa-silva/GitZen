@@ -12,26 +12,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import com.zenhub.Application
 import com.zenhub.R
 import com.zenhub.RoundedTransformation
 import com.zenhub.github.Commit
+import com.zenhub.github.GitHubApi
 import com.zenhub.github.dateFormat
-import com.zenhub.github.gitHubService
-import com.zenhub.github.showGitHubApiError
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 fun buildCommitsView(inflater: LayoutInflater, container: ViewGroup, fullRepoName: String): View {
     val view = inflater.inflate(R.layout.repo_content_commits, container, false)
     val refreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.commits_swiperefresh)
     val recyclerViewAdapter = CommitsRecyclerViewAdapter()
-    val onCommitsResponse = OnCommitsResponse(recyclerViewAdapter, container)
-    refreshLayout?.setOnRefreshListener {
-        Log.d(Application.LOGTAG, "Refreshing repo information...")
-        gitHubService.commits(onCommitsResponse.etag, fullRepoName).enqueue(onCommitsResponse)
-    }
+    refreshLayout?.setOnRefreshListener { requestData(fullRepoName, container, recyclerViewAdapter) }
 
     view.findViewById<RecyclerView>(R.id.list).let {
         val layoutManager = LinearLayoutManager(it.context)
@@ -40,9 +33,17 @@ fun buildCommitsView(inflater: LayoutInflater, container: ViewGroup, fullRepoNam
         it.addItemDecoration(DividerItemDecoration(it.context, layoutManager.orientation))
     }
 
-    gitHubService.commits(onCommitsResponse.etag, fullRepoName).enqueue(onCommitsResponse)
+    requestData(fullRepoName, container,recyclerViewAdapter )
 
     return view
+}
+
+private fun requestData(fullRepoName: String, container: ViewGroup, adapter: CommitsRecyclerViewAdapter) {
+    Log.d(Application.LOGTAG, "Refreshing repo commits...")
+    GitHubApi.commits(fullRepoName, container) { response, parentView ->
+        response?.let { adapter.updateDataSet(it) }
+        parentView.findViewById<SwipeRefreshLayout>(R.id.commits_swiperefresh).isRefreshing = false
+    }
 }
 
 class CommitsRecyclerViewAdapter : RecyclerView.Adapter<CommitsRecyclerViewAdapter.ViewHolder>() {
@@ -82,37 +83,10 @@ class CommitsRecyclerViewAdapter : RecyclerView.Adapter<CommitsRecyclerViewAdapt
     }
 
     class ViewHolder(ctx: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {
-//        init {
-//            itemView.setOnClickListener {
-//                val textView = itemView.findViewById<TextView>(R.id.repo_full_name)
-//                val intent = Intent(ctx, RepoActivity::class.java)
-//                intent.putExtra("REPO_FULL_NAME", textView.text.toString())
-//                ContextCompat.startActivity(ctx, intent, null)
-//            }
-//        }
-    }
-}
-
-class OnCommitsResponse(val adapter: CommitsRecyclerViewAdapter,
-                        val parent: ViewGroup) : Callback<List<Commit>> {
-
-    var etag: String? = null
-
-    override fun onFailure(call: Call<List<Commit>>?, t: Throwable?) {
-        Log.d(Application.LOGTAG, "Failed: ${t.toString()}")
-    }
-
-    override fun onResponse(call: Call<List<Commit>>?, response: Response<List<Commit>>) {
-        Log.d(Application.LOGTAG, "commits reponse")
-        when {
-            response.code() == 304 -> Unit
-            !response.isSuccessful -> showGitHubApiError(response.errorBody(), parent)
-            else -> {
-                etag = response.headers()["ETag"]
-                response.body()?.let { adapter.updateDataSet(it) }
+        init {
+            itemView.setOnClickListener {
+                Toast.makeText(ctx, "Will show commit details", Toast.LENGTH_SHORT).show()
             }
         }
-
-        parent.findViewById<SwipeRefreshLayout>(R.id.commits_swiperefresh).isRefreshing = false
     }
 }
