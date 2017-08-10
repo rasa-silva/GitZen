@@ -44,7 +44,7 @@ private fun requestReadMeData(fullRepoName: String, container: ViewGroup) {
     GitHubApi.readMeData(fullRepoName, container) { response, rootView ->
         response?.let {
             val webView = rootView.findViewById<WebView>(R.id.readme_webview)
-            val content = styleSheet + response.string()
+            val content = styleSheet + it.string()
             webView.loadDataWithBaseURL("https://github.com", content, "text/html", "UTF-8", null)
         }
 

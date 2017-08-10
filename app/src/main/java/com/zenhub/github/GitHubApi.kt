@@ -70,7 +70,6 @@ class OnApiResponse<T>(private val parentView: View,
                        private val block: (response: T?, rootView: View) -> Unit) : Callback<T> {
 
     override fun onResponse(call: Call<T>, response: Response<T>) {
-        Log.d(Application.LOGTAG, "Response for ${call.request().url()} is a ${response.code()}")
         if (response.isSuccessful) block.invoke(response.body(), parentView)
         else showGitHubApiError(response.errorBody(), parentView)
     }
