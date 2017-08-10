@@ -18,22 +18,6 @@ import java.util.*
 val STUBBED_USER = "rasa-silva"
 val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH)
 
-val retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl("https://api.github.com/")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-val gitHubService: GitHubService = retrofit.create(GitHubService::class.java)
-
-fun showGitHubApiError(errorBody: ResponseBody?, parent: View) {
-    val error = errorBody?.string()
-    Log.e(Application.LOGTAG, "Failed response: $error")
-    val errorMessage = Application.GSON.fromJson<ErrorMessage>(error, ErrorMessage::class.java)
-    val snackbar = Snackbar.make(parent, errorMessage.message, Snackbar.LENGTH_INDEFINITE)
-    snackbar.view.setBackgroundColor(0xfffb4934.toInt())
-    snackbar.show()
-}
-
 object GitHubApi {
     private val service: GitHubService = Retrofit.Builder()
             .baseUrl("https://api.github.com/")
@@ -44,6 +28,11 @@ object GitHubApi {
                     .build())
             .build()
             .create(GitHubService::class.java)
+
+    fun userDetails(user: String, parentView: View,
+                    block: (response: User?, rootView: View) -> Unit) {
+        service.userDetails(user).enqueue(OnApiResponse(parentView, block))
+    }
 
     fun repoDetails(repoName: String, parentView: View,
                     block: (response: RepositoryDetails?, rootView: View) -> Unit) {
@@ -60,11 +49,20 @@ object GitHubApi {
         service.listRepos(STUBBED_USER).enqueue(OnApiResponse(parentView, block))
     }
 
+    fun starredRepos(user: String, parentView: View,
+                     block: (response: List<Repository>?, rootView: View) -> Unit) {
+        service.listStarred(user).enqueue(OnApiResponse(parentView, block))
+    }
+
     fun commits(repoName: String, parentView: View,
                 block: (response: List<Commit>?, rootView: View) -> Unit) {
         service.commits(repoName).enqueue(OnApiResponse(parentView, block))
     }
 
+    fun repoContents(repoName: String, path: String, parentView: View,
+                     block: (response: List<RepoContentEntry>?, rootView: View) -> Unit) {
+        service.repoContents(repoName, path).enqueue(OnApiResponse(parentView, block))
+    }
 
 }
 
@@ -79,5 +77,14 @@ class OnApiResponse<T>(private val parentView: View,
 
     override fun onFailure(call: Call<T>, t: Throwable) {
         Log.d(Application.LOGTAG, "Failed: $t")
+    }
+
+    private fun showGitHubApiError(errorBody: ResponseBody?, parent: View) {
+        val error = errorBody?.string()
+        Log.e(Application.LOGTAG, "Failed response: $error")
+        val errorMessage = Application.GSON.fromJson<ErrorMessage>(error, ErrorMessage::class.java)
+        val snackbar = Snackbar.make(parent, errorMessage.message, Snackbar.LENGTH_INDEFINITE)
+        snackbar.view.setBackgroundColor(0xfffb4934.toInt())
+        snackbar.show()
     }
 }

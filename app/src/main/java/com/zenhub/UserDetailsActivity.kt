@@ -1,6 +1,7 @@
 package com.zenhub
 
 import android.os.Bundle
+import android.support.v4.widget.DrawerLayout
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
@@ -9,15 +10,13 @@ import android.text.format.DateUtils
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
-import com.zenhub.github.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.zenhub.github.GitHubApi
+import com.zenhub.github.STUBBED_USER
+import com.zenhub.github.dateFormat
 
 class UserDetailsActivity : BaseActivity() {
 
     val adapter = RepoListRecyclerViewAdapter()
-    private val userDetailsCallback = OnUserDetailsResponse(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +35,28 @@ class UserDetailsActivity : BaseActivity() {
 
     override fun requestDataRefresh() {
         Log.d(Application.LOGTAG, "Refreshing list...")
-        gitHubService.userDetails(STUBBED_USER).enqueue(userDetailsCallback)
+        val drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
+        GitHubApi.userDetails(STUBBED_USER, drawerLayout) { response, rootView ->
+            val avatarView = rootView.findViewById<ImageView>(R.id.avatar)
+            val roundedTransformation = RoundedTransformation()
+            Application.picasso.load(response?.avatar_url).transform(roundedTransformation).into(avatarView)
+            val navDrawerAvatar = rootView.findViewById<ImageView>(R.id.avatarImage)
+            Application.picasso.load(response?.avatar_url).transform(roundedTransformation).into(navDrawerAvatar)
+            rootView.findViewById<TextView>(R.id.userid).text = response?.login
+            rootView.findViewById<TextView>(R.id.username).text = response?.name
+            val created = rootView.findViewById<TextView>(R.id.created_at)
+            val date_created = dateFormat.parse(response?.created_at)
+            created.text = DateUtils.formatDateTime(rootView.context, date_created.time, DateUtils.FORMAT_SHOW_DATE)
+            val followers = rootView.findViewById<TextView>(R.id.followers)
+            followers.text = rootView.resources.getString(R.string.numberOfFollowers, response?.followers)
+            val following = rootView.findViewById<TextView>(R.id.following)
+            following.text = rootView.resources.getString(R.string.numberOfFollowing, response?.following)
+            val gists = rootView.findViewById<TextView>(R.id.gists)
+            gists.text = rootView.resources.getString(R.string.numberOfGists, response?.public_gists)
+
+            val refreshLayout = rootView.findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
+            refreshLayout.isRefreshing = false
+        }
 
         val recyclerView = findViewById<RecyclerView>(R.id.repo_list)
         GitHubApi.ownRepos(recyclerView, {response, _ ->
@@ -50,42 +70,3 @@ class UserDetailsActivity : BaseActivity() {
     }
 }
 
-class OnUserDetailsResponse(val activity: UserDetailsActivity) : Callback<User> {
-
-    var etag: String? = null
-
-    override fun onFailure(call: Call<User>?, t: Throwable?) {
-        Log.d(Application.LOGTAG, "Failed: ${t.toString()}")
-    }
-
-    override fun onResponse(call: Call<User>?, response: Response<User>) {
-        Log.d(Application.LOGTAG, "UserDetails reponse")
-        val refreshLayout = activity.findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
-        when {
-            response.code() == 304 -> Unit
-            !response.isSuccessful -> showGitHubApiError(response.errorBody(), refreshLayout)
-            else -> {
-                etag = response.headers()["ETag"]
-                val responseBody = response.body()
-                val avatarView = activity.findViewById<ImageView>(R.id.avatar)
-                val roundedTransformation = RoundedTransformation()
-                Application.picasso.load(responseBody?.avatar_url).transform(roundedTransformation).into(avatarView)
-                val navDrawerAvatar = activity.findViewById<ImageView>(R.id.avatarImage)
-                Application.picasso.load(responseBody?.avatar_url).transform(roundedTransformation).into(navDrawerAvatar)
-                activity.findViewById<TextView>(R.id.userid).text = responseBody?.login
-                activity.findViewById<TextView>(R.id.username).text = responseBody?.name
-                val created = activity.findViewById<TextView>(R.id.created_at)
-                val date_created = dateFormat.parse(responseBody?.created_at)
-                created.text = DateUtils.formatDateTime(activity.applicationContext, date_created.time, DateUtils.FORMAT_SHOW_DATE)
-                val followers = activity.findViewById<TextView>(R.id.followers)
-                followers.text = activity.resources.getString(R.string.numberOfFollowers, responseBody?.followers)
-                val following = activity.findViewById<TextView>(R.id.following)
-                following.text = activity.resources.getString(R.string.numberOfFollowing, responseBody?.following)
-                val gists = activity.findViewById<TextView>(R.id.gists)
-                gists.text = activity.resources.getString(R.string.numberOfGists, responseBody?.public_gists)
-            }
-        }
-
-        refreshLayout.isRefreshing = false
-    }
-}

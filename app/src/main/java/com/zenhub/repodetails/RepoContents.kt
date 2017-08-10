@@ -12,22 +12,14 @@ import android.widget.TextView
 import android.widget.Toast
 import com.zenhub.Application
 import com.zenhub.R
+import com.zenhub.github.GitHubApi
 import com.zenhub.github.RepoContentEntry
-import com.zenhub.github.gitHubService
-import com.zenhub.github.showGitHubApiError
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 fun buildContentsView(inflater: LayoutInflater, container: ViewGroup, fullRepoName: String): View {
     val view = inflater.inflate(R.layout.repo_content_contents, container, false)
     val refreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.contents_swiperefresh)
     val recyclerViewAdapter = ContentsRecyclerViewAdapter()
-    val onContentsResponse = OnContentsResponse(recyclerViewAdapter, refreshLayout)
-    refreshLayout?.setOnRefreshListener {
-        Log.d(Application.LOGTAG, "Refreshing repo contents...")
-        gitHubService.repoContents(fullRepoName, "").enqueue(onContentsResponse)
-    }
+    refreshLayout?.setOnRefreshListener { requestData(fullRepoName, "", refreshLayout, recyclerViewAdapter) }
 
     view.findViewById<RecyclerView>(R.id.list).let {
         val layoutManager = LinearLayoutManager(it.context)
@@ -42,9 +34,19 @@ fun buildContentsView(inflater: LayoutInflater, container: ViewGroup, fullRepoNa
         Toast.makeText(inflater.context, "Going back from ${currentPath.text}", Toast.LENGTH_SHORT).show()
     }
 
-    gitHubService.repoContents(fullRepoName, "").enqueue(onContentsResponse)
+    requestData(fullRepoName, "", refreshLayout, recyclerViewAdapter)
 
     return view
+}
+
+private fun requestData(fullRepoName: String, path: String, parentView: View, adapter: ContentsRecyclerViewAdapter) {
+    Log.d(Application.LOGTAG, "Refreshing repo contents...")
+    GitHubApi.repoContents(fullRepoName, path, parentView) { response, rootView ->
+        response?.let { adapter.updateDataSet(it) }
+        val refreshLayout = rootView.findViewById<SwipeRefreshLayout>(R.id.contents_swiperefresh)
+        refreshLayout.isRefreshing = false
+
+    }
 }
 
 class ContentsRecyclerViewAdapter : RecyclerView.Adapter<ContentsRecyclerViewAdapter.ViewHolder>() {
@@ -90,30 +92,5 @@ class ContentsRecyclerViewAdapter : RecyclerView.Adapter<ContentsRecyclerViewAda
                 Toast.makeText(itemView.context, path, Toast.LENGTH_LONG).show()
             }
         }
-    }
-}
-
-class OnContentsResponse(val adapter: ContentsRecyclerViewAdapter,
-                         val parent: ViewGroup) : Callback<List<RepoContentEntry>> {
-
-    var etag: String? = null
-
-    override fun onFailure(call: Call<List<RepoContentEntry>>?, t: Throwable?) {
-        Log.d(Application.LOGTAG, "Failed: ${t.toString()}")
-    }
-
-    override fun onResponse(call: Call<List<RepoContentEntry>>?, response: Response<List<RepoContentEntry>>) {
-        Log.d(Application.LOGTAG, "contents reponse")
-        when {
-            response.code() == 304 -> Unit
-            !response.isSuccessful -> showGitHubApiError(response.errorBody(), parent)
-            else -> {
-                etag = response.headers()["ETag"]
-                response.body()?.let { adapter.updateDataSet(it) }
-            }
-        }
-
-        val refreshLayout = parent.findViewById<SwipeRefreshLayout>(R.id.contents_swiperefresh)
-        refreshLayout.isRefreshing = false
     }
 }

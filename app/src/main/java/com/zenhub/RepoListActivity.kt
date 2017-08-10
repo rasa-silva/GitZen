@@ -14,29 +14,33 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.zenhub.github.*
+import com.zenhub.github.GitHubApi
+import com.zenhub.github.Repository
+import com.zenhub.github.STUBBED_USER
+import com.zenhub.github.dateFormat
 import com.zenhub.repodetails.RepoActivity
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class StarredReposActivity : RepoListActivity() {
 
-    val repoListCallback = OnRepoListResponse(adapter, this)
-
     override fun requestDataRefresh() {
         Log.d(Application.LOGTAG, "Refreshing list...")
-        gitHubService.listStarred(STUBBED_USER).enqueue(repoListCallback)
+        val refreshLayout = findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
+        GitHubApi.starredRepos(STUBBED_USER, refreshLayout) { response, _ ->
+            response?.let { adapter.updateDataSet(it) }
+            refreshLayout.isRefreshing = false
+        }
     }
 }
 
 class OwnReposActivity : RepoListActivity() {
 
-    val repoListCallback = OnRepoListResponse(adapter, this)
-
     override fun requestDataRefresh() {
         Log.d(Application.LOGTAG, "Refreshing list...")
-        gitHubService.listRepos(STUBBED_USER).enqueue(repoListCallback)
+        val refreshLayout = findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
+        GitHubApi.ownRepos(refreshLayout) { response, _ ->
+            response?.let { adapter.updateDataSet(it) }
+            refreshLayout.isRefreshing = false
+        }
     }
 }
 
@@ -101,30 +105,5 @@ class RepoListRecyclerViewAdapter : RecyclerView.Adapter<RepoListRecyclerViewAda
                 ContextCompat.startActivity(ctx, intent, null)
             }
         }
-    }
-}
-
-class OnRepoListResponse(val adapter: RepoListRecyclerViewAdapter,
-                         val activity: RepoListActivity) : Callback<List<Repository>> {
-
-    var etag: String? = null
-
-    override fun onFailure(call: Call<List<Repository>>?, t: Throwable?) {
-        Log.d(Application.LOGTAG, "Failed: ${t.toString()}")
-    }
-
-    override fun onResponse(call: Call<List<Repository>>?, response: Response<List<Repository>>) {
-        Log.d(Application.LOGTAG, "Repo list size: ${response.body()?.size}")
-        val refreshLayout = activity.findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
-        when {
-            response.code() == 304 -> Unit
-            !response.isSuccessful -> showGitHubApiError(response.errorBody(), refreshLayout)
-            else -> {
-                etag = response.headers()["ETag"]
-                response.body()?.let { adapter.updateDataSet(it) }
-            }
-        }
-
-        refreshLayout.isRefreshing = false
     }
 }
