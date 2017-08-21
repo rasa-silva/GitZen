@@ -11,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import com.zenhub.Application
 import com.zenhub.R
 import com.zenhub.github.GitHubApi
@@ -20,7 +19,7 @@ import com.zenhub.github.RepoContentEntry
 fun buildContentsView(inflater: LayoutInflater, container: ViewGroup, fullRepoName: String): View {
     val view = inflater.inflate(R.layout.repo_content_contents, container, false)
     val refreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.contents_swiperefresh)
-    val recyclerViewAdapter = ContentsRecyclerViewAdapter()
+    val recyclerViewAdapter = ContentsRecyclerViewAdapter(fullRepoName, refreshLayout)
     refreshLayout?.setOnRefreshListener { requestData(fullRepoName, "", refreshLayout, recyclerViewAdapter) }
 
     view.findViewById<RecyclerView>(R.id.list).let {
@@ -30,10 +29,15 @@ fun buildContentsView(inflater: LayoutInflater, container: ViewGroup, fullRepoNa
     }
 
     val currentPath = view.findViewById<TextView>(R.id.current_path)
-    currentPath.text = "/"
-
     view.findViewById<ImageView>(R.id.back).setOnClickListener {
-        Toast.makeText(inflater.context, "Going back from ${currentPath.text}", Toast.LENGTH_SHORT).show()
+        val currentPathText = currentPath.text
+        if (currentPathText == "/") return@setOnClickListener
+
+        val newPath = if (currentPathText.count { it == '/' } == 0) ""
+        else currentPathText.substring(0, currentPathText.lastIndexOf('/'))
+
+        Log.d(Application.LOGTAG, "Going back to $newPath...")
+        requestData(fullRepoName, newPath, refreshLayout, recyclerViewAdapter)
     }
 
     requestData(fullRepoName, "", refreshLayout, recyclerViewAdapter)
@@ -44,20 +48,25 @@ fun buildContentsView(inflater: LayoutInflater, container: ViewGroup, fullRepoNa
 private fun requestData(fullRepoName: String, path: String, parentView: View, adapter: ContentsRecyclerViewAdapter) {
     Log.d(Application.LOGTAG, "Refreshing repo contents...")
     GitHubApi.repoContents(fullRepoName, path, parentView) { response, rootView ->
-        response?.let { adapter.updateDataSet(it) }
+        response?.let {
+            val currentPath = parentView.findViewById<TextView>(R.id.current_path)
+            currentPath.text = path
+            adapter.updateDataSet(it)
+        }
         val refreshLayout = rootView.findViewById<SwipeRefreshLayout>(R.id.contents_swiperefresh)
         refreshLayout.isRefreshing = false
-
     }
 }
 
-class ContentsRecyclerViewAdapter : RecyclerView.Adapter<ContentsRecyclerViewAdapter.ViewHolder>() {
+class ContentsRecyclerViewAdapter(private val fullRepoName: String,
+                                  private val refreshLayout: SwipeRefreshLayout) : RecyclerView.Adapter<ContentsRecyclerViewAdapter.ViewHolder>() {
 
     private val dataSet = mutableListOf<RepoContentEntry>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.repo_content_contents_item, parent, false)
-        return ViewHolder(view, RepoContentEntry("", "/", 0, "dir", ""))
+        val entry = RepoContentEntry("", "/", 0, "dir", "")
+        return ViewHolder(view, this, refreshLayout, entry)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -88,7 +97,10 @@ class ContentsRecyclerViewAdapter : RecyclerView.Adapter<ContentsRecyclerViewAda
         notifyDataSetChanged()
     }
 
-    class ViewHolder(itemView: View, var entry: RepoContentEntry) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View,
+                     private val adapter: ContentsRecyclerViewAdapter,
+                     private val rootView: View,
+                     var entry: RepoContentEntry) : RecyclerView.ViewHolder(itemView) {
         init {
             itemView.setOnClickListener {
                 if (entry.type == "file") {
@@ -96,7 +108,7 @@ class ContentsRecyclerViewAdapter : RecyclerView.Adapter<ContentsRecyclerViewAda
                     intent.putExtra("FILE_URL", entry.download_url)
                     ContextCompat.startActivity(itemView.context, intent, null)
                 } else {
-                    Toast.makeText(itemView.context, "Showing dir ${entry.name}", Toast.LENGTH_LONG).show()
+                    requestData(adapter.fullRepoName, entry.path, rootView, adapter)
                 }
             }
         }
