@@ -51,16 +51,16 @@ private fun requestData(fullRepoName: String, path: String, parentView: View, ad
 
 class ContentsRecyclerViewAdapter : RecyclerView.Adapter<ContentsRecyclerViewAdapter.ViewHolder>() {
 
-    val dataSet = mutableListOf<RepoContentEntry>()
+    private val dataSet = mutableListOf<RepoContentEntry>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.repo_content_contents_item, parent, false)
-        return ViewHolder(view, "/")
+        return ViewHolder(view, RepoContentEntry("", "/", 0, "dir"))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val entry = dataSet[position]
-        holder.path = entry.path
+        holder.entry = entry
         if (entry.type == "file") {
             val imageView = holder.itemView.findViewById<ImageView>(R.id.contentType)
             imageView.setImageResource(R.drawable.ic_insert_drive_file_white_24px)
@@ -86,10 +86,14 @@ class ContentsRecyclerViewAdapter : RecyclerView.Adapter<ContentsRecyclerViewAda
         notifyDataSetChanged()
     }
 
-    class ViewHolder(itemView: View, var path: String) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View, var entry: RepoContentEntry) : RecyclerView.ViewHolder(itemView) {
         init {
             itemView.setOnClickListener {
-                Toast.makeText(itemView.context, path, Toast.LENGTH_LONG).show()
+                if (entry.type == "file")
+                    Toast.makeText(itemView.context, "Showing file ${entry.name}", Toast.LENGTH_LONG).show()
+                else {
+                    Toast.makeText(itemView.context, "Showing dir ${entry.name}", Toast.LENGTH_LONG).show()
+                }
             }
         }
     }
