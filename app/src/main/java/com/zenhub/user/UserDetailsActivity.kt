@@ -1,4 +1,4 @@
-package com.zenhub
+package com.zenhub.user
 
 import android.os.Bundle
 import android.support.v4.widget.DrawerLayout
@@ -10,9 +10,14 @@ import android.text.format.DateUtils
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import com.zenhub.Application
+import com.zenhub.BaseActivity
+import com.zenhub.R
+import com.zenhub.RoundedTransformation
 import com.zenhub.github.GitHubApi
 import com.zenhub.github.STUBBED_USER
 import com.zenhub.github.dateFormat
+import com.zenhub.lists.RepoListRecyclerViewAdapter
 
 class UserDetailsActivity : BaseActivity() {
 

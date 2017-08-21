@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity
-            android:name=".UserDetailsActivity"
+            android:name=".user.UserDetailsActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,21 +21,21 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".StarredReposActivity"
+            android:name=".lists.StarredReposActivity"
             android:label="@string/title_activity_starred_repos"
-            android:parentActivityName=".UserDetailsActivity" />
+            android:parentActivityName=".user.UserDetailsActivity" />
         <activity android:name=".BaseActivity" />
         <activity
-            android:name=".OwnReposActivity"
+            android:name=".lists.OwnReposActivity"
             android:label="@string/title_activity_own_repos"
-            android:parentActivityName=".UserDetailsActivity" />
+            android:parentActivityName=".user.UserDetailsActivity" />
         <activity
-            android:name=".repodetails.RepoActivity"
+            android:name=".repo.RepoActivity"
             android:label="@string/title_activity_repo"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".repodetails.RepoCommitDetails"
-            android:parentActivityName=".repodetails.RepoActivity" />
+            android:name=".repo.RepoCommitDetails"
+            android:parentActivityName=".repo.RepoActivity" />
     </application>
 
 </manifest>

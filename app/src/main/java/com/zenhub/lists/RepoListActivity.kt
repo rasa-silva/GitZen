@@ -1,4 +1,4 @@
-package com.zenhub
+package com.zenhub.lists
 
 import android.content.Context
 import android.content.Intent
@@ -14,11 +14,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.zenhub.Application
+import com.zenhub.BaseActivity
+import com.zenhub.R
 import com.zenhub.github.GitHubApi
 import com.zenhub.github.Repository
 import com.zenhub.github.STUBBED_USER
 import com.zenhub.github.dateFormat
-import com.zenhub.repodetails.RepoActivity
+import com.zenhub.repo.RepoActivity
 
 class StarredReposActivity : RepoListActivity() {
 
@@ -68,7 +71,7 @@ abstract class RepoListActivity : BaseActivity() {
 
 class RepoListRecyclerViewAdapter : RecyclerView.Adapter<RepoListRecyclerViewAdapter.ViewHolder>() {
 
-    val dataSet = mutableListOf<Repository>()
+    private val dataSet = mutableListOf<Repository>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.repo_list_item, parent, false)

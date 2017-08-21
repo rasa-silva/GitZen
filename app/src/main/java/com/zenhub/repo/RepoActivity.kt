@@ -1,4 +1,4 @@
-package com.zenhub.repodetails
+package com.zenhub.repo
 
 import android.app.Activity
 import android.os.Bundle
@@ -10,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.zenhub.BaseActivity
 import com.zenhub.R
+import com.zenhub.repo.commits.buildCommitsView
+import com.zenhub.repo.contents.buildContentsView
 
 class RepoActivity : BaseActivity() {
 

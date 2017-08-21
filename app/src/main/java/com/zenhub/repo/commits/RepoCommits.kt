@@ -1,4 +1,4 @@
-package com.zenhub.repodetails
+package com.zenhub.repo.commits
 
 import android.content.Context
 import android.content.Intent
@@ -21,6 +21,7 @@ import com.zenhub.RoundedTransformation
 import com.zenhub.github.Commit
 import com.zenhub.github.GitHubApi
 import com.zenhub.github.dateFormat
+import com.zenhub.repo.RepoCommitDetails
 
 fun buildCommitsView(inflater: LayoutInflater, container: ViewGroup, fullRepoName: String): View {
     val view = inflater.inflate(R.layout.repo_content_commits, container, false)
@@ -35,7 +36,7 @@ fun buildCommitsView(inflater: LayoutInflater, container: ViewGroup, fullRepoNam
         it.addItemDecoration(DividerItemDecoration(it.context, layoutManager.orientation))
     }
 
-    requestData(fullRepoName, container,recyclerViewAdapter )
+    requestData(fullRepoName, container, recyclerViewAdapter)
 
     return view
 }

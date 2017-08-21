@@ -1,4 +1,4 @@
-package com.zenhub.repodetails
+package com.zenhub.repo.contents
 
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
