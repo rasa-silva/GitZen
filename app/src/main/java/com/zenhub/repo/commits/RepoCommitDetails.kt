@@ -1,4 +1,4 @@
-package com.zenhub.repo
+package com.zenhub.repo.commits
 
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout

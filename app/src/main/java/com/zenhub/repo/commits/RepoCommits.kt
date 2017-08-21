@@ -14,14 +14,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import com.zenhub.Application
 import com.zenhub.R
 import com.zenhub.RoundedTransformation
 import com.zenhub.github.Commit
 import com.zenhub.github.GitHubApi
 import com.zenhub.github.dateFormat
-import com.zenhub.repo.RepoCommitDetails
 
 fun buildCommitsView(inflater: LayoutInflater, container: ViewGroup, fullRepoName: String): View {
     val view = inflater.inflate(R.layout.repo_content_commits, container, false)
@@ -93,7 +91,6 @@ class CommitsRecyclerViewAdapter(private val repoName: String) : RecyclerView.Ad
 
         init {
             itemView.setOnClickListener {
-                Toast.makeText(ctx, "Will show commit $sha", Toast.LENGTH_SHORT).show()
                 val intent = Intent(ctx, RepoCommitDetails::class.java)
                 intent.putExtra("REPO_FULL_NAME", repoName)
                 intent.putExtra("COMMIT_SHA", sha)

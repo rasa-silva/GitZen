@@ -22,6 +22,6 @@ class CommitStats(val additions: Int, val deletions: Int, val total: Int)
 class CommitFile(val filename: String, val patch: String)
 class CommitDetails(val commit: CommitInfo, val stats: CommitStats, val files: List<CommitFile>)
 
-class RepoContentEntry(val name: String, val path: String, val size: Int, val type: String)
+class RepoContentEntry(val name: String, val path: String, val size: Int, val type: String, val download_url: String)
 
 class ErrorMessage(val message: String)

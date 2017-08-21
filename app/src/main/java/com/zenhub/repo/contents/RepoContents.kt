@@ -1,5 +1,7 @@
 package com.zenhub.repo.contents
 
+import android.content.Intent
+import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -55,7 +57,7 @@ class ContentsRecyclerViewAdapter : RecyclerView.Adapter<ContentsRecyclerViewAda
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.repo_content_contents_item, parent, false)
-        return ViewHolder(view, RepoContentEntry("", "/", 0, "dir"))
+        return ViewHolder(view, RepoContentEntry("", "/", 0, "dir", ""))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -89,9 +91,11 @@ class ContentsRecyclerViewAdapter : RecyclerView.Adapter<ContentsRecyclerViewAda
     class ViewHolder(itemView: View, var entry: RepoContentEntry) : RecyclerView.ViewHolder(itemView) {
         init {
             itemView.setOnClickListener {
-                if (entry.type == "file")
-                    Toast.makeText(itemView.context, "Showing file ${entry.name}", Toast.LENGTH_LONG).show()
-                else {
+                if (entry.type == "file") {
+                    val intent = Intent(itemView.context, FileContentsActivity::class.java)
+                    intent.putExtra("FILE_URL", entry.download_url)
+                    ContextCompat.startActivity(itemView.context, intent, null)
+                } else {
                     Toast.makeText(itemView.context, "Showing dir ${entry.name}", Toast.LENGTH_LONG).show()
                 }
             }

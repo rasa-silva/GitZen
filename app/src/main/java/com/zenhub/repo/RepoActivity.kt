@@ -45,10 +45,10 @@ class RepoDetailsPagerAdapter(context: Activity,
                               container: ViewPager,
                               fullRepoName: String) : PagerAdapter() {
 
-    val inflater = LayoutInflater.from(context)
-    val readMeView = buildReadmeView(inflater, container, fullRepoName)
-    val commitsView = buildCommitsView(inflater, container, fullRepoName)
-    val contentsView = buildContentsView(inflater, container, fullRepoName)
+    private val inflater = LayoutInflater.from(context)
+    private val readMeView = buildReadmeView(inflater, container, fullRepoName)
+    private val commitsView = buildCommitsView(inflater, container, fullRepoName)
+    private val contentsView = buildContentsView(inflater, container, fullRepoName)
 
     override fun isViewFromObject(view: View?, obj: Any?) = view == obj
 
