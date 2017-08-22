@@ -8,6 +8,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.format.DateUtils
 import android.util.Log
+import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import com.zenhub.Application
@@ -21,7 +23,7 @@ import com.zenhub.lists.RepoListRecyclerViewAdapter
 
 class UserDetailsActivity : BaseActivity() {
 
-    val adapter = RepoListRecyclerViewAdapter()
+    private val adapter = RepoListRecyclerViewAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +42,8 @@ class UserDetailsActivity : BaseActivity() {
 
     override fun requestDataRefresh() {
         Log.d(Application.LOGTAG, "Refreshing list...")
+        val progressBar = findViewById<FrameLayout>(R.id.progress_overlay)
+        progressBar.visibility = View.VISIBLE
         val drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
         GitHubApi.userDetails(STUBBED_USER, drawerLayout) { response, rootView ->
             val avatarView = rootView.findViewById<ImageView>(R.id.avatar)
@@ -61,10 +65,11 @@ class UserDetailsActivity : BaseActivity() {
 
             val refreshLayout = rootView.findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
             refreshLayout.isRefreshing = false
+            progressBar.visibility = View.GONE
         }
 
         val recyclerView = findViewById<RecyclerView>(R.id.repo_list)
-        GitHubApi.ownRepos(recyclerView, {response, _ ->
+        GitHubApi.ownRepos(recyclerView, { response, _ ->
             if (response == null) {
                 Log.d(Application.LOGTAG, "Response is null. Will not update contents.")
             } else {
