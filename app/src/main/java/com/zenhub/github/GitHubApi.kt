@@ -23,7 +23,7 @@ object GitHubApi {
             .baseUrl("https://api.github.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(OkHttpClient.Builder()
-                    .cache(Cache(Application.context.cacheDir, 1024 * 1024L))
+                    .cache(Cache(Application.context.cacheDir, 1024 * 1024L).apply { evictAll() })
                     .addInterceptor(LoggingInterceptor())
                     .build())
             .build()

@@ -39,17 +39,40 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="16dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="16dp">
 
                 <TextView
                     android:id="@+id/commit_message"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@android:style/TextAppearance.Material.Large"
+                    tools:text="Commit message" />
+
                 <TextView
                     android:id="@+id/commit_sha"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    tools:text="commit sha" />
+
+                <TextView
+                    android:id="@+id/commiter_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="committer name" />
+
+                <TextView
+                    android:id="@+id/changed_files"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="total_changed_files" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/files"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbars="vertical"
+                    tools:listitem="@layout/repo_content_commit_item" />
             </LinearLayout>
 
         </android.support.v4.widget.SwipeRefreshLayout>

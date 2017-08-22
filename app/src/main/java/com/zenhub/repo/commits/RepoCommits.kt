@@ -49,7 +49,7 @@ private fun requestData(fullRepoName: String, container: ViewGroup, adapter: Com
 
 class CommitsRecyclerViewAdapter(private val repoName: String) : RecyclerView.Adapter<CommitsRecyclerViewAdapter.ViewHolder>() {
 
-    val dataSet = mutableListOf<Commit>()
+    private val dataSet = mutableListOf<Commit>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.repo_content_commits_item, parent, false)

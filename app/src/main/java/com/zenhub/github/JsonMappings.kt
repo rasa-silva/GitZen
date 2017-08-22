@@ -15,7 +15,7 @@ class User(val login: String, val avatar_url: String, val name: String,
 
 class Committer(val login: String, val avatar_url: String)
 class CommitInfo(val message: String, val comment_count: Int, val committer: CommitCommitter)
-class CommitCommitter(val date: String)
+class CommitCommitter(val name: String, val date: String)
 class Commit(val sha: String, val commit: CommitInfo, val committer: Committer?)
 
 class CommitStats(val additions: Int, val deletions: Int, val total: Int)
