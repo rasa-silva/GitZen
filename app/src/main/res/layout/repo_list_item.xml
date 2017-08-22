@@ -1,65 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/repo_list_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="16dp"
-    android:layout_weight="1"
-    android:orientation="vertical">
+    android:layout_margin="8dp"
+    android:layout_weight="1">
 
-    <TextView
+    <TextView xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/repo_full_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="18sp" />
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:textIsSelectable="true"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="SomeUser/SomeRepo" />
 
     <TextView
         android:id="@+id/repo_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingEnd="4dp"
-        android:paddingStart="4dp"
-        android:textSize="12sp" />
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:textIsSelectable="true"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/repo_full_name"
+        tools:text="This is a description of a given repo" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
+
+    <TextView
+        android:id="@+id/repo_stars"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:drawablePadding="8dp"
+        android:drawableStart="@drawable/ic_star_border_white_24px"
+        android:gravity="bottom"
+        android:scaleX="0.8"
+        android:scaleY="0.8"
+        android:textIsSelectable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/repo_pushed_time"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/repo_description"
+        tools:text="1212" />
 
-        <TextView
-            android:id="@+id/repo_stars"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:drawablePadding="8dp"
-            android:drawableStart="@drawable/ic_star_border_white_24px"
-            android:gravity="bottom"
-            android:scaleX="0.8"
-            android:scaleY="0.8"
-            tools:text="aaaaaaaaaa" />
+    <TextView
+        android:id="@+id/repo_pushed_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:drawablePadding="8dp"
+        android:drawableStart="@drawable/ic_access_time_white_24dp"
+        android:gravity="bottom"
+        android:scaleX="0.8"
+        android:scaleY="0.8"
+        android:textIsSelectable="true"
+        app:layout_constraintBottom_toBottomOf="@+id/repo_stars"
+        app:layout_constraintEnd_toStartOf="@+id/repo_language"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/repo_stars"
+        app:layout_constraintTop_toTopOf="@+id/repo_stars"
+        tools:layout_editor_absoluteY="42dp"
+        tools:text="2 days ago" />
 
-        <TextView
-            android:id="@+id/repo_pushed_time"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:drawablePadding="8dp"
-            android:drawableStart="@drawable/ic_access_time_white_24dp"
-            android:gravity="bottom"
-            android:scaleX="0.8"
-            android:scaleY="0.8"
-            tools:text="bbbbbbbbbb" />
+    <TextView
+        android:id="@+id/repo_language"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawablePadding="8dp"
+        android:drawableStart="@drawable/ic_language_white_24px"
+        android:gravity="bottom"
+        android:scaleX="0.8"
+        android:scaleY="0.8"
+        android:textIsSelectable="true"
+        app:layout_constraintBottom_toBottomOf="@+id/repo_pushed_time"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/repo_pushed_time"
+        app:layout_constraintTop_toTopOf="@+id/repo_pushed_time"
+        tools:layout_editor_absoluteY="42dp"
+        tools:text="Kotlin" />
 
-        <TextView
-            android:id="@+id/repo_language"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:drawablePadding="8dp"
-            android:drawableStart="@drawable/ic_language_white_24px"
-            android:gravity="bottom"
-            android:scaleX="0.8"
-            android:scaleY="0.8"
-            tools:text="ccccccc" />
-    </LinearLayout>
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>
