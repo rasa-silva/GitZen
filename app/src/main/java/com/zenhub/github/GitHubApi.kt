@@ -29,11 +29,6 @@ object GitHubApi {
             .build()
             .create(GitHubService::class.java)
 
-    fun userDetails(user: String, parentView: View,
-                    block: (response: User?, rootView: View) -> Unit) {
-        service.userDetails(user).enqueue(OnApiResponse(parentView, block))
-    }
-
     fun repoDetails(repoName: String, parentView: View,
                     block: (response: RepositoryDetails?, rootView: View) -> Unit) {
         service.repoDetails(repoName).enqueue(OnApiResponse(parentView, block))
@@ -67,6 +62,21 @@ object GitHubApi {
     fun commitDetails(repoName: String, sha: String, parentView: View,
                       block: (response: CommitDetails?, rootView: View) -> Unit) {
         service.commit(repoName, sha).enqueue(OnApiResponse(parentView, block))
+    }
+
+    fun userDetailsScreen(username: String, rootView: View,
+                          onResponse: (user: User, repos: List<Repository>) -> Unit) {
+
+        var user: User? = null
+        var repos: List<Repository>? = null
+
+        service.userDetails(username).enqueue(OnApiResponse(rootView) { resp, _ ->
+            user = resp?.apply { if (repos != null) onResponse(this, repos!!) }
+        })
+
+        service.listRepos(username).enqueue(OnApiResponse(rootView) { resp, _ ->
+            repos = resp?.apply { if (user != null) onResponse(user!!, this) }
+        })
     }
 }
 

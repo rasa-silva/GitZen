@@ -45,38 +45,32 @@ class UserDetailsActivity : BaseActivity() {
         val progressBar = findViewById<FrameLayout>(R.id.progress_overlay)
         progressBar.visibility = View.VISIBLE
         val drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
-        GitHubApi.userDetails(STUBBED_USER, drawerLayout) { response, rootView ->
-            val avatarView = rootView.findViewById<ImageView>(R.id.avatar)
-            val roundedTransformation = RoundedTransformation()
-            Application.picasso.load(response?.avatar_url).transform(roundedTransformation).into(avatarView)
-            val navDrawerAvatar = rootView.findViewById<ImageView>(R.id.avatarImage)
-            Application.picasso.load(response?.avatar_url).transform(roundedTransformation).into(navDrawerAvatar)
-            rootView.findViewById<TextView>(R.id.userid).text = response?.login
-            rootView.findViewById<TextView>(R.id.username).text = response?.name
-            val created = rootView.findViewById<TextView>(R.id.created_at)
-            val date_created = dateFormat.parse(response?.created_at)
-            created.text = DateUtils.formatDateTime(rootView.context, date_created.time, DateUtils.FORMAT_SHOW_DATE)
-            val followers = rootView.findViewById<TextView>(R.id.followers)
-            followers.text = rootView.resources.getString(R.string.numberOfFollowers, response?.followers)
-            val following = rootView.findViewById<TextView>(R.id.following)
-            following.text = rootView.resources.getString(R.string.numberOfFollowing, response?.following)
-            val gists = rootView.findViewById<TextView>(R.id.gists)
-            gists.text = rootView.resources.getString(R.string.numberOfGists, response?.public_gists)
+        GitHubApi.userDetailsScreen(STUBBED_USER, drawerLayout) { user, repos ->
 
-            val refreshLayout = rootView.findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
+            val avatarView = drawerLayout.findViewById<ImageView>(R.id.avatar)
+            val roundedTransformation = RoundedTransformation()
+            Application.picasso.load(user.avatar_url).transform(roundedTransformation).into(avatarView)
+            val navDrawerAvatar = drawerLayout.findViewById<ImageView>(R.id.avatarImage)
+            Application.picasso.load(user.avatar_url).transform(roundedTransformation).into(navDrawerAvatar)
+            drawerLayout.findViewById<TextView>(R.id.userid).text = user.login
+            drawerLayout.findViewById<TextView>(R.id.username).text = user.name
+            val created = drawerLayout.findViewById<TextView>(R.id.created_at)
+            val date_created = dateFormat.parse(user.created_at)
+            created.text = DateUtils.formatDateTime(drawerLayout.context, date_created.time, DateUtils.FORMAT_SHOW_DATE)
+            val followers = drawerLayout.findViewById<TextView>(R.id.followers)
+            followers.text = drawerLayout.resources.getString(R.string.numberOfFollowers, user.followers)
+            val following = drawerLayout.findViewById<TextView>(R.id.following)
+            following.text = drawerLayout.resources.getString(R.string.numberOfFollowing, user.following)
+            val gists = drawerLayout.findViewById<TextView>(R.id.gists)
+            gists.text = drawerLayout.resources.getString(R.string.numberOfGists, user.public_gists)
+
+            val top3Repos = repos.sortedByDescending { it.pushed_at }.take(3)
+            adapter.updateDataSet(top3Repos)
+
+            val refreshLayout = drawerLayout.findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
             refreshLayout.isRefreshing = false
             progressBar.visibility = View.GONE
         }
-
-        val recyclerView = findViewById<RecyclerView>(R.id.repo_list)
-        GitHubApi.ownRepos(recyclerView, { response, _ ->
-            if (response == null) {
-                Log.d(Application.LOGTAG, "Response is null. Will not update contents.")
-            } else {
-                val top3Repos = response.sortedByDescending { it.pushed_at }.take(3)
-                adapter.updateDataSet(top3Repos)
-            }
-        })
     }
 }
 
