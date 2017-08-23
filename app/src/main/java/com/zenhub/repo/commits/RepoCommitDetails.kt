@@ -1,19 +1,18 @@
 package com.zenhub.repo.commits
 
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.text.SpannableStringBuilder
-import android.text.Spanned
-import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.pddstudio.highlightjs.HighlightJsView
+import com.pddstudio.highlightjs.models.Language
+import com.pddstudio.highlightjs.models.Theme
 import com.zenhub.Application
 import com.zenhub.BaseActivity
 import com.zenhub.R
@@ -78,26 +77,22 @@ class CommitFilesRecyclerViewAdapter : RecyclerView.Adapter<CommitFilesRecyclerV
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.repo_content_commit_item, parent, false)
+
+        val patchView = view.findViewById<HighlightJsView>(R.id.patch)
+        with(patchView) {
+            theme = Theme.TOMORROW_NIGHT_EIGHTIES
+            highlightLanguage = Language.DIFF
+            setZoomSupportEnabled(true)
+            setBackgroundColor(android.graphics.Color.TRANSPARENT)
+        }
+
         return CommitFilesRecyclerViewAdapter.ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val filePatch = dataSet[position]
         holder.itemView.findViewById<TextView>(R.id.filename).text = filePatch.filename
-
-        val builder = SpannableStringBuilder()
-        val deletedSpan = ForegroundColorSpan(Color.RED)
-        val addedSpan = ForegroundColorSpan(Color.GREEN)
-        filePatch.patch.lines().forEach {
-            when {
-                it.startsWith('+') -> builder.append(it, addedSpan, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                it.startsWith('-') -> builder.append(it, deletedSpan, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                else -> builder.append(it)
-            }
-            builder.append("\n")
-        }
-
-        holder.itemView.findViewById<TextView>(R.id.patch).text = builder
+        holder.itemView.findViewById<HighlightJsView>(R.id.patch).setSource(filePatch.patch)
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
