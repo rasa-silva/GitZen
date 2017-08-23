@@ -14,21 +14,23 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <include layout="@layout/progress_bar_overlay"/>
+        <include layout="@layout/progress_bar_overlay" />
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardUseCompatPadding="true">
 
-            <LinearLayout
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/userBio"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="wrap_content">
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:id="@+id/bio_title"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
                     android:contentDescription="Bio cardview"
                     android:padding="8dp"
                     android:text="@string/user_details_card_bio"
@@ -37,92 +39,101 @@
                     android:textColor="@color/cardview_light_background"
                     android:textSize="24sp"
                     android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:text="Bio" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <ImageView
+                    android:id="@+id/avatar"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:contentDescription="User avatar"
+                    android:src="@drawable/ic_account_circle_white_24px"
+                    app:layout_constraintStart_toStartOf="@+id/userBio"
+                    app:layout_constraintTop_toBottomOf="@+id/bio_title" />
+
+                <TextView
+                    android:id="@+id/userid"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="8dp">
+                    android:layout_marginStart="8dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textIsSelectable="true"
+                    app:layout_constraintStart_toEndOf="@+id/avatar"
+                    app:layout_constraintTop_toTopOf="@+id/avatar"
+                    tools:text="Stubbed login" />
 
-                    <ImageView
-                        android:id="@+id/avatar"
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:contentDescription="User avatar"
-                        android:src="@drawable/ic_account_circle_white_24px" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:paddingEnd="8dp"
-                        android:paddingStart="8dp">
-
-                        <TextView
-                            android:id="@+id/userid"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                            tools:text="Stubbed login" />
-
-                        <TextView
-                            android:id="@+id/username"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                            tools:text="Stubbed user name" />
-
-                        <TextView
-                            android:id="@+id/created_at"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:drawablePadding="8dp"
-                            android:drawableStart="@drawable/ic_access_time_white_24dp"
-                            android:gravity="bottom"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                            tools:text="created_at value" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/username"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textIsSelectable="true"
+                    app:layout_constraintStart_toStartOf="@+id/userid"
+                    app:layout_constraintTop_toBottomOf="@+id/userid"
+                    tools:text="Stubbed user name" />
 
-                    <Button
-                        android:id="@+id/followers"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingStart="16sp"
-                        android:paddingEnd="16sp"
-                        android:text="@string/numberOfFollowers"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        tools:text="followers" />
+                <TextView
+                    android:id="@+id/created_at"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
+                    android:drawableStart="@drawable/ic_access_time_white_24dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textIsSelectable="true"
+                    app:layout_constraintStart_toStartOf="@+id/username"
+                    app:layout_constraintTop_toBottomOf="@+id/username"
+                    tools:text="created_at value" />
 
-                    <Button
-                        android:id="@+id/following"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingStart="16sp"
-                        android:paddingEnd="16sp"
-                        android:text="@string/numberOfFollowing"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        tools:text="following" />
 
-                    <Button
-                        android:id="@+id/gists"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingStart="16sp"
-                        android:paddingEnd="16sp"
-                        android:text="@string/numberOfGists"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        tools:text="gists" />
-                </LinearLayout>
+                <Button
+                    android:id="@+id/followers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:paddingEnd="16sp"
+                    android:paddingStart="16sp"
+                    android:text="@string/numberOfFollowers"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/following"
+                    app:layout_constraintHorizontal_chainStyle="spread_inside"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/created_at"
+                    tools:text="followers" />
 
-            </LinearLayout>
+                <Button
+                    android:id="@+id/following"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="19dp"
+                    android:paddingEnd="16sp"
+                    android:paddingStart="16sp"
+                    android:text="@string/numberOfFollowing"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/gists"
+                    app:layout_constraintStart_toEndOf="@+id/followers"
+                    tools:text="following" />
+
+                <Button
+                    android:id="@+id/gists"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="16sp"
+                    android:paddingStart="16sp"
+                    android:text="@string/numberOfGists"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/following"
+                    tools:text="gists" />
+
+
+            </android.support.constraint.ConstraintLayout>
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
