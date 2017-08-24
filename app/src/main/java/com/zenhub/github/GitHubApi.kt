@@ -10,6 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Path
+import retrofit2.http.Url
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -33,6 +34,9 @@ interface GitHubService {
 
     @GET("users/{username}/starred")
     fun listStarred(@Path("username") user: String): Call<List<Repository>>
+
+    @GET
+    fun listStarredPaginate(@Url url: String): Call<List<Repository>>
 
     @GET("users/{username}")
     fun userDetails(@Path("username") user: String): Call<User>

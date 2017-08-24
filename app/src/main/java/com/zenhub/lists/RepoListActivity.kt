@@ -25,6 +25,7 @@ import com.zenhub.repo.RepoActivity
 import com.zenhub.showErrorOnSnackbar
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
+import okhttp3.Response
 import ru.gildor.coroutines.retrofit.Result
 import ru.gildor.coroutines.retrofit.awaitResult
 
@@ -36,12 +37,37 @@ class StarredReposActivity : RepoListActivity() {
             val refreshLayout = findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
             val result = gitHubService.listStarred(STUBBED_USER).awaitResult()
             when (result) {
-                is Result.Ok -> adapter.updateDataSet(result.value)
+                is Result.Ok -> {
+                    adapter.updateDataSet(result.value)
+                    paginate(refreshLayout, result.response)
+                }
                 is Result.Error -> showErrorOnSnackbar(refreshLayout, result.response.message())
                 is Result.Exception -> showErrorOnSnackbar(refreshLayout, result.exception.localizedMessage)
             }
 
             refreshLayout.isRefreshing = false
+        }
+    }
+
+    private suspend fun paginate(rootView: View, response: Response) {
+        val linkHeader = response.header("Link") ?: return
+        val firstList = linkHeader.split(';', ',')
+        val lastUrl = firstList[2].trim(' ', '<', '>')
+
+        val lastPage = lastUrl.substringAfterLast("?page=").toInt()
+        var nextPage = 2
+
+        while(nextPage <= lastPage) {
+            val url = lastUrl.replaceAfterLast("?page=", nextPage.toString())
+            Log.d(Application.LOGTAG, "Requesting pagination $url")
+            val result = gitHubService.listStarredPaginate(url).awaitResult()
+            when (result) {
+                is Result.Ok -> adapter.appendData(result.value)
+                is Result.Error -> showErrorOnSnackbar(rootView, result.exception.localizedMessage)
+                is Result.Exception -> showErrorOnSnackbar(rootView, result.exception.localizedMessage)
+            }
+
+            nextPage++
         }
     }
 }
@@ -110,6 +136,11 @@ class RepoListRecyclerViewAdapter : RecyclerView.Adapter<RepoListRecyclerViewAda
 
     fun updateDataSet(newDataSet: List<Repository>) {
         dataSet.clear()
+        dataSet.addAll(newDataSet)
+        notifyDataSetChanged()
+    }
+
+    fun appendData(newDataSet: List<Repository>) {
         dataSet.addAll(newDataSet)
         notifyDataSetChanged()
     }
