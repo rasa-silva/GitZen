@@ -12,14 +12,15 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
-import com.zenhub.Application
-import com.zenhub.BaseActivity
-import com.zenhub.R
-import com.zenhub.RoundedTransformation
+import com.zenhub.*
 import com.zenhub.github.GitHubApi
 import com.zenhub.github.STUBBED_USER
 import com.zenhub.github.dateFormat
 import com.zenhub.lists.RepoListRecyclerViewAdapter
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
+import ru.gildor.coroutines.retrofit.Result
+import ru.gildor.coroutines.retrofit.awaitResult
 
 class UserDetailsActivity : BaseActivity() {
 
@@ -41,31 +42,47 @@ class UserDetailsActivity : BaseActivity() {
     }
 
     override fun requestDataRefresh() {
-        Log.d(Application.LOGTAG, "Refreshing list...")
-        val progressBar = findViewById<FrameLayout>(R.id.progress_overlay)
-        progressBar.visibility = View.VISIBLE
-        val drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
-        GitHubApi.userDetailsScreen(STUBBED_USER, drawerLayout) { user, repos ->
+        launch(UI) {
+            Log.d(Application.LOGTAG, "Refreshing list...")
+            val progressBar = findViewById<FrameLayout>(R.id.progress_overlay)
+            progressBar.visibility = View.VISIBLE
+            val drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
 
-            val avatarView = drawerLayout.findViewById<ImageView>(R.id.avatar)
-            val roundedTransformation = RoundedTransformation()
-            Application.picasso.load(user.avatar_url).transform(roundedTransformation).into(avatarView)
-            val navDrawerAvatar = drawerLayout.findViewById<ImageView>(R.id.avatarImage)
-            Application.picasso.load(user.avatar_url).transform(roundedTransformation).into(navDrawerAvatar)
-            drawerLayout.findViewById<TextView>(R.id.userid).text = user.login
-            drawerLayout.findViewById<TextView>(R.id.username).text = user.name
-            val created = drawerLayout.findViewById<TextView>(R.id.created_at)
-            val date_created = dateFormat.parse(user.created_at)
-            created.text = DateUtils.formatDateTime(drawerLayout.context, date_created.time, DateUtils.FORMAT_SHOW_DATE)
-            val followers = drawerLayout.findViewById<TextView>(R.id.followers)
-            followers.text = drawerLayout.resources.getString(R.string.numberOfFollowers, user.followers)
-            val following = drawerLayout.findViewById<TextView>(R.id.following)
-            following.text = drawerLayout.resources.getString(R.string.numberOfFollowing, user.following)
-            val gists = drawerLayout.findViewById<TextView>(R.id.gists)
-            gists.text = drawerLayout.resources.getString(R.string.numberOfGists, user.public_gists)
+            val userDetails = GitHubApi.service.userDetails(STUBBED_USER).awaitResult()
+            when (userDetails) {
+                is Result.Ok -> {
+                    val user = userDetails.value
+                    val avatarView = drawerLayout.findViewById<ImageView>(R.id.avatar)
+                    val roundedTransformation = RoundedTransformation()
+                    Application.picasso.load(user.avatar_url).transform(roundedTransformation).into(avatarView)
+                    val navDrawerAvatar = drawerLayout.findViewById<ImageView>(R.id.avatarImage)
+                    Application.picasso.load(user.avatar_url).transform(roundedTransformation).into(navDrawerAvatar)
+                    drawerLayout.findViewById<TextView>(R.id.userid).text = user.login
+                    drawerLayout.findViewById<TextView>(R.id.username).text = user.name
+                    val created = drawerLayout.findViewById<TextView>(R.id.created_at)
+                    val date_created = dateFormat.parse(user.created_at)
+                    created.text = DateUtils.formatDateTime(drawerLayout.context, date_created.time, DateUtils.FORMAT_SHOW_DATE)
+                    val followers = drawerLayout.findViewById<TextView>(R.id.followers)
+                    followers.text = drawerLayout.resources.getString(R.string.numberOfFollowers, user.followers)
+                    val following = drawerLayout.findViewById<TextView>(R.id.following)
+                    following.text = drawerLayout.resources.getString(R.string.numberOfFollowing, user.following)
+                    val gists = drawerLayout.findViewById<TextView>(R.id.gists)
+                    gists.text = drawerLayout.resources.getString(R.string.numberOfGists, user.public_gists)
+                }
+                is Result.Error -> showErrorOnSnackbar(drawerLayout, userDetails.response.message())
+                is Result.Exception -> TODO()
+            }
 
-            val top3Repos = repos.sortedByDescending { it.pushed_at }.take(3)
-            adapter.updateDataSet(top3Repos)
+            val reposResponse = GitHubApi.service.listRepos(STUBBED_USER).awaitResult()
+            when (reposResponse) {
+                is Result.Ok -> {
+                    val repos = reposResponse.value
+                    val top3Repos = repos.sortedByDescending { it.pushed_at }.take(3)
+                    adapter.updateDataSet(top3Repos)
+                }
+                is Result.Error -> showErrorOnSnackbar(drawerLayout, reposResponse.response.message())
+                is Result.Exception -> TODO()
+            }
 
             val refreshLayout = drawerLayout.findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
             refreshLayout.isRefreshing = false

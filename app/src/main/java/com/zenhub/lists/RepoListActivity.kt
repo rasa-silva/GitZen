@@ -22,14 +22,25 @@ import com.zenhub.github.Repository
 import com.zenhub.github.STUBBED_USER
 import com.zenhub.github.dateFormat
 import com.zenhub.repo.RepoActivity
+import com.zenhub.showErrorOnSnackbar
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
+import ru.gildor.coroutines.retrofit.Result
+import ru.gildor.coroutines.retrofit.awaitResult
 
 class StarredReposActivity : RepoListActivity() {
 
     override fun requestDataRefresh() {
-        Log.d(Application.LOGTAG, "Refreshing list...")
-        val refreshLayout = findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
-        GitHubApi.starredRepos(STUBBED_USER, refreshLayout) { response, _ ->
-            response?.let { adapter.updateDataSet(it) }
+        launch(UI) {
+            Log.d(Application.LOGTAG, "Refreshing list...")
+            val refreshLayout = findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
+            val result = GitHubApi.service.listStarred(STUBBED_USER).awaitResult()
+            when (result) {
+                is Result.Ok -> adapter.updateDataSet(result.value)
+                is Result.Error -> showErrorOnSnackbar(refreshLayout, result.response.message())
+                is Result.Exception -> showErrorOnSnackbar(refreshLayout, result.exception.localizedMessage)
+            }
+
             refreshLayout.isRefreshing = false
         }
     }

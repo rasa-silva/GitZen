@@ -19,7 +19,7 @@ val STUBBED_USER = "rasa-silva"
 val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH)
 
 object GitHubApi {
-    private val service: GitHubService = Retrofit.Builder()
+    val service: GitHubService = Retrofit.Builder()
             .baseUrl("https://api.github.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(OkHttpClient.Builder()
@@ -44,11 +44,6 @@ object GitHubApi {
         service.listRepos(STUBBED_USER).enqueue(OnApiResponse(parentView, block))
     }
 
-    fun starredRepos(user: String, parentView: View,
-                     block: (response: List<Repository>?, rootView: View) -> Unit) {
-        service.listStarred(user).enqueue(OnApiResponse(parentView, block))
-    }
-
     fun commits(repoName: String, parentView: View,
                 block: (response: List<Commit>?, rootView: View) -> Unit) {
         service.commits(repoName).enqueue(OnApiResponse(parentView, block))
@@ -62,21 +57,6 @@ object GitHubApi {
     fun commitDetails(repoName: String, sha: String, parentView: View,
                       block: (response: CommitDetails?, rootView: View) -> Unit) {
         service.commit(repoName, sha).enqueue(OnApiResponse(parentView, block))
-    }
-
-    fun userDetailsScreen(username: String, rootView: View,
-                          onResponse: (user: User, repos: List<Repository>) -> Unit) {
-
-        var user: User? = null
-        var repos: List<Repository>? = null
-
-        service.userDetails(username).enqueue(OnApiResponse(rootView) { resp, _ ->
-            user = resp?.apply { if (repos != null) onResponse(this, repos!!) }
-        })
-
-        service.listRepos(username).enqueue(OnApiResponse(rootView) { resp, _ ->
-            repos = resp?.apply { if (user != null) onResponse(user!!, this) }
-        })
     }
 }
 

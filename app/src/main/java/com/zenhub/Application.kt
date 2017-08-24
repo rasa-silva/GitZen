@@ -5,17 +5,21 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.*
 import android.support.design.widget.NavigationView
+import android.support.design.widget.Snackbar
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import com.google.gson.Gson
 
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
+import com.zenhub.github.ErrorMessage
 import com.zenhub.lists.OwnReposActivity
 import com.zenhub.lists.StarredReposActivity
 import com.zenhub.user.UserDetailsActivity
@@ -104,4 +108,13 @@ class RoundedTransformation(private val radius: Float? = null, private val margi
     }
 
     override fun key() = key
+}
+
+
+fun showErrorOnSnackbar(rootView: View, error: String) {
+    Log.e(Application.LOGTAG, "Failed response: $error")
+    val errorMessage = Application.GSON.fromJson<ErrorMessage>(error, ErrorMessage::class.java)
+    val snackbar = Snackbar.make(rootView, errorMessage.message, Snackbar.LENGTH_INDEFINITE)
+    snackbar.view.setBackgroundColor(0xfffb4934.toInt())
+    snackbar.show()
 }
