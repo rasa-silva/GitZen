@@ -17,10 +17,10 @@ import android.widget.TextView
 import com.zenhub.Application
 import com.zenhub.BaseActivity
 import com.zenhub.R
-import com.zenhub.github.GitHubApi
 import com.zenhub.github.Repository
 import com.zenhub.github.STUBBED_USER
 import com.zenhub.github.dateFormat
+import com.zenhub.github.gitHubService
 import com.zenhub.repo.RepoActivity
 import com.zenhub.showErrorOnSnackbar
 import kotlinx.coroutines.experimental.android.UI
@@ -34,7 +34,7 @@ class StarredReposActivity : RepoListActivity() {
         launch(UI) {
             Log.d(Application.LOGTAG, "Refreshing list...")
             val refreshLayout = findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
-            val result = GitHubApi.service.listStarred(STUBBED_USER).awaitResult()
+            val result = gitHubService.listStarred(STUBBED_USER).awaitResult()
             when (result) {
                 is Result.Ok -> adapter.updateDataSet(result.value)
                 is Result.Error -> showErrorOnSnackbar(refreshLayout, result.response.message())
@@ -52,7 +52,7 @@ class OwnReposActivity : RepoListActivity() {
         launch(UI) {
             Log.d(Application.LOGTAG, "Refreshing list...")
             val refreshLayout = findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
-            val result = GitHubApi.service.listRepos(STUBBED_USER).awaitResult()
+            val result = gitHubService.listRepos(STUBBED_USER).awaitResult()
             when (result) {
                 is Result.Ok -> adapter.updateDataSet(result.value)
                 is Result.Error -> showErrorOnSnackbar(refreshLayout, result.response.message())

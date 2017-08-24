@@ -13,8 +13,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.zenhub.Application
 import com.zenhub.R
-import com.zenhub.github.GitHubApi
 import com.zenhub.github.RepoContentEntry
+import com.zenhub.github.gitHubService
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
+import ru.gildor.coroutines.retrofit.Result
+import ru.gildor.coroutines.retrofit.awaitResult
 
 fun buildContentsView(inflater: LayoutInflater, container: ViewGroup, fullRepoName: String): View {
     val view = inflater.inflate(R.layout.repo_content_contents, container, false)
@@ -46,14 +50,20 @@ fun buildContentsView(inflater: LayoutInflater, container: ViewGroup, fullRepoNa
 }
 
 private fun requestData(fullRepoName: String, path: String, parentView: View, adapter: ContentsRecyclerViewAdapter) {
-    Log.d(Application.LOGTAG, "Refreshing repo contents...")
-    GitHubApi.repoContents(fullRepoName, path, parentView) { response, rootView ->
-        response?.let {
-            val currentPath = parentView.findViewById<TextView>(R.id.current_path)
-            currentPath.text = path
-            adapter.updateDataSet(it)
+    launch(UI) {
+        Log.d(Application.LOGTAG, "Refreshing repo contents...")
+
+        val response = gitHubService.repoContents(fullRepoName, path).awaitResult()
+        when (response) {
+            is Result.Ok -> {
+                parentView.findViewById<TextView>(R.id.current_path).text = path
+                adapter.updateDataSet(response.value)
+            }
+            is Result.Error -> TODO()
+            is Result.Exception -> TODO()
         }
-        val refreshLayout = rootView.findViewById<SwipeRefreshLayout>(R.id.contents_swiperefresh)
+
+        val refreshLayout = parentView.findViewById<SwipeRefreshLayout>(R.id.contents_swiperefresh)
         refreshLayout.isRefreshing = false
     }
 }

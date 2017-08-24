@@ -13,9 +13,9 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import com.zenhub.*
-import com.zenhub.github.GitHubApi
 import com.zenhub.github.STUBBED_USER
 import com.zenhub.github.dateFormat
+import com.zenhub.github.gitHubService
 import com.zenhub.lists.RepoListRecyclerViewAdapter
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
@@ -48,7 +48,7 @@ class UserDetailsActivity : BaseActivity() {
             progressBar.visibility = View.VISIBLE
             val drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
 
-            val userDetails = GitHubApi.service.userDetails(STUBBED_USER).awaitResult()
+            val userDetails = gitHubService.userDetails(STUBBED_USER).awaitResult()
             when (userDetails) {
                 is Result.Ok -> {
                     val user = userDetails.value
@@ -73,7 +73,7 @@ class UserDetailsActivity : BaseActivity() {
                 is Result.Exception -> TODO()
             }
 
-            val reposResponse = GitHubApi.service.listRepos(STUBBED_USER).awaitResult()
+            val reposResponse = gitHubService.listRepos(STUBBED_USER).awaitResult()
             when (reposResponse) {
                 is Result.Ok -> {
                     val repos = reposResponse.value

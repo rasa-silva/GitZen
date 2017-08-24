@@ -18,8 +18,12 @@ import com.zenhub.Application
 import com.zenhub.R
 import com.zenhub.RoundedTransformation
 import com.zenhub.github.Commit
-import com.zenhub.github.GitHubApi
 import com.zenhub.github.dateFormat
+import com.zenhub.github.gitHubService
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
+import ru.gildor.coroutines.retrofit.Result
+import ru.gildor.coroutines.retrofit.awaitResult
 
 fun buildCommitsView(inflater: LayoutInflater, container: ViewGroup, fullRepoName: String): View {
     val view = inflater.inflate(R.layout.repo_content_commits, container, false)
@@ -40,10 +44,16 @@ fun buildCommitsView(inflater: LayoutInflater, container: ViewGroup, fullRepoNam
 }
 
 private fun requestData(fullRepoName: String, container: ViewGroup, adapter: CommitsRecyclerViewAdapter) {
-    Log.d(Application.LOGTAG, "Refreshing repo commits...")
-    GitHubApi.commits(fullRepoName, container) { response, parentView ->
-        response?.let { adapter.updateDataSet(it) }
-        parentView.findViewById<SwipeRefreshLayout>(R.id.commits_swiperefresh).isRefreshing = false
+    launch(UI) {
+        Log.d(Application.LOGTAG, "Refreshing repo commits...")
+        val result = gitHubService.commits(fullRepoName).awaitResult()
+        when (result) {
+            is Result.Ok -> adapter.updateDataSet(result.value)
+            is Result.Error -> TODO()
+            is Result.Exception -> TODO()
+        }
+
+        container.findViewById<SwipeRefreshLayout>(R.id.commits_swiperefresh).isRefreshing = false
     }
 }
 

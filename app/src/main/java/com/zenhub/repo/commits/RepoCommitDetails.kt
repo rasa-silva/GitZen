@@ -17,7 +17,11 @@ import com.zenhub.Application
 import com.zenhub.BaseActivity
 import com.zenhub.R
 import com.zenhub.github.CommitFile
-import com.zenhub.github.GitHubApi
+import com.zenhub.github.gitHubService
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
+import ru.gildor.coroutines.retrofit.Result
+import ru.gildor.coroutines.retrofit.awaitResult
 
 class RepoCommitDetails : BaseActivity() {
 
@@ -44,20 +48,27 @@ class RepoCommitDetails : BaseActivity() {
     }
 
     override fun requestDataRefresh() {
-        Log.d(Application.LOGTAG, "Refreshing commit details...")
-        val refreshLayout = findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
-        GitHubApi.commitDetails(repoName, commitSha, refreshLayout) { response, _ ->
-            response?.let {
-                val message = refreshLayout.findViewById<TextView>(R.id.commit_message)
-                message.text = response.commit.message
-                val sha = refreshLayout.findViewById<TextView>(R.id.commit_sha)
-                sha.text = commitSha
-                refreshLayout.findViewById<TextView>(R.id.commiter_name).text = response.commit.committer.name
-                refreshLayout.findViewById<TextView>(R.id.changed_files).text = response.stats.total.toString()
+        launch(UI) {
+            Log.d(Application.LOGTAG, "Refreshing commit details...")
+            val refreshLayout = findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
+            val result = gitHubService.commit(repoName, commitSha).awaitResult()
+            when (result) {
+                is Result.Ok -> {
+                    val response = result.value
+                    val message = refreshLayout.findViewById<TextView>(R.id.commit_message)
+                    message.text = response.commit.message
+                    val sha = refreshLayout.findViewById<TextView>(R.id.commit_sha)
+                    sha.text = commitSha
+                    refreshLayout.findViewById<TextView>(R.id.commiter_name).text = response.commit.committer.name
+                    refreshLayout.findViewById<TextView>(R.id.changed_files).text = response.stats.total.toString()
 
-                val adapter = refreshLayout.findViewById<RecyclerView>(R.id.files).adapter as CommitFilesRecyclerViewAdapter
-                adapter.updateDataSet(response.files)
+                    val adapter = refreshLayout.findViewById<RecyclerView>(R.id.files).adapter as CommitFilesRecyclerViewAdapter
+                    adapter.updateDataSet(response.files)
+                }
+                is Result.Error -> TODO()
+                is Result.Exception -> TODO()
             }
+
             refreshLayout.isRefreshing = false
         }
     }

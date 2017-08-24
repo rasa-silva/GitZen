@@ -1,68 +1,57 @@
 package com.zenhub.github
 
-import android.support.design.widget.Snackbar
-import android.util.Log
-import android.view.View
 import com.zenhub.Application
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
+import retrofit2.http.Headers
+import retrofit2.http.Path
 import java.text.SimpleDateFormat
 import java.util.*
 
 val STUBBED_USER = "rasa-silva"
 val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH)
 
-object GitHubApi {
-    val service: GitHubService = Retrofit.Builder()
-            .baseUrl("https://api.github.com/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(OkHttpClient.Builder()
-                    .cache(Cache(Application.context.cacheDir, 1024 * 1024L).apply { evictAll() })
-                    .addInterceptor(LoggingInterceptor())
-                    .build())
-            .build()
-            .create(GitHubService::class.java)
+val gitHubService: GitHubService = Retrofit.Builder()
+        .baseUrl("https://api.github.com/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .client(OkHttpClient.Builder()
+                .cache(Cache(Application.context.cacheDir, 1024 * 1024L).apply { evictAll() })
+                .addInterceptor(LoggingInterceptor())
+                .build())
+        .build()
+        .create(GitHubService::class.java)
 
-    fun commits(repoName: String, parentView: View,
-                block: (response: List<Commit>?, rootView: View) -> Unit) {
-        service.commits(repoName).enqueue(OnApiResponse(parentView, block))
-    }
+interface GitHubService {
 
-    fun repoContents(repoName: String, path: String, parentView: View,
-                     block: (response: List<RepoContentEntry>?, rootView: View) -> Unit) {
-        service.repoContents(repoName, path).enqueue(OnApiResponse(parentView, block))
-    }
+    @GET("users/{username}/repos")
+    fun listRepos(@Path("username") user: String): Call<List<Repository>>
 
-    fun commitDetails(repoName: String, sha: String, parentView: View,
-                      block: (response: CommitDetails?, rootView: View) -> Unit) {
-        service.commit(repoName, sha).enqueue(OnApiResponse(parentView, block))
-    }
-}
+    @GET("users/{username}/starred")
+    fun listStarred(@Path("username") user: String): Call<List<Repository>>
 
-class OnApiResponse<T>(private val parentView: View,
-                       private val block: (response: T?, rootView: View) -> Unit) : Callback<T> {
+    @GET("users/{username}")
+    fun userDetails(@Path("username") user: String): Call<User>
 
-    override fun onResponse(call: Call<T>, response: Response<T>) {
-        if (response.isSuccessful) block.invoke(response.body(), parentView)
-        else showGitHubApiError(response.errorBody(), parentView)
-    }
+    @GET("repos/{fullname}")
+    fun repoDetails(@Path("fullname", encoded = true) fullname: String): Call<RepositoryDetails>
 
-    override fun onFailure(call: Call<T>, t: Throwable) {
-        Log.d(Application.LOGTAG, "Failed: $t")
-    }
+    @GET("repos/{fullname}/readme")
+    @Headers("Accept: application/vnd.github.v3.html")
+    fun repoReadme(@Path("fullname", encoded = true) fullname: String): Call<ResponseBody>
 
-    private fun showGitHubApiError(errorBody: ResponseBody?, parent: View) {
-        val error = errorBody?.string()
-        Log.e(Application.LOGTAG, "Failed response: $error")
-        val errorMessage = Application.GSON.fromJson<ErrorMessage>(error, ErrorMessage::class.java)
-        val snackbar = Snackbar.make(parent, errorMessage.message, Snackbar.LENGTH_INDEFINITE)
-        snackbar.view.setBackgroundColor(0xfffb4934.toInt())
-        snackbar.show()
-    }
+    @GET("repos/{fullname}/commits")
+    fun commits(@Path("fullname", encoded = true) fullname: String): Call<List<Commit>>
+
+    @GET("repos/{fullname}/contents/{path}")
+    fun repoContents(@Path("fullname", encoded = true) fullname: String,
+                     @Path("path", encoded = true) path: String): Call<List<RepoContentEntry>>
+
+    @GET("repos/{fullname}/commits/{sha}")
+    fun commit(@Path("fullname", encoded = true) fullname: String,
+               @Path("sha") sha: String): Call<CommitDetails>
 }

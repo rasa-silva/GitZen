@@ -10,7 +10,7 @@ import android.webkit.WebView
 import android.widget.TextView
 import com.zenhub.Application
 import com.zenhub.R
-import com.zenhub.github.GitHubApi
+import com.zenhub.github.gitHubService
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import ru.gildor.coroutines.retrofit.Result
@@ -42,14 +42,14 @@ fun buildReadmeView(inflater: LayoutInflater, container: ViewGroup, fullRepoName
 private fun requestReadMeData(fullRepoName: String, rootView: SwipeRefreshLayout) {
     launch(UI) {
         Log.d(Application.LOGTAG, "Refreshing repo information...")
-        val repoDetails = GitHubApi.service.repoDetails(fullRepoName).awaitResult()
+        val repoDetails = gitHubService.repoDetails(fullRepoName).awaitResult()
         when (repoDetails) {
             is Result.Ok -> rootView.findViewById<TextView>(R.id.fullName).text = repoDetails.value.full_name
             is Result.Error -> TODO()
             is Result.Exception -> TODO()
         }
 
-        val readMeResult = GitHubApi.service.repoReadme(fullRepoName).awaitResult()
+        val readMeResult = gitHubService.repoReadme(fullRepoName).awaitResult()
         when (readMeResult) {
             is Result.Ok -> {
                 val webView = rootView.findViewById<WebView>(R.id.readme_webview)
