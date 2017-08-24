@@ -51,8 +51,8 @@ class StarredReposActivity : RepoListActivity() {
 
     private suspend fun paginate(rootView: View, response: Response) {
         val linkHeader = response.header("Link") ?: return
-        val firstList = linkHeader.split(';', ',')
-        val lastUrl = firstList[2].trim(' ', '<', '>')
+        val nextAndLastUrls = linkHeader.split(';', ',')
+        val lastUrl = nextAndLastUrls[2].trim(' ', '<', '>')
 
         val lastPage = lastUrl.substringAfterLast("?page=").toInt()
         var nextPage = 2

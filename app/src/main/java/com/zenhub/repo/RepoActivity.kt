@@ -37,6 +37,8 @@ class RepoActivity : BaseActivity() {
             }
         })
 
+        viewPager.setCurrentItem(1, true) //Preselect commits on the middle
+
         requestDataRefresh()
     }
 }
