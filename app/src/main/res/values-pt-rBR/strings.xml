@@ -9,6 +9,7 @@
     <string name="starred">Favorito</string>
     <string name="title_activity_starred_repos">Repositórios Favoritos</string>
     <string name="title_activity_own_repos">Meu Repositório</string>
+    <string name="title_activity_settings">Configurações</string>
     <string name="numberOfFollowers">%d Seguidores</string>
     <string name="numberOfFollowing">Seguindo %d</string>
     <string name="user_details_card_social">Social</string>
@@ -16,5 +17,7 @@
     <string name="user_details_card_code">Código</string>
     <string name="numberOfGists">%d Gists</string>
     <string name="title_activity_repo">Detalhes do Repositório</string>
+    <string name="unknown_user_name">Anónimo</string>
+    <string name="previous_dir">Pasta anterior</string>
 
 </resources>
