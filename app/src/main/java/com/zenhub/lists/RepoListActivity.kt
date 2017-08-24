@@ -49,11 +49,15 @@ class StarredReposActivity : RepoListActivity() {
 class OwnReposActivity : RepoListActivity() {
 
     override fun requestDataRefresh() {
-        Log.d(Application.LOGTAG, "Refreshing list...")
-        val refreshLayout = findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
-        GitHubApi.ownRepos(refreshLayout) { response, _ ->
-            response?.let { adapter.updateDataSet(it) }
-            refreshLayout.isRefreshing = false
+        launch(UI) {
+            Log.d(Application.LOGTAG, "Refreshing list...")
+            val refreshLayout = findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
+            val result = GitHubApi.service.listRepos(STUBBED_USER).awaitResult()
+            when (result) {
+                is Result.Ok -> adapter.updateDataSet(result.value)
+                is Result.Error -> showErrorOnSnackbar(refreshLayout, result.response.message())
+                is Result.Exception -> showErrorOnSnackbar(refreshLayout, result.exception.localizedMessage)
+            }
         }
     }
 }

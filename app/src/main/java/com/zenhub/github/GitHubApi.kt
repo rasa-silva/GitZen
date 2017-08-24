@@ -29,21 +29,6 @@ object GitHubApi {
             .build()
             .create(GitHubService::class.java)
 
-    fun repoDetails(repoName: String, parentView: View,
-                    block: (response: RepositoryDetails?, rootView: View) -> Unit) {
-        service.repoDetails(repoName).enqueue(OnApiResponse(parentView, block))
-    }
-
-    fun readMeData(repoName: String, parentView: View,
-                   block: (response: ResponseBody?, rootView: View) -> Unit) {
-        service.repoReadme(repoName).enqueue(OnApiResponse(parentView, block))
-    }
-
-    fun ownRepos(parentView: View,
-                 block: (response: List<Repository>?, rootView: View) -> Unit) {
-        service.listRepos(STUBBED_USER).enqueue(OnApiResponse(parentView, block))
-    }
-
     fun commits(repoName: String, parentView: View,
                 block: (response: List<Commit>?, rootView: View) -> Unit) {
         service.commits(repoName).enqueue(OnApiResponse(parentView, block))

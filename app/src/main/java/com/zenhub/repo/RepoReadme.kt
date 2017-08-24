@@ -11,6 +11,10 @@ import android.widget.TextView
 import com.zenhub.Application
 import com.zenhub.R
 import com.zenhub.github.GitHubApi
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
+import ru.gildor.coroutines.retrofit.Result
+import ru.gildor.coroutines.retrofit.awaitResult
 
 private val styleSheet = """
     <style>
@@ -30,26 +34,32 @@ fun buildReadmeView(inflater: LayoutInflater, container: ViewGroup, fullRepoName
         refreshLayout.isEnabled = webView.scrollY == 0
     }
 
-    refreshLayout?.setOnRefreshListener { requestReadMeData(fullRepoName, container) }
-    requestReadMeData(fullRepoName, container)
+    refreshLayout?.setOnRefreshListener { requestReadMeData(fullRepoName, refreshLayout) }
+    requestReadMeData(fullRepoName, refreshLayout)
     return view
 }
 
-private fun requestReadMeData(fullRepoName: String, container: ViewGroup) {
-    Log.d(Application.LOGTAG, "Refreshing repo information...")
-    GitHubApi.repoDetails(fullRepoName, container) { response, rootView ->
-        response?.let {
-            rootView.findViewById<TextView>(R.id.fullName).text = it.full_name
-        }
-    }
-
-    GitHubApi.readMeData(fullRepoName, container) { response, rootView ->
-        response?.let {
-            val webView = rootView.findViewById<WebView>(R.id.readme_webview)
-            val content = styleSheet + it.string()
-            webView.loadDataWithBaseURL("https://github.com", content, "text/html", "UTF-8", null)
+private fun requestReadMeData(fullRepoName: String, rootView: SwipeRefreshLayout) {
+    launch(UI) {
+        Log.d(Application.LOGTAG, "Refreshing repo information...")
+        val repoDetails = GitHubApi.service.repoDetails(fullRepoName).awaitResult()
+        when (repoDetails) {
+            is Result.Ok -> rootView.findViewById<TextView>(R.id.fullName).text = repoDetails.value.full_name
+            is Result.Error -> TODO()
+            is Result.Exception -> TODO()
         }
 
-        rootView.findViewById<SwipeRefreshLayout>(R.id.readme_swiperefresh).isRefreshing = false
+        val readMeResult = GitHubApi.service.repoReadme(fullRepoName).awaitResult()
+        when (readMeResult) {
+            is Result.Ok -> {
+                val webView = rootView.findViewById<WebView>(R.id.readme_webview)
+                val content = styleSheet + readMeResult.value.string()
+                webView.loadDataWithBaseURL("https://github.com", content, "text/html", "UTF-8", null)
+            }
+            is Result.Error -> TODO()
+            is Result.Exception -> TODO()
+        }
+
+        rootView.isRefreshing = false
     }
 }
