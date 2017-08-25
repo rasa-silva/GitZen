@@ -26,6 +26,8 @@ android {
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
+        buildConfigField("String", "GITHUB_CLIENT_ID", keystoreProperties['clientId'])
+        buildConfigField("String", "GITHUB_SECRET", keystoreProperties['clientSecret'])
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -37,7 +39,7 @@ android {
         }
     }
     lintOptions {
-        abortOnError false
+        disable 'MissingTranslation'
     }
 }
 
