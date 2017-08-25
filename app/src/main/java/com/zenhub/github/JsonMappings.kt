@@ -2,7 +2,7 @@ package com.zenhub.github
 
 class Repository(val name: String, val full_name: String,
                  val description: String, val pushed_at: String,
-                 val stargazers_count: Int, val language: String)
+                 val stargazers_count: Int, val language: String?)
 
 class RepositoryDetails(val name: String, val full_name: String,
                         val description: String, val pushed_at: String,

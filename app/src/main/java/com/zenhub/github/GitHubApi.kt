@@ -1,6 +1,7 @@
 package com.zenhub.github
 
 import com.zenhub.Application
+import com.zenhub.Application.Companion.GSON
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
@@ -19,7 +20,7 @@ val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH)
 
 val gitHubService: GitHubService = Retrofit.Builder()
         .baseUrl("https://api.github.com/")
-        .addConverterFactory(GsonConverterFactory.create())
+        .addConverterFactory(GsonConverterFactory.create(GSON))
         .client(OkHttpClient.Builder()
                 .cache(Cache(Application.context.cacheDir, 1024 * 1024L).apply { evictAll() })
                 .addInterceptor(LoggingInterceptor())

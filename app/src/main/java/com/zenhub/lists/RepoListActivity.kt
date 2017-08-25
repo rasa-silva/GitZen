@@ -2,6 +2,8 @@ package com.zenhub.lists
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
@@ -17,10 +19,7 @@ import android.widget.TextView
 import com.zenhub.Application
 import com.zenhub.BaseActivity
 import com.zenhub.R
-import com.zenhub.github.Repository
-import com.zenhub.github.STUBBED_USER
-import com.zenhub.github.dateFormat
-import com.zenhub.github.gitHubService
+import com.zenhub.github.*
 import com.zenhub.repo.RepoActivity
 import com.zenhub.showErrorOnSnackbar
 import kotlinx.coroutines.experimental.android.UI
@@ -57,7 +56,7 @@ class StarredReposActivity : RepoListActivity() {
         val lastPage = lastUrl.substringAfterLast("?page=").toInt()
         var nextPage = 2
 
-        while(nextPage <= lastPage) {
+        while (nextPage <= lastPage) {
             val url = lastUrl.replaceAfterLast("?page=", nextPage.toString())
             Log.d(Application.LOGTAG, "Requesting pagination $url")
             val result = gitHubService.listStarredPaginate(url).awaitResult()
@@ -127,7 +126,14 @@ class RepoListRecyclerViewAdapter : RecyclerView.Adapter<RepoListRecyclerViewAda
         holder.itemView.findViewById<TextView>(R.id.repo_description).text = starredRepo.description
         holder.itemView.findViewById<TextView>(R.id.repo_pushed_time).text = fuzzy_date
         holder.itemView.findViewById<TextView>(R.id.repo_stars).text = starredRepo.stargazers_count.toString()
-        holder.itemView.findViewById<TextView>(R.id.repo_language).text = starredRepo.language
+        val languageTextView = holder.itemView.findViewById<TextView>(R.id.repo_language)
+        languageTextView.text = starredRepo.language
+        if (starredRepo.language == null) {
+            languageTextView.background = ColorDrawable(Color.TRANSPARENT)
+        } else {
+            val color = languageColors[starredRepo.language]?.color
+            color?.let { languageTextView.background = ColorDrawable(Color.parseColor(it)) }
+        }
     }
 
     override fun getItemCount(): Int {

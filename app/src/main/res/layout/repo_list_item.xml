@@ -15,12 +15,13 @@
         android:layout_width="325dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
-        android:layout_marginTop="0dp"
+        android:layout_marginEnd="8dp"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/repo_description"
+        app:layout_constraintEnd_toStartOf="@+id/repo_language"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
-        tools:layout_editor_absoluteX="0dp"
         tools:text="SomeUser/SomeRepo" />
 
     <TextView
@@ -75,7 +76,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
-        android:background="@color/cardview_dark_background"
         android:gravity="center_vertical"
         android:padding="2sp"
         android:textSize="12sp"
