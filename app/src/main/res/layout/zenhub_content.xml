@@ -26,111 +26,119 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/bio_title"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="0dp"
-                    android:contentDescription="Bio cardview"
-                    android:padding="8dp"
-                    android:text="@string/user_details_card_bio"
-                    android:textAlignment="viewStart"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/cardview_light_background"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="Bio" />
-
                 <ImageView
                     android:id="@+id/avatar"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
+                    android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="8dp"
                     android:contentDescription="User avatar"
                     android:src="@drawable/ic_account_circle_white_24px"
-                    app:layout_constraintStart_toStartOf="@+id/userBio"
-                    app:layout_constraintTop_toBottomOf="@+id/bio_title" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/userid"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textIsSelectable="true"
-                    app:layout_constraintStart_toEndOf="@+id/avatar"
-                    app:layout_constraintTop_toTopOf="@+id/avatar"
+                    app:layout_constraintEnd_toStartOf="@+id/username"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/avatar"
                     tools:text="Stubbed login" />
 
                 <TextView
                     android:id="@+id/username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textIsSelectable="true"
-                    app:layout_constraintStart_toStartOf="@+id/userid"
-                    app:layout_constraintTop_toBottomOf="@+id/userid"
+                    app:layout_constraintBottom_toBottomOf="@+id/userid"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/userid"
+                    app:layout_constraintTop_toTopOf="@+id/userid"
                     tools:text="Stubbed user name" />
 
                 <TextView
                     android:id="@+id/created_at"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
                     android:drawablePadding="8dp"
                     android:drawableStart="@drawable/ic_access_time_white_24dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textIsSelectable="true"
-                    app:layout_constraintStart_toStartOf="@+id/username"
-                    app:layout_constraintTop_toBottomOf="@+id/username"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/userid"
                     tools:text="created_at value" />
 
 
-                <Button
+                <TextView
                     android:id="@+id/followers"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
                     android:paddingEnd="16sp"
                     android:paddingStart="16sp"
                     android:text="@string/numberOfFollowers"
+                    android:textAlignment="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/following"
                     app:layout_constraintHorizontal_chainStyle="spread_inside"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/created_at"
-                    tools:text="followers" />
+                    tools:text="Followers\n1" />
 
-                <Button
+                <TextView
                     android:id="@+id/following"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="19dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
                     android:paddingEnd="16sp"
                     android:paddingStart="16sp"
                     android:text="@string/numberOfFollowing"
+                    android:textAlignment="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/gists"
                     app:layout_constraintStart_toEndOf="@+id/followers"
-                    tools:text="following" />
+                    app:layout_constraintTop_toBottomOf="@+id/created_at"
+                    tools:text="Following\n3" />
 
-                <Button
+                <TextView
                     android:id="@+id/gists"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="8dp"
                     android:paddingEnd="16sp"
                     android:paddingStart="16sp"
                     android:text="@string/numberOfGists"
+                    android:textAlignment="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/following"
-                    tools:text="gists" />
+                    app:layout_constraintTop_toBottomOf="@+id/created_at"
+                    tools:text="Gists\n10" />
 
 
             </android.support.constraint.ConstraintLayout>
@@ -145,19 +153,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="Code cardview"
-                    android:padding="8dp"
-                    android:text="@string/user_details_card_code"
-                    android:textAlignment="viewStart"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/cardview_light_background"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    tools:text="Code" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/repo_list"
