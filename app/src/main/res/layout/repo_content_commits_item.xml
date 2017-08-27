@@ -1,102 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/repo_list_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
-    android:gravity="center"
-    android:orientation="horizontal">
+    android:gravity="center">
 
     <ImageView
         android:id="@+id/avatar"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:contentDescription="User avatar"
-        android:src="@drawable/ic_account_circle_white_24px" />
+        android:src="@drawable/ic_account_circle_white_24px"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
+
+    <TextView
+        android:id="@+id/commit_message"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_marginStart="8dp"
+        android:ellipsize="end"
+        android:gravity="top"
+        android:maxLines="2"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/avatar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread_inside"
+        tools:text="commit message" />
 
-        <TextView
-            android:id="@+id/commit_message"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:gravity="top"
-            android:maxLines="1"
-            android:paddingEnd="8dp"
-            android:paddingStart="8dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textSize="16sp"
-            tools:text="commit message" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="bottom"
-            android:orientation="horizontal"
-            android:paddingEnd="4sp"
-            android:paddingStart="4sp">
+    <TextView
+        android:id="@+id/committer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/avatar"
+        tools:text="committer"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/commit_message" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:contentDescription="committer_icon"
-                android:maxHeight="24sp"
-                android:maxWidth="24sp"
-                android:paddingEnd="4dp"
-                android:paddingStart="4dp"
-                android:src="@drawable/ic_account_circle_white_24px" />
+    <TextView
+        android:id="@+id/pushed_time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="0dp"
+        android:layout_marginTop="8dp"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/commit_message"
+        tools:text="pushed time" />
 
-            <TextView
-                android:id="@+id/committer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                tools:text="committer" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:contentDescription="commit_date_icon"
-                android:maxHeight="24sp"
-                android:maxWidth="24sp"
-                android:paddingEnd="4dp"
-                android:paddingStart="4dp"
-                android:src="@drawable/ic_access_time_white_24dp" />
-
-            <TextView
-                android:id="@+id/pushed_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                tools:text="pushed time" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:contentDescription="comments_icon"
-                android:maxHeight="24sp"
-                android:maxWidth="24sp"
-                android:paddingEnd="4dp"
-                android:paddingStart="4dp"
-                android:src="@drawable/ic_comment_white_24px" />
-
-            <TextView
-                android:id="@+id/comments"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                tools:text="123" />
-
-        </LinearLayout>
-    </LinearLayout>
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

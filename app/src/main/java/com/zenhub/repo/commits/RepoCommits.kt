@@ -82,7 +82,6 @@ class CommitsRecyclerViewAdapter(private val repoName: String) : RecyclerView.Ad
         holder.itemView.findViewById<TextView>(R.id.commit_message).text = commit.commit.message
         holder.itemView.findViewById<TextView>(R.id.committer).text = commit.committer?.login ?: "<unknown>"
         holder.itemView.findViewById<TextView>(R.id.pushed_time).text = fuzzy_date
-        holder.itemView.findViewById<TextView>(R.id.comments).text = commit.commit.comment_count.toString()
     }
 
     override fun getItemCount(): Int {
