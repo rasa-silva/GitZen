@@ -20,5 +20,6 @@
     <string name="unknown_user_name">Anónimo</string>
     <string name="previous_dir">Pasta anterior</string>
     <string name="repo_stars">%d estrelas</string>
+    <string name="commit_details_stats">por %s, alterando %d ficheiros</string>
 
 </resources>

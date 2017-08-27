@@ -5,6 +5,9 @@ import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.RelativeSizeSpan
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -34,6 +37,8 @@ class RepoCommitDetails : BaseActivity() {
         super.onCreateDrawer()
 
         repoName = intent.getStringExtra("REPO_FULL_NAME")
+        supportActionBar?.title = repoName
+
         commitSha = intent.getStringExtra("COMMIT_SHA")
 
         val recyclerViewAdapter = CommitFilesRecyclerViewAdapter()
@@ -55,12 +60,19 @@ class RepoCommitDetails : BaseActivity() {
             when (result) {
                 is Result.Ok -> {
                     val response = result.value
-                    val message = refreshLayout.findViewById<TextView>(R.id.commit_message)
-                    message.text = response.commit.message
-                    val sha = refreshLayout.findViewById<TextView>(R.id.commit_sha)
-                    sha.text = commitSha
-                    refreshLayout.findViewById<TextView>(R.id.commiter_name).text = response.commit.committer.name
-                    refreshLayout.findViewById<TextView>(R.id.changed_files).text = response.stats.total.toString()
+                    val firstAndOtherLines = response.commit.message.split("\n\n")
+                    val styledCommitMsg = if (firstAndOtherLines.size == 1) response.commit.message
+                    else {
+                        SpannableStringBuilder()
+                                .append(firstAndOtherLines[0])
+                                .append(firstAndOtherLines[1], RelativeSizeSpan(0.75f), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    }
+
+                    refreshLayout.findViewById<TextView>(R.id.commit_message).text = styledCommitMsg
+
+                    val commit_details_stats = refreshLayout.findViewById<TextView>(R.id.commit_details_stats)
+                    val statsText = commit_details_stats.resources.getString(R.string.commit_details_stats, response.commit.committer.name, response.files.size)
+                    commit_details_stats.text = statsText
 
                     val adapter = refreshLayout.findViewById<RecyclerView>(R.id.files).adapter as CommitFilesRecyclerViewAdapter
                     adapter.updateDataSet(response.files)

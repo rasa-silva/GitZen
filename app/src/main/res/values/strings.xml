@@ -20,5 +20,6 @@
     <string name="unknown_user_name">Unknown User</string>
     <string name="previous_dir">Previous dir</string>
     <string name="repo_stars"><i>%d stars</i></string>
+    <string name="commit_details_stats">by %s, touching %d files</string>
 
 </resources>

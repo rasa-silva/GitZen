@@ -50,27 +50,17 @@
                     tools:text="Commit message" />
 
                 <TextView
-                    android:id="@+id/commit_sha"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="commit sha" />
-
-                <TextView
-                    android:id="@+id/commiter_name"
+                    android:id="@+id/commit_details_stats"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:text="committer name" />
-
-                <TextView
-                    android:id="@+id/changed_files"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    tools:text="total_changed_files" />
+                    android:text="@string/commit_details_stats"
+                    tools:text="by committer, touching 123 files" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/files"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:paddingTop="16sp"
                     android:scrollbars="vertical"
                     tools:listitem="@layout/repo_content_commit_item" />
             </LinearLayout>

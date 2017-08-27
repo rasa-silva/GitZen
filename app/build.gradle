@@ -10,14 +10,14 @@ def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
-    signingConfigs {
+/*    signingConfigs {
         config {
             keyAlias keystoreProperties['keyAlias']
             keyPassword keystoreProperties['keyPassword']
             storeFile file(keystoreProperties['storeFile'])
             storePassword keystoreProperties['storePassword']
         }
-    }
+    }*/
     compileSdkVersion 26
     buildToolsVersion "26.0.1"
     defaultConfig {
@@ -26,8 +26,8 @@ android {
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
-        buildConfigField("String", "GITHUB_CLIENT_ID", keystoreProperties['clientId'])
-        buildConfigField("String", "GITHUB_SECRET", keystoreProperties['clientSecret'])
+//        buildConfigField("String", "GITHUB_CLIENT_ID", keystoreProperties['clientId'])
+//        buildConfigField("String", "GITHUB_SECRET", keystoreProperties['clientSecret'])
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -35,7 +35,7 @@ android {
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
+            //signingConfig signingConfigs.config
         }
     }
     lintOptions {
