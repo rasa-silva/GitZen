@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         android:layout_marginEnd="8dp"
-        android:textSize="18sp"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
         app:layout_constraintBottom_toTopOf="@+id/repo_description"
         app:layout_constraintEnd_toStartOf="@+id/repo_language"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,12 +31,11 @@
         android:layout_marginBottom="4dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="4dp"
-        android:textSize="12sp"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
         app:layout_constraintBottom_toTopOf="@+id/repo_stars"
         app:layout_constraintEnd_toStartOf="@+id/repo_language"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/repo_full_name"
-        tools:layout_editor_absoluteY="47dp"
         tools:text="This is a description of a given repo that has a very long description and, as such, wraps the content to the next line" />
 
 
@@ -46,17 +45,15 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="0dp"
-        android:drawablePadding="4dp"
-        android:drawableStart="@drawable/ic_star_border_white_24px"
         android:gravity="center_vertical"
-        android:textSize="16sp"
+        android:text="@string/repo_stars"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/repo_pushed_time"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/repo_description"
-        tools:layout_editor_absoluteY="96dp"
         tools:text="1212" />
 
     <TextView
@@ -65,7 +62,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="0dp"
         android:gravity="center_vertical"
-        android:textSize="12sp"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="2 days ago" />
@@ -77,8 +74,8 @@
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         android:gravity="center_vertical"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
         android:padding="2sp"
-        android:textSize="12sp"
         app:layout_constraintBottom_toTopOf="@+id/repo_pushed_time"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

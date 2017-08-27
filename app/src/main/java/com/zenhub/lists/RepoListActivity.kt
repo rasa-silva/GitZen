@@ -125,7 +125,8 @@ class RepoListRecyclerViewAdapter : RecyclerView.Adapter<RepoListRecyclerViewAda
         holder.itemView.findViewById<TextView>(R.id.repo_full_name).text = starredRepo.full_name
         holder.itemView.findViewById<TextView>(R.id.repo_description).text = starredRepo.description
         holder.itemView.findViewById<TextView>(R.id.repo_pushed_time).text = fuzzy_date
-        holder.itemView.findViewById<TextView>(R.id.repo_stars).text = starredRepo.stargazers_count.toString()
+        val stars = holder.itemView.resources.getString(R.string.repo_stars, starredRepo.stargazers_count)
+        holder.itemView.findViewById<TextView>(R.id.repo_stars).text = stars
         val languageTextView = holder.itemView.findViewById<TextView>(R.id.repo_language)
         languageTextView.text = starredRepo.language
         if (starredRepo.language == null) {

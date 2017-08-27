@@ -19,5 +19,6 @@
     <string name="title_activity_repo">Detalhes do Repositório</string>
     <string name="unknown_user_name">Anónimo</string>
     <string name="previous_dir">Pasta anterior</string>
+    <string name="repo_stars">%d estrelas</string>
 
 </resources>
