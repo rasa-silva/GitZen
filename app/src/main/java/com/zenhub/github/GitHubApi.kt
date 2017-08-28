@@ -8,14 +8,10 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
-import retrofit2.http.Headers
-import retrofit2.http.Path
-import retrofit2.http.Url
+import retrofit2.http.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-val STUBBED_USER = "rasa-silva"
 val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH)
 
 val gitHubService: GitHubService = Retrofit.Builder()
@@ -29,6 +25,10 @@ val gitHubService: GitHubService = Retrofit.Builder()
         .create(GitHubService::class.java)
 
 interface GitHubService {
+
+    @POST("authorizations")
+    fun createToken(@Header("Authorization") authorization: String,
+                    @Body tokenRequest: TokenRequest): Call<TokenResponse>
 
     @GET("users/{username}/repos")
     fun listRepos(@Path("username") user: String): Call<List<Repository>>

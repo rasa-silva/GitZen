@@ -11,15 +11,14 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <ImageView
-        android:id="@+id/avatarImage"
+        android:id="@+id/nav_avatar"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:contentDescription="User avatar"
-        android:paddingTop="16dp"
         app:srcCompat="@drawable/ic_account_circle_white_24px" />
 
     <TextView
-        android:id="@+id/userid"
+        android:id="@+id/nav_user"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingEnd="8dp"

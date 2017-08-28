@@ -13,7 +13,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import com.zenhub.*
-import com.zenhub.github.STUBBED_USER
+import com.zenhub.auth.UserLogin
 import com.zenhub.github.dateFormat
 import com.zenhub.github.gitHubService
 import com.zenhub.lists.RepoListRecyclerViewAdapter
@@ -42,22 +42,26 @@ class UserDetailsActivity : BaseActivity() {
     }
 
     override fun requestDataRefresh() {
+
+        val username = UserLogin.getUser()
+
         launch(UI) {
             Log.d(Application.LOGTAG, "Refreshing list...")
             val progressBar = findViewById<FrameLayout>(R.id.progress_overlay)
             progressBar.visibility = View.VISIBLE
             val drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
 
-            val userDetails = gitHubService.userDetails(STUBBED_USER).awaitResult()
+            val userDetails = gitHubService.userDetails(username!!).awaitResult()
             when (userDetails) {
                 is Result.Ok -> {
                     val user = userDetails.value
                     val avatarView = drawerLayout.findViewById<ImageView>(R.id.avatar)
                     val roundedTransformation = RoundedTransformation()
                     Application.picasso.load(user.avatar_url).transform(roundedTransformation).into(avatarView)
-                    val navDrawerAvatar = drawerLayout.findViewById<ImageView>(R.id.avatarImage)
+                    val navDrawerAvatar = drawerLayout.findViewById<ImageView>(R.id.nav_avatar)
                     Application.picasso.load(user.avatar_url).transform(roundedTransformation).into(navDrawerAvatar)
                     drawerLayout.findViewById<TextView>(R.id.userid).text = user.login
+                    drawerLayout.findViewById<TextView>(R.id.nav_user).text = user.login
                     drawerLayout.findViewById<TextView>(R.id.username).text = user.name
                     val created = drawerLayout.findViewById<TextView>(R.id.created_at)
                     val date_created = dateFormat.parse(user.created_at)
@@ -73,7 +77,7 @@ class UserDetailsActivity : BaseActivity() {
                 is Result.Exception -> TODO()
             }
 
-            val reposResponse = gitHubService.listRepos(STUBBED_USER).awaitResult()
+            val reposResponse = gitHubService.listRepos(username).awaitResult()
             when (reposResponse) {
                 is Result.Ok -> {
                     val repos = reposResponse.value

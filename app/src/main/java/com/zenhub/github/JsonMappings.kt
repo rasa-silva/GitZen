@@ -1,5 +1,8 @@
 package com.zenhub.github
 
+class TokenRequest(val client_id: String, val client_secret: String, val scopes: List<String>, val note: String)
+class TokenResponse(val token: String)
+
 class Repository(val name: String, val full_name: String,
                  val description: String, val pushed_at: String,
                  val stargazers_count: Int, val language: String?)
