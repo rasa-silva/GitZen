@@ -29,7 +29,6 @@ object LoggedUser {
     @SuppressLint("MissingPermission")
     fun getToken(): String? {
         val am = AccountManager.get(Application.context)
-        val authToken = am.blockingGetAuthToken(account, "GitHub", true)
-        return authToken
+        return am.blockingGetAuthToken(account, "GitHub", true)
     }
 }

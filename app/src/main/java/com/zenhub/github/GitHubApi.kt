@@ -27,8 +27,10 @@ val gitHubService: GitHubService = Retrofit.Builder()
 
 
 class OAuthTokenAuthenticator : Authenticator {
+
+    private val token: String? by lazy { LoggedUser.getToken() }
+
     override fun authenticate(route: Route, response: Response): Request? {
-        val token = LoggedUser.getToken()
         token?.let {
             return response.request().newBuilder()
                     .header("Authorization", "token $it")
