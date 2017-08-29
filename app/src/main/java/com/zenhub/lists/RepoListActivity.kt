@@ -19,7 +19,6 @@ import android.widget.TextView
 import com.zenhub.Application
 import com.zenhub.BaseActivity
 import com.zenhub.R
-import com.zenhub.auth.UserLogin
 import com.zenhub.github.Repository
 import com.zenhub.github.dateFormat
 import com.zenhub.github.gitHubService
@@ -37,9 +36,8 @@ class StarredReposActivity : RepoListActivity() {
     override fun requestDataRefresh() {
         launch(UI) {
             Log.d(Application.LOGTAG, "Refreshing list...")
-            val username = UserLogin.getUser()
             val refreshLayout = findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
-            val result = gitHubService.listStarred(username!!).awaitResult()
+            val result = gitHubService.listStarred().awaitResult()
             when (result) {
                 is Result.Ok -> {
                     adapter.updateDataSet(result.value)
@@ -81,9 +79,8 @@ class OwnReposActivity : RepoListActivity() {
     override fun requestDataRefresh() {
         launch(UI) {
             Log.d(Application.LOGTAG, "Refreshing list...")
-            val username = UserLogin.getUser()
             val refreshLayout = findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
-            val result = gitHubService.listRepos(username!!).awaitResult()
+            val result = gitHubService.listRepos().awaitResult()
             when (result) {
                 is Result.Ok -> adapter.updateDataSet(result.value)
                 is Result.Error -> showErrorOnSnackbar(refreshLayout, result.response.message())

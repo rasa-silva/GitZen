@@ -66,7 +66,7 @@ class LoginActivity : BaseActivity() {
             val tokenResult = gitHubService.createToken(basic, request).awaitResult()
             when (tokenResult) {
                 is Result.Ok -> {
-                    UserLogin.addAccount(username, tokenResult.value.token)
+                    LoggedUser.setAccount(username, tokenResult.value.token)
                     val bundle = Bundle()
                     bundle.putString(AccountManager.KEY_ACCOUNT_NAME, username)
                     bundle.putString(AccountManager.KEY_ACCOUNT_TYPE, BuildConfig.APPLICATION_ID)

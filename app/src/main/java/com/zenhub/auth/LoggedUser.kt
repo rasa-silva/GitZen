@@ -6,20 +6,22 @@ import android.annotation.SuppressLint
 import android.preference.PreferenceManager
 import com.zenhub.Application
 
-object UserLogin {
+object LoggedUser {
 
+    private val ACCOUNT_TYPE = "GitHub"
     private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(Application.context)
+    var account: Account? = null
 
-    fun clearPreferences() = sharedPreferences.edit().clear().apply()
-
-    fun getUser(): String? {
-        return sharedPreferences.getString("username", null)
+    init {
+        val am = AccountManager.get(Application.context)
+        val accountsByType = am.getAccountsByType(ACCOUNT_TYPE)
+        if (accountsByType.isNotEmpty()) account = accountsByType[0]
     }
 
-    fun addAccount(username: String, token: String) {
+    fun setAccount(username: String, token: String) {
         sharedPreferences.edit().putString("username", username).apply()
         val am = AccountManager.get(Application.context)
-        val account = Account(username, "GitHub")
+        account = Account(username, ACCOUNT_TYPE)
         am.addAccountExplicitly(account, null, null)
         am.setAuthToken(account, "GitHub", token)
     }
@@ -27,7 +29,6 @@ object UserLogin {
     @SuppressLint("MissingPermission")
     fun getToken(): String? {
         val am = AccountManager.get(Application.context)
-        val account = Account(getUser(), "GitHub")
         val authToken = am.blockingGetAuthToken(account, "GitHub", true)
         return authToken
     }

@@ -13,7 +13,6 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import com.zenhub.*
-import com.zenhub.auth.UserLogin
 import com.zenhub.github.dateFormat
 import com.zenhub.github.gitHubService
 import com.zenhub.lists.RepoListRecyclerViewAdapter
@@ -43,15 +42,13 @@ class UserDetailsActivity : BaseActivity() {
 
     override fun requestDataRefresh() {
 
-        val username = UserLogin.getUser()
-
         launch(UI) {
             Log.d(Application.LOGTAG, "Refreshing list...")
             val progressBar = findViewById<FrameLayout>(R.id.progress_overlay)
             progressBar.visibility = View.VISIBLE
             val drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
 
-            val userDetails = gitHubService.userDetails(username!!).awaitResult()
+            val userDetails = gitHubService.userDetails().awaitResult()
             when (userDetails) {
                 is Result.Ok -> {
                     val user = userDetails.value
@@ -77,7 +74,7 @@ class UserDetailsActivity : BaseActivity() {
                 is Result.Exception -> TODO()
             }
 
-            val reposResponse = gitHubService.listRepos(username).awaitResult()
+            val reposResponse = gitHubService.listRepos().awaitResult()
             when (reposResponse) {
                 is Result.Ok -> {
                     val repos = reposResponse.value

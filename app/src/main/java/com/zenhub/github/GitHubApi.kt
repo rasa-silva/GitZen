@@ -2,13 +2,13 @@ package com.zenhub.github
 
 import com.zenhub.Application
 import com.zenhub.Application.Companion.GSON
-import okhttp3.Cache
-import okhttp3.OkHttpClient
-import okhttp3.ResponseBody
+import com.zenhub.auth.LoggedUser
+import okhttp3.*
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
+import retrofit2.http.Headers
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -19,10 +19,25 @@ val gitHubService: GitHubService = Retrofit.Builder()
         .addConverterFactory(GsonConverterFactory.create(GSON))
         .client(OkHttpClient.Builder()
                 .cache(Cache(Application.context.cacheDir, 1024 * 1024L).apply { evictAll() })
+                .authenticator(OAuthTokenAuthenticator())
                 .addInterceptor(LoggingInterceptor())
                 .build())
         .build()
         .create(GitHubService::class.java)
+
+
+class OAuthTokenAuthenticator : Authenticator {
+    override fun authenticate(route: Route, response: Response): Request? {
+        val token = LoggedUser.getToken()
+        token?.let {
+            return response.request().newBuilder()
+                    .header("Authorization", "token $it")
+                    .build()
+        }
+
+        return null
+    }
+}
 
 interface GitHubService {
 
@@ -30,17 +45,17 @@ interface GitHubService {
     fun createToken(@Header("Authorization") authorization: String,
                     @Body tokenRequest: TokenRequest): Call<TokenResponse>
 
-    @GET("users/{username}/repos")
-    fun listRepos(@Path("username") user: String): Call<List<Repository>>
+    @GET("user/repos")
+    fun listRepos(): Call<List<Repository>>
 
-    @GET("users/{username}/starred")
-    fun listStarred(@Path("username") user: String): Call<List<Repository>>
+    @GET("user/starred")
+    fun listStarred(): Call<List<Repository>>
 
     @GET
     fun listStarredPaginate(@Url url: String): Call<List<Repository>>
 
-    @GET("users/{username}")
-    fun userDetails(@Path("username") user: String): Call<User>
+    @GET("user")
+    fun userDetails(): Call<User>
 
     @GET("repos/{fullname}")
     fun repoDetails(@Path("fullname", encoded = true) fullname: String): Call<RepositoryDetails>

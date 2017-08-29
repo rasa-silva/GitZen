@@ -2,8 +2,8 @@ package com.zenhub
 
 import android.content.Intent
 import android.os.Bundle
+import com.zenhub.auth.LoggedUser
 import com.zenhub.auth.LoginActivity
-import com.zenhub.auth.UserLogin
 import com.zenhub.user.UserDetailsActivity
 
 class LauncherActivity : BaseActivity() {
@@ -11,9 +11,7 @@ class LauncherActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//        UserLogin.clearPreferences()
-
-        if (UserLogin.getUser().isNullOrBlank()) {
+        if (LoggedUser.account == null) {
             startActivity(Intent(this, LoginActivity::class.java))
         } else {
             startActivity(Intent(this, UserDetailsActivity::class.java))
