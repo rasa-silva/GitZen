@@ -17,12 +17,12 @@
             android:name=".user.UserDetailsActivity"
             android:label="@string/app_name" />
         <activity
-            android:name=".lists.StarredReposActivity"
+            android:name=".user.StarredReposActivity"
             android:label="@string/title_activity_starred_repos"
             android:parentActivityName=".user.UserDetailsActivity" />
         <activity android:name=".BaseActivity" />
         <activity
-            android:name=".lists.OwnReposActivity"
+            android:name=".user.OwnReposActivity"
             android:label="@string/title_activity_own_repos"
             android:parentActivityName=".user.UserDetailsActivity" />
         <activity

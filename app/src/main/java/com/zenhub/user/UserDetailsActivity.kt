@@ -15,7 +15,6 @@ import android.widget.TextView
 import com.zenhub.*
 import com.zenhub.github.dateFormat
 import com.zenhub.github.gitHubService
-import com.zenhub.lists.RepoListRecyclerViewAdapter
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import ru.gildor.coroutines.retrofit.Result

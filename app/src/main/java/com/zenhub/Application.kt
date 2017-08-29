@@ -20,8 +20,8 @@ import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
 import com.zenhub.github.ErrorMessage
-import com.zenhub.lists.OwnReposActivity
-import com.zenhub.lists.StarredReposActivity
+import com.zenhub.user.OwnReposActivity
+import com.zenhub.user.StarredReposActivity
 import com.zenhub.user.UserDetailsActivity
 
 @SuppressLint("StaticFieldLeak")

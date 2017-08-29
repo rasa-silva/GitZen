@@ -80,7 +80,7 @@ class CommitsRecyclerViewAdapter(private val repoName: String) : RecyclerView.Ad
         val date = dateFormat.parse(commit.commit.committer.date)
         val fuzzy_date = DateUtils.getRelativeTimeSpanString(date.time, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS)
         holder.itemView.findViewById<TextView>(R.id.commit_message).text = commit.commit.message
-        holder.itemView.findViewById<TextView>(R.id.committer).text = commit.committer?.login ?: "<unknown>"
+        holder.itemView.findViewById<TextView>(R.id.committer).text = commit.commit.committer.name
         holder.itemView.findViewById<TextView>(R.id.pushed_time).text = fuzzy_date
     }
 

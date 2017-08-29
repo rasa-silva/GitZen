@@ -1,4 +1,4 @@
-package com.zenhub.lists
+package com.zenhub.user
 
 import android.content.Context
 import android.content.Intent
@@ -6,92 +6,25 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
-import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.format.DateUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.zenhub.Application
 import com.zenhub.BaseActivity
 import com.zenhub.R
 import com.zenhub.github.Repository
 import com.zenhub.github.dateFormat
-import com.zenhub.github.gitHubService
 import com.zenhub.github.languageColors
 import com.zenhub.repo.RepoActivity
-import com.zenhub.showErrorOnSnackbar
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
 import okhttp3.Response
-import ru.gildor.coroutines.retrofit.Result
-import ru.gildor.coroutines.retrofit.awaitResult
-
-class StarredReposActivity : RepoListActivity() {
-
-    override fun requestDataRefresh() {
-        launch(UI) {
-            Log.d(Application.LOGTAG, "Refreshing list...")
-            val refreshLayout = findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
-            val result = gitHubService.listStarred().awaitResult()
-            when (result) {
-                is Result.Ok -> {
-                    adapter.updateDataSet(result.value)
-                    paginate(refreshLayout, result.response)
-                }
-                is Result.Error -> showErrorOnSnackbar(refreshLayout, result.response.message())
-                is Result.Exception -> showErrorOnSnackbar(refreshLayout, result.exception.localizedMessage)
-            }
-
-            refreshLayout.isRefreshing = false
-        }
-    }
-
-    private suspend fun paginate(rootView: View, response: Response) {
-        val linkHeader = response.header("Link") ?: return
-        val nextAndLastUrls = linkHeader.split(';', ',')
-        val lastUrl = nextAndLastUrls[2].trim(' ', '<', '>')
-
-        val lastPage = lastUrl.substringAfterLast("?page=").toInt()
-        var nextPage = 2
-
-        while (nextPage <= lastPage) {
-            val url = lastUrl.replaceAfterLast("?page=", nextPage.toString())
-            Log.d(Application.LOGTAG, "Requesting pagination $url")
-            val result = gitHubService.listStarredPaginate(url).awaitResult()
-            when (result) {
-                is Result.Ok -> adapter.appendData(result.value)
-                is Result.Error -> showErrorOnSnackbar(rootView, result.exception.localizedMessage)
-                is Result.Exception -> showErrorOnSnackbar(rootView, result.exception.localizedMessage)
-            }
-
-            nextPage++
-        }
-    }
-}
-
-class OwnReposActivity : RepoListActivity() {
-
-    override fun requestDataRefresh() {
-        launch(UI) {
-            Log.d(Application.LOGTAG, "Refreshing list...")
-            val refreshLayout = findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
-            val result = gitHubService.listRepos().awaitResult()
-            when (result) {
-                is Result.Ok -> adapter.updateDataSet(result.value)
-                is Result.Error -> showErrorOnSnackbar(refreshLayout, result.response.message())
-                is Result.Exception -> showErrorOnSnackbar(refreshLayout, result.exception.localizedMessage)
-            }
-        }
-    }
-}
 
 abstract class RepoListActivity : BaseActivity() {
 
+    val recyclerView by lazy { findViewById<RecyclerView>(R.id.list) }
     val adapter = RepoListRecyclerViewAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -99,7 +32,7 @@ abstract class RepoListActivity : BaseActivity() {
         setContentView(R.layout.repo_list_activity)
         super.onCreateDrawer()
 
-        findViewById<RecyclerView>(R.id.list).let {
+        recyclerView.let {
             val layoutManager = LinearLayoutManager(it.context)
             it.layoutManager = layoutManager
             it.adapter = adapter
@@ -107,6 +40,20 @@ abstract class RepoListActivity : BaseActivity() {
         }
 
         requestDataRefresh()
+    }
+
+    fun attachPaginationListener(recyclerView: RecyclerView, response: Response, paginationRequest: (String) -> Unit) {
+        val linkHeader = response.header("Link") ?: return
+        val nextAndLastUrls = linkHeader.split(';', ',')
+        val lastUrl = nextAndLastUrls[2].trim(' ', '<', '>')
+
+        val lastPage = lastUrl.substringAfterLast("?page=").toInt()
+        if (lastPage == 1) return //No pagination needed
+
+        recyclerView.clearOnScrollListeners()
+        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+        val scrollListener = PaginationScrollListener(layoutManager, lastPage, lastUrl, paginationRequest)
+        recyclerView.addOnScrollListener(scrollListener)
     }
 
     abstract override fun requestDataRefresh()
