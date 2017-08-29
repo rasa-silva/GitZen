@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.zenhub.R
 import com.zenhub.core.BaseActivity
+import com.zenhub.core.PaginationScrollListener
 import com.zenhub.github.Repository
 import com.zenhub.github.dateFormat
 import com.zenhub.github.languageColors
