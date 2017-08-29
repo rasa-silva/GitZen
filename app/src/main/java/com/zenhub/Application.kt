@@ -2,27 +2,15 @@ package com.zenhub
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.graphics.*
-import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
-import android.support.v4.view.GravityCompat
-import android.support.v4.widget.DrawerLayout
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import android.util.Log
-import android.view.MenuItem
 import android.view.View
 import com.google.gson.Gson
 
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
 import com.zenhub.github.ErrorMessage
-import com.zenhub.user.OwnReposActivity
-import com.zenhub.user.StarredReposActivity
-import com.zenhub.user.UserDetailsActivity
 
 @SuppressLint("StaticFieldLeak")
 class Application : android.app.Application() {
@@ -41,51 +29,6 @@ class Application : android.app.Application() {
         var LOGTAG = "ZenHub"
         val GSON = Gson()
     }
-}
-
-open class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-
-    private lateinit var drawerLayout: DrawerLayout
-
-    protected fun onCreateDrawer() {
-        drawerLayout = findViewById(R.id.drawer_layout)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        val drawerToggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, 0, 0)
-        drawerLayout.addDrawerListener(drawerToggle)
-
-        drawerToggle.syncState()
-
-        findViewById<NavigationView>(R.id.nav_view)?.setNavigationItemSelectedListener(this)
-
-        findViewById<SwipeRefreshLayout>(R.id.swiperefresh)?.setOnRefreshListener {
-            requestDataRefresh()
-        }
-    }
-
-    override fun onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START)
-        } else {
-            super.onBackPressed()
-        }
-    }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.nav_home -> startActivity(Intent(this, UserDetailsActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
-            R.id.nav_repos -> startActivity(Intent(this, OwnReposActivity::class.java))
-            R.id.nav_starred -> startActivity(Intent(this, StarredReposActivity::class.java))
-        }
-
-        drawerLayout.closeDrawer(GravityCompat.START)
-        return true
-    }
-
-    protected open fun requestDataRefresh() {}
 }
 
 class RoundedTransformation(private val radius: Float? = null, private val margin: Float = 0f) : Transformation {

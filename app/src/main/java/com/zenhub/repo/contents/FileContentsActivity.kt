@@ -8,8 +8,8 @@ import com.pddstudio.highlightjs.HighlightJsView
 import com.pddstudio.highlightjs.models.Language
 import com.pddstudio.highlightjs.models.Theme
 import com.zenhub.Application
-import com.zenhub.BaseActivity
 import com.zenhub.R
+import com.zenhub.core.BaseActivity
 import java.net.URL
 
 class FileContentsActivity : BaseActivity() {

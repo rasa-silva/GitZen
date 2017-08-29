@@ -8,8 +8,8 @@ import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.zenhub.BaseActivity
 import com.zenhub.R
+import com.zenhub.core.BaseActivity
 import com.zenhub.repo.commits.buildCommitsView
 import com.zenhub.repo.contents.buildContentsView
 

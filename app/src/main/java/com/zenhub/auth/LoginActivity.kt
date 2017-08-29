@@ -6,9 +6,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.zenhub.Application
-import com.zenhub.BaseActivity
 import com.zenhub.BuildConfig
 import com.zenhub.R
+import com.zenhub.core.BaseActivity
 import com.zenhub.github.TokenRequest
 import com.zenhub.github.gitHubService
 import com.zenhub.user.UserDetailsActivity

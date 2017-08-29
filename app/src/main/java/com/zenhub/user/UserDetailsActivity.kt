@@ -12,9 +12,13 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
-import com.zenhub.*
+import com.zenhub.Application
+import com.zenhub.R
+import com.zenhub.RoundedTransformation
+import com.zenhub.core.BaseActivity
 import com.zenhub.github.dateFormat
 import com.zenhub.github.gitHubService
+import com.zenhub.showErrorOnSnackbar
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import ru.gildor.coroutines.retrofit.Result

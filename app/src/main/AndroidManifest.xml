@@ -20,7 +20,7 @@
             android:name=".user.StarredReposActivity"
             android:label="@string/title_activity_starred_repos"
             android:parentActivityName=".user.UserDetailsActivity" />
-        <activity android:name=".BaseActivity" />
+        <activity android:name=".core.BaseActivity" />
         <activity
             android:name=".user.OwnReposActivity"
             android:label="@string/title_activity_own_repos"

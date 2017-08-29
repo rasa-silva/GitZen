@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import com.zenhub.auth.LoggedUser
 import com.zenhub.auth.LoginActivity
+import com.zenhub.core.BaseActivity
 import com.zenhub.user.UserDetailsActivity
 
 class LauncherActivity : BaseActivity() {

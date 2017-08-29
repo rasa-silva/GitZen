@@ -14,8 +14,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.zenhub.BaseActivity
 import com.zenhub.R
+import com.zenhub.core.BaseActivity
 import com.zenhub.github.Repository
 import com.zenhub.github.dateFormat
 import com.zenhub.github.languageColors
