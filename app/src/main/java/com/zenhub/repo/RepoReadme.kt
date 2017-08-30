@@ -11,17 +11,20 @@ import android.widget.TextView
 import com.zenhub.Application
 import com.zenhub.R
 import com.zenhub.github.gitHubService
+import com.zenhub.showErrorOnSnackbar
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import ru.gildor.coroutines.retrofit.Result
 import ru.gildor.coroutines.retrofit.awaitResult
 
-private val styleSheet = """
+private const val STYLESHEET = """
     <style>
         body {color: #ffffff; background-color: #303030;}
         a {color: #458588;}
         pre {overflow: auto; width: 99%; background-color: #424242;}
     </style>"""
+
+private const val EMPTY_README = """<body><h1>No ReadMe available.</h1></body>"""
 
 fun buildReadmeView(inflater: LayoutInflater, container: ViewGroup, fullRepoName: String): View {
     val view = inflater.inflate(R.layout.repo_content_readme, container, false)
@@ -50,13 +53,18 @@ private fun requestReadMeData(fullRepoName: String, rootView: SwipeRefreshLayout
         }
 
         val readMeResult = gitHubService.repoReadme(fullRepoName).awaitResult()
+        val webView = rootView.findViewById<WebView>(R.id.readme_webview)
         when (readMeResult) {
             is Result.Ok -> {
-                val webView = rootView.findViewById<WebView>(R.id.readme_webview)
-                val content = styleSheet + readMeResult.value.string()
+                val content = STYLESHEET + readMeResult.value.string()
                 webView.loadDataWithBaseURL("https://github.com", content, "text/html", "UTF-8", null)
             }
-            is Result.Error -> TODO()
+            is Result.Error -> {
+                if (readMeResult.response.code() == 404)
+                    webView.loadData(STYLESHEET + EMPTY_README, "text/html", "UTF-8")
+                else
+                    showErrorOnSnackbar(rootView, readMeResult.response.message())
+            }
             is Result.Exception -> TODO()
         }
 
