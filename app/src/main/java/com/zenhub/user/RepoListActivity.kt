@@ -16,12 +16,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.zenhub.R
 import com.zenhub.core.BaseActivity
-import com.zenhub.core.PaginationScrollListener
 import com.zenhub.github.Repository
 import com.zenhub.github.dateFormat
 import com.zenhub.github.languageColors
 import com.zenhub.repo.RepoActivity
-import okhttp3.Response
 
 abstract class RepoListActivity : BaseActivity() {
 
@@ -41,20 +39,6 @@ abstract class RepoListActivity : BaseActivity() {
         }
 
         requestDataRefresh()
-    }
-
-    fun attachPaginationListener(recyclerView: RecyclerView, response: Response, paginationRequest: (String) -> Unit) {
-        val linkHeader = response.header("Link") ?: return
-        val nextAndLastUrls = linkHeader.split(';', ',')
-        val lastUrl = nextAndLastUrls[2].trim(' ', '<', '>')
-
-        val lastPage = lastUrl.substringAfterLast("?page=").toInt()
-        if (lastPage == 1) return //No pagination needed
-
-        recyclerView.clearOnScrollListeners()
-        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-        val scrollListener = PaginationScrollListener(layoutManager, lastPage, lastUrl, paginationRequest)
-        recyclerView.addOnScrollListener(scrollListener)
     }
 
     abstract override fun requestDataRefresh()
