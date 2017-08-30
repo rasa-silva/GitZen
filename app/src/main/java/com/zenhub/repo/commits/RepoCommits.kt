@@ -17,9 +17,11 @@ import android.widget.TextView
 import com.zenhub.Application
 import com.zenhub.R
 import com.zenhub.RoundedTransformation
+import com.zenhub.core.PagedRecyclerViewAdapter
 import com.zenhub.github.Commit
 import com.zenhub.github.dateFormat
 import com.zenhub.github.gitHubService
+import com.zenhub.showErrorOnSnackbar
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import ru.gildor.coroutines.retrofit.Result
@@ -27,28 +29,29 @@ import ru.gildor.coroutines.retrofit.awaitResult
 
 fun buildCommitsView(inflater: LayoutInflater, container: ViewGroup, fullRepoName: String): View {
     val view = inflater.inflate(R.layout.repo_content_commits, container, false)
+    val recyclerView = view.findViewById<RecyclerView>(R.id.list)
+    val recyclerViewAdapter = CommitsRecyclerViewAdapter(fullRepoName, container.context, recyclerView)
     val refreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.commits_swiperefresh)
-    val recyclerViewAdapter = CommitsRecyclerViewAdapter(fullRepoName)
-    refreshLayout?.setOnRefreshListener { requestData(fullRepoName, container, recyclerViewAdapter) }
+    refreshLayout?.setOnRefreshListener { requestDataRefresh(fullRepoName, container, recyclerViewAdapter) }
 
-    view.findViewById<RecyclerView>(R.id.list).let {
+    recyclerView.let {
         val layoutManager = LinearLayoutManager(it.context)
         it.layoutManager = layoutManager
         it.adapter = recyclerViewAdapter
         it.addItemDecoration(DividerItemDecoration(it.context, layoutManager.orientation))
     }
 
-    requestData(fullRepoName, container, recyclerViewAdapter)
+    requestDataRefresh(fullRepoName, container, recyclerViewAdapter)
 
     return view
 }
 
-private fun requestData(fullRepoName: String, container: ViewGroup, adapter: CommitsRecyclerViewAdapter) {
+private fun requestDataRefresh(fullRepoName: String, container: ViewGroup, adapter: CommitsRecyclerViewAdapter) {
     launch(UI) {
         Log.d(Application.LOGTAG, "Refreshing repo commits...")
         val result = gitHubService.commits(fullRepoName).awaitResult()
         when (result) {
-            is Result.Ok -> adapter.updateDataSet(result.value)
+            is Result.Ok -> adapter.updateDataSet(result)
             is Result.Error -> TODO()
             is Result.Exception -> TODO()
         }
@@ -57,21 +60,13 @@ private fun requestData(fullRepoName: String, container: ViewGroup, adapter: Com
     }
 }
 
-class CommitsRecyclerViewAdapter(private val repoName: String) : RecyclerView.Adapter<CommitsRecyclerViewAdapter.ViewHolder>() {
+class CommitsRecyclerViewAdapter(private val fullRepoName: String,
+                                 private val ctx: Context,
+                                 private val recyclerView: RecyclerView) : PagedRecyclerViewAdapter<Commit?>(ctx, R.layout.repo_content_commits_item) {
+    override fun bindData(itemView: View, model: Commit?) {
+        val commit = model ?: return
 
-    private val dataSet = mutableListOf<Commit>()
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.repo_content_commits_item, parent, false)
-        return ViewHolder(parent.context, view, repoName)
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val commit = dataSet[position]
-
-        holder.sha = commit.sha
-
-        val avatarView = holder.itemView.findViewById<ImageView>(R.id.avatar)
+        val avatarView = itemView.findViewById<ImageView>(R.id.avatar)
         commit.committer?.let {
             Application.picasso.load(it.avatar_url)
                     .transform(RoundedTransformation()).into(avatarView)
@@ -79,32 +74,28 @@ class CommitsRecyclerViewAdapter(private val repoName: String) : RecyclerView.Ad
 
         val date = dateFormat.parse(commit.commit.committer.date)
         val fuzzy_date = DateUtils.getRelativeTimeSpanString(date.time, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS)
-        holder.itemView.findViewById<TextView>(R.id.commit_message).text = commit.commit.message
-        holder.itemView.findViewById<TextView>(R.id.committer).text = commit.commit.committer.name
-        holder.itemView.findViewById<TextView>(R.id.pushed_time).text = fuzzy_date
+        itemView.findViewById<TextView>(R.id.commit_message).text = commit.commit.message
+        itemView.findViewById<TextView>(R.id.committer).text = commit.commit.committer.name
+        itemView.findViewById<TextView>(R.id.pushed_time).text = fuzzy_date
+
+        itemView.setOnClickListener {
+            val intent = Intent(ctx, RepoCommitDetails::class.java)
+            intent.putExtra("REPO_FULL_NAME", fullRepoName)
+            intent.putExtra("COMMIT_SHA", commit.sha)
+            ContextCompat.startActivity(ctx, intent, null)
+        }
     }
 
-    override fun getItemCount(): Int {
-        return dataSet.size
-    }
-
-    fun updateDataSet(newDataSet: List<Commit>) {
-        dataSet.clear()
-        dataSet.addAll(newDataSet)
-        notifyDataSetChanged()
-    }
-
-    class ViewHolder(ctx: Context, itemView: View, repoName: String) : RecyclerView.ViewHolder(itemView) {
-
-        var sha: String = ""
-
-        init {
-            itemView.setOnClickListener {
-                val intent = Intent(ctx, RepoCommitDetails::class.java)
-                intent.putExtra("REPO_FULL_NAME", repoName)
-                intent.putExtra("COMMIT_SHA", sha)
-                ContextCompat.startActivity(ctx, intent, null)
+    override fun doPageRequest(url: String) {
+        launch(UI) {
+            Log.d(Application.LOGTAG, "Paging own repo list with $url...")
+            val result = gitHubService.commitsPaginate(url).awaitResult()
+            when (result) {
+                is Result.Ok -> appendDataSet(result.value)
+                is Result.Error -> showErrorOnSnackbar(recyclerView, result.exception.localizedMessage)
+                is Result.Exception -> showErrorOnSnackbar(recyclerView, result.exception.localizedMessage)
             }
         }
     }
 }
+

@@ -12,7 +12,6 @@ import ru.gildor.coroutines.retrofit.Result
 
 
 abstract class PagedRecyclerViewAdapter<in T>(ctx: Context,
-                                              private val doPageRequest: (String) -> Unit,
                                               @LayoutRes private val itemLayout: Int) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val inflater by lazy { LayoutInflater.from(ctx) }
@@ -60,7 +59,9 @@ abstract class PagedRecyclerViewAdapter<in T>(ctx: Context,
 
     abstract fun bindData(itemView: View, model: T?)
 
-    open fun loadMore(url: String) {
+    abstract fun doPageRequest(url: String)
+
+    private fun loadMore(url: String) {
         isLoading = true
         view.post {
             dataSet.add(ModelHolder(TYPE_LOAD, null))

@@ -1,6 +1,5 @@
 package com.zenhub.user
 
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -32,7 +31,7 @@ import ru.gildor.coroutines.retrofit.awaitResult
 abstract class RepoListActivity : BaseActivity() {
 
     private val recyclerView by lazy { findViewById<RecyclerView>(R.id.list) }
-    private val adapter by lazy { RepoListAdapter(this, this::paginationRequest) }
+    private val adapter by lazy { RepoListAdapter(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,24 +61,11 @@ abstract class RepoListActivity : BaseActivity() {
         }
     }
 
-    private fun paginationRequest(url: String) {
-        launch(UI) {
-            Log.d(Application.LOGTAG, "Paging own repo list with $url...")
-            val result = requestPage(url).awaitResult()
-            when (result) {
-                is Result.Ok -> adapter.appendDataSet(result.value)
-                is Result.Error -> showErrorOnSnackbar(recyclerView, result.exception.localizedMessage)
-                is Result.Exception -> showErrorOnSnackbar(recyclerView, result.exception.localizedMessage)
-            }
-        }
-    }
-
     abstract fun requestInitial(): Call<List<Repository>>
     abstract fun requestPage(url: String) : Call<List<Repository>>
 }
 
-class RepoListAdapter(private val ctx: Context, doPageRequest: (String) -> Unit) : PagedRecyclerViewAdapter<Repository?>(ctx, doPageRequest, R.layout.repo_list_item) {
-
+class RepoListAdapter(private val activity: RepoListActivity) : PagedRecyclerViewAdapter<Repository?>(activity, R.layout.repo_list_item) {
     override fun bindData(itemView: View, model: Repository?) {
         val starredRepo = model ?: return
 
@@ -101,9 +87,22 @@ class RepoListAdapter(private val ctx: Context, doPageRequest: (String) -> Unit)
         }
 
         itemView.setOnClickListener {
-            val intent = Intent(ctx, RepoActivity::class.java)
+            val intent = Intent(activity, RepoActivity::class.java)
             intent.putExtra("REPO_FULL_NAME", repoNameView.text.toString())
-            ContextCompat.startActivity(ctx, intent, null)
+            ContextCompat.startActivity(activity, intent, null)
+        }
+    }
+
+    override fun doPageRequest(url: String) {
+        launch(UI) {
+            Log.d(Application.LOGTAG, "Paging own repo list with $url...")
+            val result = activity.requestPage(url).awaitResult()
+            val recyclerView = activity.findViewById<RecyclerView>(R.id.list)
+            when (result) {
+                is Result.Ok -> appendDataSet(result.value)
+                is Result.Error -> showErrorOnSnackbar(recyclerView, result.exception.localizedMessage)
+                is Result.Exception -> showErrorOnSnackbar(recyclerView, result.exception.localizedMessage)
+            }
         }
     }
 }

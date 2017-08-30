@@ -72,6 +72,9 @@ interface GitHubService {
     @GET("repos/{fullname}/commits")
     fun commits(@Path("fullname", encoded = true) fullname: String): Call<List<Commit>>
 
+    @GET
+    fun commitsPaginate(@Url url: String): Call<List<Commit>>
+
     @GET("repos/{fullname}/contents/{path}")
     fun repoContents(@Path("fullname", encoded = true) fullname: String,
                      @Path("path", encoded = true) path: String): Call<List<RepoContentEntry>>
