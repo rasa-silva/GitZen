@@ -27,17 +27,18 @@ val gitHubService = Retrofit.Builder()
 
 class OAuthTokenInterceptor : Interceptor {
 
+    private val AUTH_HEADER = "Authorization"
     private val token: String? by lazy { LoggedUser.getToken() }
 
     override fun intercept(chain: Interceptor.Chain): Response {
-
-        val request = if (token != null) {
-            chain.request().newBuilder().addHeader("Authorization", "token $token").build()
+        val oldReq = chain.request()
+        val newReq = if (oldReq.header(AUTH_HEADER).isNullOrBlank() && token != null) {
+            oldReq.newBuilder().addHeader(AUTH_HEADER, "token $token").build()
         } else {
-            chain.request()
+            oldReq
         }
 
-        return chain.proceed(request)
+        return chain.proceed(newReq)
     }
 }
 
