@@ -14,30 +14,30 @@ import java.util.*
 
 val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH)
 
-val gitHubService: GitHubService = Retrofit.Builder()
+val gitHubService = Retrofit.Builder()
         .baseUrl("https://api.github.com/")
         .addConverterFactory(GsonConverterFactory.create(GSON))
         .client(OkHttpClient.Builder()
                 .cache(Cache(Application.context.cacheDir, 1024 * 1024L).apply { evictAll() })
-                .authenticator(OAuthTokenAuthenticator())
+                .addInterceptor(OAuthTokenInterceptor())
                 .addInterceptor(LoggingInterceptor())
                 .build())
         .build()
         .create(GitHubService::class.java)
 
-
-class OAuthTokenAuthenticator : Authenticator {
+class OAuthTokenInterceptor : Interceptor {
 
     private val token: String? by lazy { LoggedUser.getToken() }
 
-    override fun authenticate(route: Route, response: Response): Request? {
-        token?.let {
-            return response.request().newBuilder()
-                    .header("Authorization", "token $it")
-                    .build()
+    override fun intercept(chain: Interceptor.Chain): Response {
+
+        val request = if (token != null) {
+            chain.request().newBuilder().addHeader("Authorization", "token $token").build()
+        } else {
+            chain.request()
         }
 
-        return null
+        return chain.proceed(request)
     }
 }
 
@@ -49,6 +49,9 @@ interface GitHubService {
 
     @GET("user/repos")
     fun listRepos(): Call<List<Repository>>
+
+    @GET
+    fun listReposPaginate(@Url url: String): Call<List<Repository>>
 
     @GET("user/starred")
     fun listStarred(): Call<List<Repository>>

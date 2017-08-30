@@ -3,13 +3,11 @@ package com.zenhub.auth
 import android.accounts.Account
 import android.accounts.AccountManager
 import android.annotation.SuppressLint
-import android.preference.PreferenceManager
 import com.zenhub.Application
 
 object LoggedUser {
 
     private val ACCOUNT_TYPE = "GitHub"
-    private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(Application.context)
     var account: Account? = null
 
     init {
@@ -19,7 +17,6 @@ object LoggedUser {
     }
 
     fun setAccount(username: String, token: String) {
-        sharedPreferences.edit().putString("username", username).apply()
         val am = AccountManager.get(Application.context)
         account = Account(username, ACCOUNT_TYPE)
         am.addAccountExplicitly(account, null, null)

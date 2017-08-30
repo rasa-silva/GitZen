@@ -3,9 +3,6 @@ package com.zenhub.user
 import android.os.Bundle
 import android.support.v4.widget.DrawerLayout
 import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.text.format.DateUtils
 import android.util.Log
 import android.view.View
@@ -26,19 +23,19 @@ import ru.gildor.coroutines.retrofit.awaitResult
 
 class UserDetailsActivity : BaseActivity() {
 
-    private val adapter = RepoListRecyclerViewAdapter()
+//    private val adapter = RepoListRecyclerViewAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.zenhub_activity)
         super.onCreateDrawer()
 
-        findViewById<RecyclerView>(R.id.repo_list).let {
-            val layoutManager = LinearLayoutManager(it.context)
-            it.layoutManager = layoutManager
-            it.adapter = adapter
-            it.addItemDecoration(DividerItemDecoration(it.context, layoutManager.orientation))
-        }
+//        findViewById<RecyclerView>(R.id.repo_list).let {
+//            val layoutManager = LinearLayoutManager(it.context)
+//            it.layoutManager = layoutManager
+//            it.adapter = adapter
+//            it.addItemDecoration(DividerItemDecoration(it.context, layoutManager.orientation))
+//        }
 
         requestDataRefresh()
     }
@@ -77,19 +74,18 @@ class UserDetailsActivity : BaseActivity() {
                 is Result.Exception -> TODO()
             }
 
-            val reposResponse = gitHubService.listRepos().awaitResult()
-            when (reposResponse) {
-                is Result.Ok -> {
-                    val repos = reposResponse.value
-                    val top3Repos = repos.sortedByDescending { it.pushed_at }.take(3)
-                    adapter.updateDataSet(top3Repos)
-                }
-                is Result.Error -> showErrorOnSnackbar(drawerLayout, reposResponse.response.message())
-                is Result.Exception -> TODO()
-            }
+//            val reposResponse = gitHubService.listRepos().awaitResult()
+//            when (reposResponse) {
+//                is Result.Ok -> {
+//                    val repos = reposResponse.value
+//                    val top3Repos = repos.sortedByDescending { it.pushed_at }.take(3)
+//                    adapter.updateDataSet(top3Repos)
+//                }
+//                is Result.Error -> showErrorOnSnackbar(drawerLayout, reposResponse.response.message())
+//                is Result.Exception -> TODO()
+//            }
 
-            val refreshLayout = drawerLayout.findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
-            refreshLayout.isRefreshing = false
+            drawerLayout.findViewById<SwipeRefreshLayout>(R.id.swiperefresh).isRefreshing = false
             progressBar.visibility = View.GONE
         }
     }
