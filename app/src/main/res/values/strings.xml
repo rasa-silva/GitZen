@@ -35,9 +35,10 @@
     <string name="repo_tab_commits">Commits</string>
     <string name="repo_tab_files">Files</string>
 
-    <string name="avatar_image_desc">Avatar image</string>
-    <string name="stargazers_count">&lt;b>Stargazers&lt;/b>\n%1$d</string>
-    <string name="repo_size">&lt;b>Size&lt;/b>\n%1$dKB</string>
-    <string name="last_pushed">&lt;b>Last pushed&lt;/b>\n%1$s</string>
+    <!-- About tab of repo activity -->
+    <string name="starred_image_desc">Starred status</string>
+    <string name="stargazers"><b>Stargazers</b></string>
+    <string name="repo_size"><b>Size</b></string>
+    <string name="last_pushed"><b>Last pushed</b></string>
 
 </resources>

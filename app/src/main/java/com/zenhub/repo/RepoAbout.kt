@@ -2,15 +2,17 @@ package com.zenhub.repo
 
 import android.graphics.Color
 import android.support.v4.widget.SwipeRefreshLayout
-import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import com.zenhub.Application
 import com.zenhub.R
+import com.zenhub.core.asDigitalUnit
 import com.zenhub.core.asFuzzyDate
 import com.zenhub.github.getLanguageColor
 import com.zenhub.github.gitHubService
@@ -18,6 +20,7 @@ import com.zenhub.showErrorOnSnackbar
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import ru.gildor.coroutines.retrofit.Result
+import ru.gildor.coroutines.retrofit.awaitResponse
 import ru.gildor.coroutines.retrofit.awaitResult
 
 
@@ -30,7 +33,7 @@ private const val STYLESHEET = """
 
 private const val EMPTY_README = """<body><h1>No ReadMe available.</h1></body>"""
 
-fun buildReadmeView(inflater: LayoutInflater, container: ViewGroup, fullRepoName: String): View {
+fun buildAboutView(inflater: LayoutInflater, container: ViewGroup, fullRepoName: String): View {
     val view = inflater.inflate(R.layout.repo_content_readme, container, false)
     //Fix the fight between the refreshLayout swipe and the webview scroll
     //TODO NestedScrollView?
@@ -41,14 +44,23 @@ fun buildReadmeView(inflater: LayoutInflater, container: ViewGroup, fullRepoName
         refreshLayout.isEnabled = webView.scrollY == 0
     }
 
-    refreshLayout?.setOnRefreshListener { requestReadMeData(fullRepoName, refreshLayout) }
-    requestReadMeData(fullRepoName, refreshLayout)
+    refreshLayout?.setOnRefreshListener { requestAboutData(fullRepoName, refreshLayout) }
+    requestAboutData(fullRepoName, refreshLayout)
     return view
 }
 
-private fun requestReadMeData(fullRepoName: String, rootView: SwipeRefreshLayout) {
+private fun requestAboutData(fullRepoName: String, rootView: SwipeRefreshLayout) {
     launch(UI) {
         Log.d(Application.LOGTAG, "Refreshing repo information...")
+
+        val starredView = rootView.findViewById<ImageView>(R.id.starred)
+        val isStarred = gitHubService.isStarred(fullRepoName).awaitResponse()
+        when {
+            isStarred.isSuccessful -> setAsStarred(starredView, fullRepoName)
+            isStarred.code() == 404 -> setAsUnstarred(starredView, fullRepoName)
+            else -> TODO()
+        }
+
         val repoDetails = gitHubService.repoDetails(fullRepoName).awaitResult()
         when (repoDetails) {
             is Result.Ok -> {
@@ -62,22 +74,9 @@ private fun requestReadMeData(fullRepoName: String, rootView: SwipeRefreshLayout
                     background = getLanguageColor(details.language)
                 }
 
-                rootView.findViewById<TextView>(R.id.stargazers)?.apply {
-                    val string = rootView.resources.getString(R.string.stargazers_count, details.stargazers_count)
-                    text = Html.fromHtml(string)
-                }
-
-                rootView.findViewById<TextView>(R.id.size)?.apply {
-                    val string = rootView.resources.getString(R.string.repo_size, details.size)
-                    text = Html.fromHtml(string)
-                }
-
-                rootView.findViewById<TextView>(R.id.pushed_time)?.apply {
-                    val string = rootView.resources.getString(R.string.last_pushed, details.pushed_at.asFuzzyDate())
-                    text = Html.fromHtml(string)
-                }
-
-                //TODO Check if repo is starred and change star imageview to filled
+                rootView.findViewById<TextView>(R.id.stargazers_count)?.text = details.stargazers_count.toString()
+                rootView.findViewById<TextView>(R.id.size_value)?.text = (details.size * 1024).asDigitalUnit()
+                rootView.findViewById<TextView>(R.id.pushed_time_value)?.text = details.pushed_at.asFuzzyDate()
             }
             is Result.Error -> TODO()
             is Result.Exception -> TODO()
@@ -100,5 +99,37 @@ private fun requestReadMeData(fullRepoName: String, rootView: SwipeRefreshLayout
         }
 
         rootView.isRefreshing = false
+    }
+}
+
+private fun setAsStarred(view: View, fullRepoName: String) {
+    val drawable = view.resources.getDrawable(R.drawable.ic_star_white_24px, null)
+    (view as ImageView).setImageDrawable(drawable)
+    view.setOnClickListener {
+        launch(UI) {
+            val response = gitHubService.unstarRepo(fullRepoName).awaitResponse()
+            if (response.isSuccessful) {
+                Toast.makeText(view.context, "Unstarred $fullRepoName", Toast.LENGTH_LONG).show()
+                setAsUnstarred(view, fullRepoName)
+            } else {
+                Toast.makeText(view.context, "Failed to unstar $fullRepoName", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+}
+
+private fun setAsUnstarred(view: View, fullRepoName: String) {
+    val drawable = view.resources.getDrawable(R.drawable.ic_star_border_white_24px, null)
+    (view as ImageView).setImageDrawable(drawable)
+    view.setOnClickListener {
+        launch(UI) {
+            val response = gitHubService.starRepo(fullRepoName).awaitResponse()
+            if (response.isSuccessful) {
+                Toast.makeText(view.context, "Starred $fullRepoName", Toast.LENGTH_LONG).show()
+                setAsStarred(view, fullRepoName)
+            } else {
+                Toast.makeText(view.context, "Failed to star $fullRepoName", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 }

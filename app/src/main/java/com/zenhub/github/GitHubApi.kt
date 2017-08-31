@@ -53,6 +53,16 @@ interface GitHubService {
     @GET("user/starred")
     fun listStarred(): Call<List<Repository>>
 
+    @GET("user/starred/{fullname}")
+    fun isStarred(@Path("fullname", encoded = true) fullname: String): Call<Void>
+
+    @PUT("user/starred/{fullname}")
+    @Headers("Content-Length: 0")
+    fun starRepo(@Path("fullname", encoded = true) fullname: String): Call<Void>
+
+    @DELETE("user/starred/{fullname}")
+    fun unstarRepo(@Path("fullname", encoded = true) fullname: String): Call<Void>
+
     @GET
     fun listStarredPaginate(@Url url: String): Call<List<Repository>>
 

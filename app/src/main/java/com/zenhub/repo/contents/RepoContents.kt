@@ -13,6 +13,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.zenhub.Application
 import com.zenhub.R
+import com.zenhub.core.asDigitalUnit
 import com.zenhub.github.RepoContentEntry
 import com.zenhub.github.gitHubService
 import kotlinx.coroutines.experimental.android.UI
@@ -88,13 +89,7 @@ class ContentsRecyclerViewAdapter(private val fullRepoName: String,
         }
 
         holder.itemView.findViewById<TextView>(R.id.name).text = entry.name
-        val size = if (entry.size > 1024) {
-            val inKiloBytes = entry.size / 1024
-            inKiloBytes.toString() + " kb"
-        } else {
-            entry.size.toString() + " b"
-        }
-        holder.itemView.findViewById<TextView>(R.id.size).text = size
+        holder.itemView.findViewById<TextView>(R.id.size).text = entry.size.asDigitalUnit()
     }
 
     override fun getItemCount(): Int {

@@ -37,8 +37,6 @@ class RepoActivity : BaseActivity() {
             }
         })
 
-        viewPager.setCurrentItem(1, true) //Preselect commits on the middle
-
         requestDataRefresh()
     }
 }
@@ -48,7 +46,7 @@ class RepoDetailsPagerAdapter(context: Activity,
                               fullRepoName: String) : PagerAdapter() {
 
     private val inflater = LayoutInflater.from(context)
-    private val readMeView = buildReadmeView(inflater, container, fullRepoName)
+    private val readMeView = buildAboutView(inflater, container, fullRepoName)
     private val commitsView = buildCommitsView(inflater, container, fullRepoName)
     private val contentsView = buildContentsView(inflater, container, fullRepoName)
 
