@@ -1,15 +1,12 @@
 package com.zenhub.user
 
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.text.format.DateUtils
 import android.util.Log
 import android.view.View
 import android.widget.TextView
@@ -17,9 +14,9 @@ import com.zenhub.Application
 import com.zenhub.R
 import com.zenhub.core.BaseActivity
 import com.zenhub.core.PagedRecyclerViewAdapter
+import com.zenhub.core.asFuzzyDate
 import com.zenhub.github.Repository
-import com.zenhub.github.dateFormat
-import com.zenhub.github.languageColors
+import com.zenhub.github.getLanguageColor
 import com.zenhub.repo.RepoActivity
 import com.zenhub.showErrorOnSnackbar
 import kotlinx.coroutines.experimental.android.UI
@@ -69,22 +66,15 @@ class RepoListAdapter(private val activity: RepoListActivity) : PagedRecyclerVie
     override fun bindData(itemView: View, model: Repository?) {
         val starredRepo = model ?: return
 
-        val date = dateFormat.parse(starredRepo.pushed_at)
-        val fuzzy_date = DateUtils.getRelativeTimeSpanString(date.time, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS)
         val repoNameView = itemView.findViewById<TextView>(R.id.repo_full_name)
         repoNameView.text = starredRepo.full_name
         itemView.findViewById<TextView>(R.id.repo_description).text = starredRepo.description
-        itemView.findViewById<TextView>(R.id.repo_pushed_time).text = fuzzy_date
+        itemView.findViewById<TextView>(R.id.repo_pushed_time).text = starredRepo.pushed_at.asFuzzyDate()
         val stars = itemView.resources.getString(R.string.repo_stars, starredRepo.stargazers_count)
         itemView.findViewById<TextView>(R.id.repo_stars).text = stars
         val languageTextView = itemView.findViewById<TextView>(R.id.repo_language)
         languageTextView.text = starredRepo.language
-        if (starredRepo.language == null) {
-            languageTextView.background = ColorDrawable(Color.TRANSPARENT)
-        } else {
-            val color = languageColors[starredRepo.language]?.color
-            color?.let { languageTextView.background = ColorDrawable(Color.parseColor(it)) }
-        }
+        languageTextView.background = getLanguageColor(starredRepo.language)
 
         itemView.setOnClickListener {
             val intent = Intent(activity, RepoActivity::class.java)

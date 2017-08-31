@@ -7,9 +7,9 @@ class Repository(val name: String, val full_name: String,
                  val description: String, val pushed_at: String,
                  val stargazers_count: Int, val language: String?)
 
-class RepositoryDetails(val name: String, val full_name: String,
-                        val description: String, val pushed_at: String,
-                        val stargazers_count: Int, val language: String)
+class RepositoryDetails(val name: String, val description: String, val stargazers_count: Int,
+                        val homepage: String?, val html_url: String,
+                        val pushed_at: String, val language: String, val size: Int)
 
 class User(val login: String, val avatar_url: String, val name: String,
            val public_repos: Int, val public_gists: Int,

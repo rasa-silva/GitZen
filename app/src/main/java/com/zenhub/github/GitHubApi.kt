@@ -9,10 +9,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 import retrofit2.http.Headers
-import java.text.SimpleDateFormat
-import java.util.*
-
-val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH)
 
 val gitHubService = Retrofit.Builder()
         .baseUrl("https://api.github.com/")

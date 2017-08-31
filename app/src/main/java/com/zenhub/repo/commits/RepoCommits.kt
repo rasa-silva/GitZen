@@ -7,7 +7,6 @@ import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.text.format.DateUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -18,8 +17,8 @@ import com.zenhub.Application
 import com.zenhub.R
 import com.zenhub.RoundedTransformation
 import com.zenhub.core.PagedRecyclerViewAdapter
+import com.zenhub.core.asFuzzyDate
 import com.zenhub.github.Commit
-import com.zenhub.github.dateFormat
 import com.zenhub.github.gitHubService
 import com.zenhub.showErrorOnSnackbar
 import kotlinx.coroutines.experimental.android.UI
@@ -72,11 +71,9 @@ class CommitsRecyclerViewAdapter(private val fullRepoName: String,
                     .transform(RoundedTransformation()).into(avatarView)
         }
 
-        val date = dateFormat.parse(commit.commit.committer.date)
-        val fuzzy_date = DateUtils.getRelativeTimeSpanString(date.time, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS)
         itemView.findViewById<TextView>(R.id.commit_message).text = commit.commit.message
         itemView.findViewById<TextView>(R.id.committer).text = commit.commit.committer.name
-        itemView.findViewById<TextView>(R.id.pushed_time).text = fuzzy_date
+        itemView.findViewById<TextView>(R.id.pushed_time).text = commit.commit.committer.date.asFuzzyDate()
 
         itemView.setOnClickListener {
             val intent = Intent(ctx, RepoCommitDetails::class.java)

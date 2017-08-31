@@ -3,7 +3,6 @@ package com.zenhub.user
 import android.os.Bundle
 import android.support.v4.widget.DrawerLayout
 import android.support.v4.widget.SwipeRefreshLayout
-import android.text.format.DateUtils
 import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
@@ -13,7 +12,7 @@ import com.zenhub.Application
 import com.zenhub.R
 import com.zenhub.RoundedTransformation
 import com.zenhub.core.BaseActivity
-import com.zenhub.github.dateFormat
+import com.zenhub.core.asFuzzyDate
 import com.zenhub.github.gitHubService
 import com.zenhub.showErrorOnSnackbar
 import kotlinx.coroutines.experimental.android.UI
@@ -60,9 +59,7 @@ class UserDetailsActivity : BaseActivity() {
                     drawerLayout.findViewById<TextView>(R.id.userid).text = user.login
                     drawerLayout.findViewById<TextView>(R.id.nav_user).text = user.login
                     drawerLayout.findViewById<TextView>(R.id.username).text = user.name
-                    val created = drawerLayout.findViewById<TextView>(R.id.created_at)
-                    val date_created = dateFormat.parse(user.created_at)
-                    created.text = DateUtils.formatDateTime(drawerLayout.context, date_created.time, DateUtils.FORMAT_SHOW_DATE)
+                    drawerLayout.findViewById<TextView>(R.id.created_at).text = user.created_at.asFuzzyDate()
                     val followers = drawerLayout.findViewById<TextView>(R.id.followers)
                     followers.text = drawerLayout.resources.getString(R.string.numberOfFollowers, user.followers)
                     val following = drawerLayout.findViewById<TextView>(R.id.following)

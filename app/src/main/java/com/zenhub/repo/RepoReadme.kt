@@ -2,6 +2,7 @@ package com.zenhub.repo
 
 import android.graphics.Color
 import android.support.v4.widget.SwipeRefreshLayout
+import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,12 +11,15 @@ import android.webkit.WebView
 import android.widget.TextView
 import com.zenhub.Application
 import com.zenhub.R
+import com.zenhub.core.asFuzzyDate
+import com.zenhub.github.getLanguageColor
 import com.zenhub.github.gitHubService
 import com.zenhub.showErrorOnSnackbar
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import ru.gildor.coroutines.retrofit.Result
 import ru.gildor.coroutines.retrofit.awaitResult
+
 
 private const val STYLESHEET = """
     <style>
@@ -47,7 +51,34 @@ private fun requestReadMeData(fullRepoName: String, rootView: SwipeRefreshLayout
         Log.d(Application.LOGTAG, "Refreshing repo information...")
         val repoDetails = gitHubService.repoDetails(fullRepoName).awaitResult()
         when (repoDetails) {
-            is Result.Ok -> rootView.findViewById<TextView>(R.id.fullName).text = repoDetails.value.full_name
+            is Result.Ok -> {
+                val details = repoDetails.value
+                rootView.findViewById<TextView>(R.id.description).text = details.description
+                val homepage = if (details.homepage.isNullOrBlank()) details.html_url else details.homepage
+                rootView.findViewById<TextView>(R.id.homepage).text = homepage
+
+                rootView.findViewById<TextView>(R.id.language)?.apply {
+                    text = details.language
+                    background = getLanguageColor(details.language)
+                }
+
+                rootView.findViewById<TextView>(R.id.stargazers)?.apply {
+                    val string = rootView.resources.getString(R.string.stargazers_count, details.stargazers_count)
+                    text = Html.fromHtml(string)
+                }
+
+                rootView.findViewById<TextView>(R.id.size)?.apply {
+                    val string = rootView.resources.getString(R.string.repo_size, details.size)
+                    text = Html.fromHtml(string)
+                }
+
+                rootView.findViewById<TextView>(R.id.pushed_time)?.apply {
+                    val string = rootView.resources.getString(R.string.last_pushed, details.pushed_at.asFuzzyDate())
+                    text = Html.fromHtml(string)
+                }
+
+                //TODO Check if repo is starred and change star imageview to filled
+            }
             is Result.Error -> TODO()
             is Result.Exception -> TODO()
         }

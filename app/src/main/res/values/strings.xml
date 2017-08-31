@@ -30,4 +30,14 @@
     <string name="action_sign_in_short">Sign in</string>
     <string name="login_to_github">Login to GitHub</string>
 
+    <!-- Tab names for the main repo activity -->
+    <string name="repo_tab_about">About</string>
+    <string name="repo_tab_commits">Commits</string>
+    <string name="repo_tab_files">Files</string>
+
+    <string name="avatar_image_desc">Avatar image</string>
+    <string name="stargazers_count">&lt;b>Stargazers&lt;/b>\n%1$d</string>
+    <string name="repo_size">&lt;b>Size&lt;/b>\n%1$dKB</string>
+    <string name="last_pushed">&lt;b>Last pushed&lt;/b>\n%1$s</string>
+
 </resources>
