@@ -1,7 +1,7 @@
 package com.zenhub.github
 
+import com.google.gson.GsonBuilder
 import com.zenhub.Application
-import com.zenhub.Application.Companion.GSON
 import com.zenhub.auth.LoggedUser
 import okhttp3.*
 import retrofit2.Call
@@ -9,6 +9,10 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 import retrofit2.http.Headers
+
+val GSON = GsonBuilder()
+        .registerTypeAdapter(ReceivedEvent::class.java, EventDeserializer())
+        .create()
 
 val gitHubService = Retrofit.Builder()
         .baseUrl("https://api.github.com/")
@@ -44,6 +48,15 @@ interface GitHubService {
     fun createToken(@Header("Authorization") authorization: String,
                     @Body tokenRequest: TokenRequest): Call<TokenResponse>
 
+    @GET("user")
+    fun userDetails(): Call<User>
+
+    @GET("users/{user}/received_events")
+    fun receivedEvents(@Path("user") user: String): Call<List<ReceivedEvent>>
+
+    @GET
+    fun receivedEventsPaginate(@Url url: String): Call<List<ReceivedEvent>>
+
     @GET("user/repos")
     fun listRepos(): Call<List<Repository>>
 
@@ -65,9 +78,6 @@ interface GitHubService {
 
     @GET
     fun listStarredPaginate(@Url url: String): Call<List<Repository>>
-
-    @GET("user")
-    fun userDetails(): Call<User>
 
     @GET("repos/{fullname}")
     fun repoDetails(@Path("fullname", encoded = true) fullname: String): Call<RepositoryDetails>

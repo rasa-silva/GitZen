@@ -34,8 +34,8 @@
 
             <ImageView
                 android:id="@+id/starred"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
                 android:contentDescription="@string/starred_image_desc"

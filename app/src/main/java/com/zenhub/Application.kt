@@ -6,14 +6,17 @@ import android.graphics.*
 import android.support.design.widget.Snackbar
 import android.util.Log
 import android.view.View
-import com.google.gson.Gson
-
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
 import com.zenhub.github.ErrorMessage
+import com.zenhub.github.GSON
 
 @SuppressLint("StaticFieldLeak")
 class Application : android.app.Application() {
+
+//    init {
+//        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+//    }
 
     override fun onCreate() {
         super.onCreate()
@@ -26,8 +29,7 @@ class Application : android.app.Application() {
 
         lateinit var context: Context
         lateinit var picasso: Picasso
-        var LOGTAG = "ZenHub"
-        val GSON = Gson()
+        const val LOGTAG = "ZenHub"
     }
 }
 
@@ -56,7 +58,7 @@ class RoundedTransformation(private val radius: Float? = null, private val margi
 
 fun showErrorOnSnackbar(rootView: View, error: String) {
     Log.e(Application.LOGTAG, "Failed response: $error")
-    val errorMessage = Application.GSON.fromJson<ErrorMessage>(error, ErrorMessage::class.java)
+    val errorMessage = GSON.fromJson<ErrorMessage>(error, ErrorMessage::class.java)
     val snackbar = Snackbar.make(rootView, errorMessage.message, Snackbar.LENGTH_INDEFINITE)
     snackbar.view.setBackgroundColor(0xfffb4934.toInt())
     snackbar.show()

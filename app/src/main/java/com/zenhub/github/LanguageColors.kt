@@ -21,6 +21,6 @@ fun getLanguageColor(language: String?): ColorDrawable {
 private fun loadLanguageColors(): Map<String, LanguageColor> {
     return Application.context.assets.open("colors.json").use {
         val typeToken = object : TypeToken<Map<String, LanguageColor>>() {}.type
-        Application.GSON.fromJson<Map<String, LanguageColor>>(it.reader(), typeToken)
+        GSON.fromJson<Map<String, LanguageColor>>(it.reader(), typeToken)
     }
 }

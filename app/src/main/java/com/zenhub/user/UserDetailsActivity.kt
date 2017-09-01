@@ -3,6 +3,9 @@ package com.zenhub.user
 import android.os.Bundle
 import android.support.v4.widget.DrawerLayout
 import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
@@ -11,9 +14,11 @@ import android.widget.TextView
 import com.zenhub.Application
 import com.zenhub.R
 import com.zenhub.RoundedTransformation
+import com.zenhub.auth.LoggedUser
 import com.zenhub.core.BaseActivity
+import com.zenhub.core.PagedRecyclerViewAdapter
 import com.zenhub.core.asFuzzyDate
-import com.zenhub.github.gitHubService
+import com.zenhub.github.*
 import com.zenhub.showErrorOnSnackbar
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
@@ -22,19 +27,20 @@ import ru.gildor.coroutines.retrofit.awaitResult
 
 class UserDetailsActivity : BaseActivity() {
 
-//    private val adapter = RepoListRecyclerViewAdapter()
+    private val recyclerView by lazy { findViewById<RecyclerView>(R.id.list) }
+    private val adapter by lazy { EventListAdapter(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.zenhub_activity)
         super.onCreateDrawer()
 
-//        findViewById<RecyclerView>(R.id.repo_list).let {
-//            val layoutManager = LinearLayoutManager(it.context)
-//            it.layoutManager = layoutManager
-//            it.adapter = adapter
-//            it.addItemDecoration(DividerItemDecoration(it.context, layoutManager.orientation))
-//        }
+        recyclerView.let {
+            val layoutManager = LinearLayoutManager(it.context)
+            it.layoutManager = layoutManager
+            it.adapter = adapter
+            it.addItemDecoration(DividerItemDecoration(it.context, layoutManager.orientation))
+        }
 
         requestDataRefresh()
     }
@@ -42,7 +48,7 @@ class UserDetailsActivity : BaseActivity() {
     override fun requestDataRefresh() {
 
         launch(UI) {
-            Log.d(Application.LOGTAG, "Refreshing list...")
+            Log.d(Application.LOGTAG, "Refreshing user details...")
             val progressBar = findViewById<FrameLayout>(R.id.progress_overlay)
             progressBar.visibility = View.VISIBLE
             val drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
@@ -68,19 +74,18 @@ class UserDetailsActivity : BaseActivity() {
                     gists.text = drawerLayout.resources.getString(R.string.numberOfGists, user.public_gists)
                 }
                 is Result.Error -> showErrorOnSnackbar(drawerLayout, userDetails.response.message())
-                is Result.Exception -> TODO()
+                is Result.Exception -> Log.d(Application.LOGTAG, "Failed events call", userDetails.exception)
             }
 
-//            val reposResponse = gitHubService.listRepos().awaitResult()
-//            when (reposResponse) {
-//                is Result.Ok -> {
-//                    val repos = reposResponse.value
-//                    val top3Repos = repos.sortedByDescending { it.pushed_at }.take(3)
-//                    adapter.updateDataSet(top3Repos)
-//                }
-//                is Result.Error -> showErrorOnSnackbar(drawerLayout, reposResponse.response.message())
-//                is Result.Exception -> TODO()
-//            }
+            LoggedUser.account?.name?.let {
+
+                val events = gitHubService.receivedEvents(it).awaitResult()
+                when (events) {
+                    is Result.Ok -> adapter.updateDataSet(events)
+                    is Result.Error -> showErrorOnSnackbar(drawerLayout, events.response.message())
+                    is Result.Exception -> Log.d(Application.LOGTAG, "Failed events call", events.exception)
+                }
+            }
 
             drawerLayout.findViewById<SwipeRefreshLayout>(R.id.swiperefresh).isRefreshing = false
             progressBar.visibility = View.GONE
@@ -88,3 +93,50 @@ class UserDetailsActivity : BaseActivity() {
     }
 }
 
+class EventListAdapter(activity: UserDetailsActivity) : PagedRecyclerViewAdapter<ReceivedEvent?>(activity, R.layout.user_events_item) {
+
+    private val recyclerView = activity.findViewById<RecyclerView>(R.id.list)
+
+    override fun bindData(itemView: View, model: ReceivedEvent?) {
+        val event = model ?: return
+
+        Application.picasso.load(model.actor.avatar_url)
+                .transform(RoundedTransformation())
+                .into(itemView.findViewById<ImageView>(R.id.avatar))
+        itemView.findViewById<TextView>(R.id.actor).text = event.actor.display_login
+        itemView.findViewById<TextView>(R.id.created_at).text = event.created_at.asFuzzyDate()
+
+        val msg = itemView.findViewById<TextView>(R.id.message)
+        when (event.payload) {
+            is WatchEvent -> {
+                msg.text = msg.resources.getString(R.string.watch_event, event.payload.action, event.repo)
+            }
+            is PullRequestEvent -> {
+                msg.text = msg.resources.getString(R.string.pullrequest_event,
+                        event.payload.action, event.payload.number, event.repo)
+            }
+            is IssuesEvent -> {
+                msg.text = msg.resources.getString(R.string.issues_event,
+                        event.payload.action, event.payload.number, event.repo)
+            }
+            ForkEvent -> {
+                msg.text = msg.resources.getString(R.string.fork_event, event.repo)
+            }
+            UnsupportedEvent -> {
+                msg.text = msg.resources.getString(R.string.unsupported_event, event.type)
+            }
+        }
+    }
+
+    override fun doPageRequest(url: String) {
+        launch(UI) {
+            Log.d(Application.LOGTAG, "Paging user event list with $url...")
+            val result = gitHubService.receivedEventsPaginate(url).awaitResult()
+            when (result) {
+                is Result.Ok -> appendDataSet(result.value)
+                is Result.Error -> showErrorOnSnackbar(recyclerView, result.exception.localizedMessage)
+                is Result.Exception -> showErrorOnSnackbar(recyclerView, result.exception.localizedMessage)
+            }
+        }
+    }
+}
