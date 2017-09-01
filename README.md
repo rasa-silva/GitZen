@@ -1,8 +1,8 @@
 # ZenHub
 
-A minimal Android GitHub client for learning Android and polishing Kotlin skills.
+A minimalist Android GitHub client for learning Android and polishing Kotlin skills.
 
-The feature set will target my own use/preferences and will not be a complete GitHub client.
+The feature set will target my own use/preferences and will not be a "fully featured" GitHub client.
 
 Contributions will gladly be accepted as long as:
   * Makes part of the feature set I want
