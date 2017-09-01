@@ -43,6 +43,7 @@
     <string name="avatar_image">Avatar image</string>
 
     <!-- Received Events -->
+    <string name="events_title">Received events</string>
     <string name="watch_event">%1$s watching %2$s.</string>
     <string name="fork_event">forked %1$s.</string>
     <string name="pullrequest_event">%1$s pull request #%2$d on %3$s.</string>
