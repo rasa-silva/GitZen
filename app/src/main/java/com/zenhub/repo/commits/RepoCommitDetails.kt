@@ -65,6 +65,7 @@ class RepoCommitDetails : BaseActivity() {
                     else {
                         SpannableStringBuilder()
                                 .append(firstAndOtherLines[0])
+                                .append('\n')
                                 .append(firstAndOtherLines[1], RelativeSizeSpan(0.75f), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     }
 
