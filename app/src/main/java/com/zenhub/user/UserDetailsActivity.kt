@@ -66,12 +66,10 @@ class UserDetailsActivity : BaseActivity() {
                     drawerLayout.findViewById<TextView>(R.id.nav_user).text = user.login
                     drawerLayout.findViewById<TextView>(R.id.username).text = user.name
                     drawerLayout.findViewById<TextView>(R.id.created_at).text = user.created_at.asFuzzyDate()
-                    val followers = drawerLayout.findViewById<TextView>(R.id.followers)
-                    followers.text = drawerLayout.resources.getString(R.string.numberOfFollowers, user.followers)
-                    val following = drawerLayout.findViewById<TextView>(R.id.following)
-                    following.text = drawerLayout.resources.getString(R.string.numberOfFollowing, user.following)
-                    val gists = drawerLayout.findViewById<TextView>(R.id.gists)
-                    gists.text = drawerLayout.resources.getString(R.string.numberOfGists, user.public_gists)
+                    drawerLayout.findViewById<TextView>(R.id.repos_value).text = user.public_repos.toString()
+                    drawerLayout.findViewById<TextView>(R.id.followers_value).text = user.followers.toString()
+                    drawerLayout.findViewById<TextView>(R.id.following_value).text = user.following.toString()
+                    drawerLayout.findViewById<TextView>(R.id.gists_value).text = user.public_gists.toString()
                 }
                 is Result.Error -> showErrorOnSnackbar(drawerLayout, userDetails.response.message())
                 is Result.Exception -> Log.d(Application.LOGTAG, "Failed events call", userDetails.exception)

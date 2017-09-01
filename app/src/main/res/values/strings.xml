@@ -10,12 +10,9 @@
     <string name="title_activity_starred_repos">Starred Repositories</string>
     <string name="title_activity_own_repos">Repositories</string>
     <string name="title_activity_settings">Settings</string>
-    <string name="numberOfFollowers">Followers\n%1$d</string>
-    <string name="numberOfFollowing">Following\n%1$d</string>
     <string name="user_details_card_social">Social</string>
     <string name="user_details_card_bio">Bio</string>
     <string name="user_details_card_code">Code</string>
-    <string name="numberOfGists">Gists\n%1$d</string>
     <string name="title_activity_repo">Repository Details</string>
     <string name="unknown_user_name">Unknown User</string>
     <string name="previous_dir">Previous dir</string>
@@ -41,6 +38,12 @@
     <string name="repo_size"><b>Size</b></string>
     <string name="last_pushed"><b>Last pushed</b></string>
     <string name="avatar_image">Avatar image</string>
+
+    <!-- User Details -->
+    <string name="repos">Repos</string>
+    <string name="followers">Followers</string>
+    <string name="following">Following</string>
+    <string name="gists">Gists</string>
 
     <!-- Received Events -->
     <string name="events_title">Received events</string>

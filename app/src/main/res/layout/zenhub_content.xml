@@ -30,12 +30,10 @@
                     android:id="@+id/avatar"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
-                    android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:contentDescription="User avatar"
                     android:src="@drawable/ic_account_circle_white_24px"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -43,46 +41,80 @@
                     android:id="@+id/userid"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    app:layout_constraintEnd_toStartOf="@+id/username"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintHorizontal_chainStyle="packed"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/avatar"
-                    tools:text="Stubbed login" />
+                    app:layout_constraintStart_toEndOf="@+id/avatar"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="rasa-silva" />
 
                 <TextView
                     android:id="@+id/username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    app:layout_constraintBottom_toBottomOf="@+id/userid"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/userid"
-                    app:layout_constraintTop_toTopOf="@+id/userid"
-                    tools:text="Stubbed user name" />
+                    app:layout_constraintBottom_toBottomOf="@+id/created_at"
+                    app:layout_constraintStart_toEndOf="@+id/avatar"
+                    app:layout_constraintTop_toBottomOf="@+id/userid"
+                    tools:text="Ricardo Silva" />
 
                 <TextView
                     android:id="@+id/created_at"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textStyle="italic"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/username"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    tools:layout_editor_absoluteY="83dp"
+                    tools:text="joined 22 Set 2007" />
+
+                <TextView
+                    android:id="@+id/repos_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
-                    android:drawablePadding="8dp"
-                    android:drawableStart="@drawable/ic_access_time_white_24dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:paddingEnd="16sp"
+                    android:paddingStart="16sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                    app:layout_constraintEnd_toStartOf="@+id/followers_value"
+                    app:layout_constraintHorizontal_chainStyle="spread_inside"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/userid"
-                    tools:text="created_at value" />
+                    app:layout_constraintTop_toBottomOf="@+id/username"
+                    tools:text="12" />
 
+                <TextView
+                    android:id="@+id/repos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="4dp"
+                    android:paddingEnd="16sp"
+                    android:paddingStart="16sp"
+                    android:text="@string/repos"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/repos_value"
+                    app:layout_constraintStart_toStartOf="@+id/repos_value"
+                    app:layout_constraintTop_toBottomOf="@+id/repos_value"
+                    tools:text="Repos" />
+
+                <TextView
+                    android:id="@+id/followers_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:paddingEnd="16sp"
+                    android:paddingStart="16sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                    app:layout_constraintEnd_toStartOf="@+id/following_value"
+                    app:layout_constraintStart_toEndOf="@+id/repos_value"
+                    app:layout_constraintTop_toBottomOf="@+id/username"
+                    tools:text="10" />
 
                 <TextView
                     android:id="@+id/followers"
@@ -90,38 +122,60 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
                     android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:paddingEnd="16sp"
+                    android:paddingStart="16sp"
+                    android:text="@string/followers"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/followers_value"
+                    app:layout_constraintStart_toStartOf="@+id/followers_value"
+                    app:layout_constraintTop_toBottomOf="@+id/followers_value"
+                    tools:text="Followers" />
+
+                <TextView
+                    android:id="@+id/following_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:paddingEnd="16sp"
                     android:paddingStart="16sp"
-                    android:text="@string/numberOfFollowers"
-                    android:textAlignment="center"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/following"
-                    app:layout_constraintHorizontal_chainStyle="spread_inside"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/created_at"
-                    tools:layout_editor_absoluteY="195dp"
-                    tools:text="Followers\n1" />
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                    app:layout_constraintEnd_toStartOf="@+id/gists_value"
+                    app:layout_constraintStart_toEndOf="@+id/followers_value"
+                    app:layout_constraintTop_toBottomOf="@+id/username"
+                    tools:text="3" />
 
                 <TextView
                     android:id="@+id/following"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
                     android:paddingEnd="16sp"
                     android:paddingStart="16sp"
-                    android:text="@string/numberOfFollowing"
-                    android:textAlignment="center"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    app:layout_constraintBottom_toBottomOf="@+id/followers"
-                    app:layout_constraintEnd_toStartOf="@+id/gists"
-                    app:layout_constraintStart_toEndOf="@+id/followers"
-                    app:layout_constraintTop_toTopOf="@+id/followers"
-                    tools:layout_editor_absoluteY="195dp"
-                    tools:text="Following\n3" />
+                    android:text="@string/following"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/following_value"
+                    app:layout_constraintStart_toStartOf="@+id/following_value"
+                    app:layout_constraintTop_toBottomOf="@+id/following_value"
+                    tools:text="Following" />
+
+                <TextView
+                    android:id="@+id/gists_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="8dp"
+                    android:paddingEnd="16sp"
+                    android:paddingStart="16sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/following_value"
+                    app:layout_constraintTop_toBottomOf="@+id/username"
+                    tools:text="1" />
 
                 <TextView
                     android:id="@+id/gists"
@@ -129,18 +183,16 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
                     android:paddingEnd="16sp"
                     android:paddingStart="16sp"
-                    android:text="@string/numberOfGists"
-                    android:textAlignment="center"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    app:layout_constraintBottom_toBottomOf="@+id/following"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/following"
-                    app:layout_constraintTop_toTopOf="@+id/following"
-                    tools:layout_editor_absoluteY="195dp"
-                    tools:text="Gists\n10" />
+                    android:text="@string/gists"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/gists_value"
+                    app:layout_constraintStart_toStartOf="@+id/gists_value"
+                    app:layout_constraintTop_toBottomOf="@+id/gists_value"
+                    tools:text="Gists" />
 
 
             </android.support.constraint.ConstraintLayout>
