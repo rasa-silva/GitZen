@@ -17,6 +17,7 @@ import com.zenhub.core.asFuzzyDate
 import com.zenhub.github.getLanguageColor
 import com.zenhub.github.gitHubService
 import com.zenhub.showErrorOnSnackbar
+import com.zenhub.showExceptionOnSnackbar
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import ru.gildor.coroutines.retrofit.Result
@@ -78,8 +79,8 @@ private fun requestAboutData(fullRepoName: String, rootView: SwipeRefreshLayout)
                 rootView.findViewById<TextView>(R.id.size_value)?.text = (details.size * 1024).asDigitalUnit()
                 rootView.findViewById<TextView>(R.id.pushed_time_value)?.text = details.pushed_at.asFuzzyDate()
             }
-            is Result.Error -> TODO()
-            is Result.Exception -> TODO()
+            is Result.Error -> showErrorOnSnackbar(rootView, repoDetails.response.message())
+            is Result.Exception -> showExceptionOnSnackbar(rootView, repoDetails.exception)
         }
 
         val readMeResult = gitHubService.repoReadme(fullRepoName).awaitResult()
@@ -95,16 +96,16 @@ private fun requestAboutData(fullRepoName: String, rootView: SwipeRefreshLayout)
                 else
                     showErrorOnSnackbar(rootView, readMeResult.response.message())
             }
-            is Result.Exception -> TODO()
+            is Result.Exception -> showExceptionOnSnackbar(rootView, readMeResult.exception)
         }
 
         rootView.isRefreshing = false
     }
 }
 
-private fun setAsStarred(view: View, fullRepoName: String) {
+private fun setAsStarred(view: ImageView, fullRepoName: String) {
     val drawable = view.resources.getDrawable(R.drawable.ic_star_white_24px, null)
-    (view as ImageView).setImageDrawable(drawable)
+    view.setImageDrawable(drawable)
     view.setOnClickListener {
         launch(UI) {
             val response = gitHubService.unstarRepo(fullRepoName).awaitResponse()
@@ -118,9 +119,9 @@ private fun setAsStarred(view: View, fullRepoName: String) {
     }
 }
 
-private fun setAsUnstarred(view: View, fullRepoName: String) {
+private fun setAsUnstarred(view: ImageView, fullRepoName: String) {
     val drawable = view.resources.getDrawable(R.drawable.ic_star_border_white_24px, null)
-    (view as ImageView).setImageDrawable(drawable)
+    view.setImageDrawable(drawable)
     view.setOnClickListener {
         launch(UI) {
             val response = gitHubService.starRepo(fullRepoName).awaitResponse()

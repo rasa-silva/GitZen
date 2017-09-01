@@ -58,8 +58,19 @@ class RoundedTransformation(private val radius: Float? = null, private val margi
 
 fun showErrorOnSnackbar(rootView: View, error: String) {
     Log.e(Application.LOGTAG, "Failed response: $error")
-    val errorMessage = GSON.fromJson<ErrorMessage>(error, ErrorMessage::class.java)
-    val snackbar = Snackbar.make(rootView, errorMessage.message, Snackbar.LENGTH_INDEFINITE)
-    snackbar.view.setBackgroundColor(0xfffb4934.toInt())
+    val errorMessage = if (error[0] == '{') { //Assume JSON
+        GSON.fromJson<ErrorMessage>(error, ErrorMessage::class.java).message
+    } else {
+        error
+    }
+    val snackbar = Snackbar.make(rootView, errorMessage, Snackbar.LENGTH_INDEFINITE)
+    snackbar.view.setBackgroundResource(R.color.errorBackground)
+    snackbar.show()
+}
+
+fun showExceptionOnSnackbar(rootView: View, t: Throwable) {
+    Log.e(Application.LOGTAG, "Failed response: $t")
+    val snackbar = Snackbar.make(rootView, t.localizedMessage, Snackbar.LENGTH_INDEFINITE)
+    snackbar.view.setBackgroundResource(R.color.errorBackground)
     snackbar.show()
 }
