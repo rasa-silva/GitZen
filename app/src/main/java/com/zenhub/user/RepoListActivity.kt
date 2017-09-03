@@ -4,15 +4,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.Toolbar
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import com.zenhub.Application
 import com.zenhub.R
-import com.zenhub.core.BaseActivity
 import com.zenhub.core.PagedRecyclerViewAdapter
 import com.zenhub.core.asFuzzyDate
 import com.zenhub.github.Repository
@@ -25,7 +27,7 @@ import retrofit2.Call
 import ru.gildor.coroutines.retrofit.Result
 import ru.gildor.coroutines.retrofit.awaitResult
 
-abstract class RepoListActivity : BaseActivity() {
+abstract class RepoListActivity : AppCompatActivity() {
 
     private val recyclerView by lazy { findViewById<RecyclerView>(R.id.list) }
     private val adapter by lazy { RepoListAdapter(this) }
@@ -33,7 +35,10 @@ abstract class RepoListActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.repo_list_activity)
-        super.onCreateDrawer()
+        //super.onCreateDrawer()
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         recyclerView.let {
             val layoutManager = LinearLayoutManager(it.context)
@@ -45,7 +50,11 @@ abstract class RepoListActivity : BaseActivity() {
         requestDataRefresh()
     }
 
-    override fun requestDataRefresh() {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun requestDataRefresh() {
         launch(UI) {
             Log.d(Application.LOGTAG, "Refreshing starred list...")
             val result = requestInitial().awaitResult()
