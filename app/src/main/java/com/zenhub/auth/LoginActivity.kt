@@ -5,9 +5,7 @@ import android.accounts.AccountManager
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import com.zenhub.Application
-import com.zenhub.BuildConfig
-import com.zenhub.R
+import com.zenhub.*
 import com.zenhub.core.BaseActivity
 import com.zenhub.github.TokenRequest
 import com.zenhub.github.gitHubService
@@ -56,29 +54,29 @@ class LoginActivity : BaseActivity() {
     private fun attemptLogin() {
         showProgress(true)
 
-        val username = username.text.toString()
-        val password = password.text.toString()
+        val user = username.text.toString()
+        val pwd = password.text.toString()
 
         launch(UI) {
             val scopes = listOf("gist", "repo", "user")
             val request = TokenRequest(BuildConfig.GITHUB_CLIENT_ID, BuildConfig.GITHUB_SECRET, scopes, "ZenHub")
-            val basic = Credentials.basic(username, password)
+            val basic = Credentials.basic(user, pwd)
             val tokenResult = gitHubService.createToken(basic, request).awaitResult()
             when (tokenResult) {
                 is Result.Ok -> {
-                    LoggedUser.setAccount(username, tokenResult.value.token)
+                    LoggedUser.setAccount(user, tokenResult.value.token)
                     val bundle = Bundle()
-                    bundle.putString(AccountManager.KEY_ACCOUNT_NAME, username)
+                    bundle.putString(AccountManager.KEY_ACCOUNT_NAME, user)
                     bundle.putString(AccountManager.KEY_ACCOUNT_TYPE, BuildConfig.APPLICATION_ID)
                     setAccountAuthenticatorResult(bundle)
                     finish()
+                    startActivity(Intent(Application.context, UserDetailsActivity::class.java))
                 }
-                is Result.Error -> TODO()
-                is Result.Exception -> TODO()
+                is Result.Error -> showErrorOnSnackbar(password, tokenResult.response.message())
+                is Result.Exception -> showExceptionOnSnackbar(password, tokenResult.exception)
             }
 
             showProgress(false)
-            startActivity(Intent(Application.context, UserDetailsActivity::class.java))
         }
     }
 
