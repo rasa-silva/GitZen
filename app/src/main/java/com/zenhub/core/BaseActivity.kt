@@ -14,7 +14,7 @@ import com.zenhub.user.OwnReposActivity
 import com.zenhub.user.StarredReposActivity
 import com.zenhub.user.UserDetailsActivity
 
-open class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var drawerLayout: DrawerLayout
 
@@ -23,7 +23,6 @@ open class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
 
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val drawerToggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, 0, 0)
         drawerLayout.addDrawerListener(drawerToggle)

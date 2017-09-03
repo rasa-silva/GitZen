@@ -20,7 +20,6 @@
             android:name=".user.StarredReposActivity"
             android:label="@string/title_activity_starred_repos"
             android:parentActivityName=".user.UserDetailsActivity" />
-        <activity android:name=".core.BaseActivity" />
         <activity
             android:name=".user.OwnReposActivity"
             android:label="@string/title_activity_own_repos"
@@ -36,9 +35,6 @@
             android:name=".auth.LoginActivity"
             android:label="@string/title_activity_login"
             android:parentActivityName=".user.UserDetailsActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.zenhub.user.UserDetailsActivity" />
         </activity>
 
         <service android:name=".auth.AuthenticatorService">
