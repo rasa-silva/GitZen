@@ -14,7 +14,7 @@ class Repository(val name: String, val full_name: String,
 
 class RepositoryDetails(val name: String, val description: String, val stargazers_count: Int,
                         val homepage: String?, val html_url: String,
-                        val pushed_at: String, val language: String, val size: Int)
+                        val pushed_at: String, val language: String, val size: Long)
 
 class User(val login: String, val avatar_url: String, val name: String,
            val public_repos: Int, val public_gists: Int,
@@ -29,7 +29,7 @@ class Commit(val sha: String, val commit: CommitInfo, val committer: Committer?)
 class CommitFile(val filename: String, val patch: String)
 class CommitDetails(val commit: CommitInfo, val files: List<CommitFile>)
 
-class RepoContentEntry(val name: String, val path: String, val size: Int, val type: String, val download_url: String)
+class RepoContentEntry(val name: String, val path: String, val size: Long, val type: String, val download_url: String)
 
 class ErrorMessage(val message: String)
 

@@ -11,7 +11,7 @@ fun String.asFuzzyDate(): CharSequence {
     return DateUtils.getRelativeTimeSpanString(date.time, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS)
 }
 
-fun Int.asDigitalUnit(): CharSequence {
+fun Long.asDigitalUnit(): CharSequence {
     return when {
         this > 1024 * 1024 -> (this / 1024 / 1024).toString() + "mb"
         this > 1024 -> (this / 1024).toString() + "kb"
