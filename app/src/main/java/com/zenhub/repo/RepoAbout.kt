@@ -6,17 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
-import com.zenhub.Application
-import com.zenhub.R
+import com.zenhub.*
 import com.zenhub.core.asDigitalUnit
 import com.zenhub.core.asFuzzyDate
 import com.zenhub.github.getLanguageColor
 import com.zenhub.github.gitHubService
-import com.zenhub.showErrorOnSnackbar
-import com.zenhub.showExceptionOnSnackbar
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import ru.gildor.coroutines.retrofit.Result
@@ -52,6 +49,8 @@ fun buildAboutView(inflater: LayoutInflater, container: ViewGroup, fullRepoName:
 private fun requestAboutData(fullRepoName: String, rootView: SwipeRefreshLayout) {
     launch(UI) {
         Log.d(Application.LOGTAG, "Refreshing repo information...")
+        val progressBar = rootView.findViewById<FrameLayout>(R.id.progress_overlay)
+        progressBar.visibility = View.VISIBLE
 
         val starredView = rootView.findViewById<ImageView>(R.id.starred)
         val isStarred = gitHubService.isStarred(fullRepoName).awaitResponse()
@@ -99,6 +98,7 @@ private fun requestAboutData(fullRepoName: String, rootView: SwipeRefreshLayout)
         }
 
         rootView.isRefreshing = false
+        progressBar.visibility = View.GONE
     }
 }
 
@@ -109,10 +109,10 @@ private fun setAsStarred(view: ImageView, fullRepoName: String) {
         launch(UI) {
             val response = gitHubService.unstarRepo(fullRepoName).awaitResponse()
             if (response.isSuccessful) {
-                Toast.makeText(view.context, "Unstarred $fullRepoName", Toast.LENGTH_LONG).show()
+                showInfoOnSnackbar(view, "Unstarred $fullRepoName")
                 setAsUnstarred(view, fullRepoName)
             } else {
-                Toast.makeText(view.context, "Failed to unstar $fullRepoName", Toast.LENGTH_LONG).show()
+                showErrorOnSnackbar(view, "Failed to unstar $fullRepoName")
             }
         }
     }
@@ -125,10 +125,10 @@ private fun setAsUnstarred(view: ImageView, fullRepoName: String) {
         launch(UI) {
             val response = gitHubService.starRepo(fullRepoName).awaitResponse()
             if (response.isSuccessful) {
-                Toast.makeText(view.context, "Starred $fullRepoName", Toast.LENGTH_LONG).show()
+                showInfoOnSnackbar(view, "Starred $fullRepoName")
                 setAsStarred(view, fullRepoName)
             } else {
-                Toast.makeText(view.context, "Failed to star $fullRepoName", Toast.LENGTH_LONG).show()
+                showErrorOnSnackbar(view, "Failed to star $fullRepoName")
             }
         }
     }

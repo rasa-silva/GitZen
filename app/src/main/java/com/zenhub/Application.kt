@@ -74,3 +74,9 @@ fun showExceptionOnSnackbar(rootView: View, t: Throwable) {
     snackbar.view.setBackgroundResource(R.color.errorBackground)
     snackbar.show()
 }
+
+fun showInfoOnSnackbar(rootView: View, info: String) {
+    val snackbar = Snackbar.make(rootView, info, Snackbar.LENGTH_SHORT)
+    snackbar.view.setBackgroundResource(R.color.colorAccent)
+    snackbar.show()
+}
