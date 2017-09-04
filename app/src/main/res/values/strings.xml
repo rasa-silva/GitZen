@@ -37,6 +37,7 @@
     <string name="avatar_image">Avatar image</string>
 
     <!-- User Details -->
+    <string name="user_joined">since %1$s</string>
     <string name="repos">Repos</string>
     <string name="followers">Followers</string>
     <string name="following">Following</string>

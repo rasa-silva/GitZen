@@ -65,7 +65,8 @@ class UserDetailsActivity : BaseActivity() {
                     drawerLayout.findViewById<TextView>(R.id.userid).text = user.login
                     drawerLayout.findViewById<TextView>(R.id.nav_user).text = user.login
                     drawerLayout.findViewById<TextView>(R.id.username).text = user.name
-                    drawerLayout.findViewById<TextView>(R.id.created_at).text = user.created_at.asFuzzyDate()
+                    val joined = avatarView.resources.getString(R.string.user_joined, user.created_at.asFuzzyDate())
+                    drawerLayout.findViewById<TextView>(R.id.joined).text = joined
                     drawerLayout.findViewById<TextView>(R.id.repos_value).text = user.public_repos.toString()
                     drawerLayout.findViewById<TextView>(R.id.followers_value).text = user.followers.toString()
                     drawerLayout.findViewById<TextView>(R.id.following_value).text = user.following.toString()
