@@ -1,14 +1,8 @@
 # ZenHub
 
-A minimalist Android GitHub client for learning Android and polishing Kotlin skills.
+A minimalist GitHub client for Android written in Kotlin.
 
-The feature set will target my own use/preferences and will not be a "fully featured" GitHub client.
-
-Contributions will gladly be accepted as long as:
-  * Makes part of the feature set I want
-  * Not being something I'd use, does not make a real difference in performance/complexity.
-  
-## Implemented:
+## Features:
  * OAuth via Android Account Manager
  * User overview
  * Own repository list with paging
@@ -20,7 +14,10 @@ Contributions will gladly be accepted as long as:
  * Commit details including files diff
  
 
-## Features that will *not* be implemented:
+The source code is available on https://github.com/rasa-silva/ZenHub feel free to contribute/fork.
+The feature set will target my own use/preferences and will not be a "fully featured" GitHub client.
+
+## Will not implement/merge:
   * Multiple users
   * Enterprise
   * Repo 
@@ -28,3 +25,4 @@ Contributions will gladly be accepted as long as:
     * Deployments
     * Invitations
   * Migrations
+  * Others?
