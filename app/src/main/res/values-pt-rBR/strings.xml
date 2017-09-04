@@ -35,6 +35,7 @@
     <string name="repo_size"><b>Tamanho</b></string>
     <string name="last_pushed"><b>Última actualização</b></string>
     <string name="avatar_image">Image do Avatar</string>
+    <string name="readme_title">ReadMe</string>
 
     <!-- User Details -->
     <string name="user_joined">desde %1$s</string>

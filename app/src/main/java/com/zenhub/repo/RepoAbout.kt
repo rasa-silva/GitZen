@@ -1,6 +1,5 @@
 package com.zenhub.repo
 
-import android.graphics.Color
 import android.support.v4.widget.SwipeRefreshLayout
 import android.util.Log
 import android.view.LayoutInflater
@@ -40,7 +39,7 @@ fun buildAboutView(inflater: LayoutInflater, container: ViewGroup, fullRepoName:
     //TODO NestedScrollView?
     val refreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.readme_swiperefresh)
     val webView = view.findViewById<WebView>(R.id.readme_webview)
-    webView.setBackgroundColor(Color.TRANSPARENT)
+//    webView.setBackgroundColor(Color.TRANSPARENT)
     refreshLayout.viewTreeObserver.addOnScrollChangedListener {
         refreshLayout.isEnabled = webView.scrollY == 0
     }
