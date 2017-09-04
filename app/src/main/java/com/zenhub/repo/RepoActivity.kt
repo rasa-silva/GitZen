@@ -5,20 +5,23 @@ import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
+import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import com.zenhub.R
-import com.zenhub.core.BaseActivity
 import com.zenhub.repo.commits.buildCommitsView
 import com.zenhub.repo.contents.buildContentsView
 
-class RepoActivity : BaseActivity() {
+class RepoActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.repo_activity)
-        super.onCreateDrawer()
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
 
         val fullRepoName = intent.getStringExtra("REPO_FULL_NAME")
         supportActionBar?.title = fullRepoName
@@ -36,8 +39,10 @@ class RepoActivity : BaseActivity() {
                 viewPager.setCurrentItem(tab.position, true)
             }
         })
+    }
 
-        requestDataRefresh()
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return super.onOptionsItemSelected(item)
     }
 }
 

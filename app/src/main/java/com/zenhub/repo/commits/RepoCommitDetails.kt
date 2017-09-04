@@ -1,15 +1,19 @@
 package com.zenhub.repo.commits
 
 import android.os.Bundle
+import android.support.v4.app.NavUtils
 import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.Toolbar
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.RelativeSizeSpan
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -18,7 +22,6 @@ import com.pddstudio.highlightjs.models.Language
 import com.pddstudio.highlightjs.models.Theme
 import com.zenhub.Application
 import com.zenhub.R
-import com.zenhub.core.BaseActivity
 import com.zenhub.github.CommitFile
 import com.zenhub.github.gitHubService
 import kotlinx.coroutines.experimental.android.UI
@@ -26,20 +29,18 @@ import kotlinx.coroutines.experimental.launch
 import ru.gildor.coroutines.retrofit.Result
 import ru.gildor.coroutines.retrofit.awaitResult
 
-class RepoCommitDetails : BaseActivity() {
+class RepoCommitDetails : AppCompatActivity() {
 
-    private lateinit var repoName: String
-    private lateinit var commitSha: String
+    private val repoName by lazy { intent.getStringExtra("REPO_FULL_NAME") }
+    private val commitSha by lazy { intent.getStringExtra("COMMIT_SHA") }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.repo_commit_activity)
-        super.onCreateDrawer()
-
-        repoName = intent.getStringExtra("REPO_FULL_NAME")
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = repoName
-
-        commitSha = intent.getStringExtra("COMMIT_SHA")
 
         val recyclerViewAdapter = CommitFilesRecyclerViewAdapter()
         findViewById<RecyclerView>(R.id.files).let {
@@ -52,7 +53,17 @@ class RepoCommitDetails : BaseActivity() {
         requestDataRefresh()
     }
 
-    override fun requestDataRefresh() {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                NavUtils.navigateUpTo(this, parentActivityIntent.putExtra("REPO_FULL_NAME", repoName))
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun requestDataRefresh() {
         launch(UI) {
             Log.d(Application.LOGTAG, "Refreshing commit details...")
             val refreshLayout = findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
