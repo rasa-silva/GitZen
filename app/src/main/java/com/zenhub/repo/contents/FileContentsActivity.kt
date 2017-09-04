@@ -3,21 +3,23 @@ package com.zenhub.repo.contents
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 import android.util.Log
 import com.pddstudio.highlightjs.HighlightJsView
 import com.pddstudio.highlightjs.models.Language
 import com.pddstudio.highlightjs.models.Theme
 import com.zenhub.Application
 import com.zenhub.R
-import com.zenhub.core.BaseActivity
 import java.net.URL
 
-class FileContentsActivity : BaseActivity() {
+class FileContentsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_file_contents)
-        super.onCreateDrawer()
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
 
         val codeView = findViewById<HighlightJsView>(R.id.highlight_view)
         val refreshLayout = findViewById<SwipeRefreshLayout>(R.id.swiperefresh)
