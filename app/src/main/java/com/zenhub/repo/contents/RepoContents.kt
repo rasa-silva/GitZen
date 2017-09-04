@@ -16,6 +16,8 @@ import com.zenhub.R
 import com.zenhub.core.asDigitalUnit
 import com.zenhub.github.RepoContentEntry
 import com.zenhub.github.gitHubService
+import com.zenhub.showErrorOnSnackbar
+import com.zenhub.showExceptionOnSnackbar
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import ru.gildor.coroutines.retrofit.Result
@@ -60,8 +62,8 @@ private fun requestData(fullRepoName: String, path: String, parentView: View, ad
                 parentView.findViewById<TextView>(R.id.current_path).text = path
                 adapter.updateDataSet(response.value)
             }
-            is Result.Error -> TODO()
-            is Result.Exception -> TODO()
+            is Result.Error -> showErrorOnSnackbar(parentView, response.response.message())
+            is Result.Exception -> showExceptionOnSnackbar(parentView, response.exception)
         }
 
         val refreshLayout = parentView.findViewById<SwipeRefreshLayout>(R.id.contents_swiperefresh)

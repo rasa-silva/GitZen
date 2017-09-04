@@ -13,14 +13,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import com.zenhub.Application
-import com.zenhub.R
-import com.zenhub.RoundedTransformation
+import com.zenhub.*
 import com.zenhub.core.PagedRecyclerViewAdapter
 import com.zenhub.core.asFuzzyDate
 import com.zenhub.github.Commit
 import com.zenhub.github.gitHubService
-import com.zenhub.showErrorOnSnackbar
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import ru.gildor.coroutines.retrofit.Result
@@ -51,8 +48,8 @@ private fun requestDataRefresh(fullRepoName: String, container: ViewGroup, adapt
         val result = gitHubService.commits(fullRepoName).awaitResult()
         when (result) {
             is Result.Ok -> adapter.updateDataSet(result)
-            is Result.Error -> TODO()
-            is Result.Exception -> TODO()
+            is Result.Error -> showErrorOnSnackbar(container, result.response.message())
+            is Result.Exception -> showExceptionOnSnackbar(container, result.exception)
         }
 
         container.findViewById<SwipeRefreshLayout>(R.id.commits_swiperefresh).isRefreshing = false

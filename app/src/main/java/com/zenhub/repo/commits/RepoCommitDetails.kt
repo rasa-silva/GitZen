@@ -24,6 +24,8 @@ import com.zenhub.Application
 import com.zenhub.R
 import com.zenhub.github.CommitFile
 import com.zenhub.github.gitHubService
+import com.zenhub.showErrorOnSnackbar
+import com.zenhub.showExceptionOnSnackbar
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import ru.gildor.coroutines.retrofit.Result
@@ -89,8 +91,8 @@ class RepoCommitDetails : AppCompatActivity() {
                     val adapter = refreshLayout.findViewById<RecyclerView>(R.id.files).adapter as CommitFilesRecyclerViewAdapter
                     adapter.updateDataSet(response.files)
                 }
-                is Result.Error -> TODO()
-                is Result.Exception -> TODO()
+                is Result.Error -> showErrorOnSnackbar(refreshLayout, result.response.message())
+                is Result.Exception -> showExceptionOnSnackbar(refreshLayout, result.exception)
             }
 
             refreshLayout.isRefreshing = false

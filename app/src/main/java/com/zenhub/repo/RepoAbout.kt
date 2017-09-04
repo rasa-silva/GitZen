@@ -33,7 +33,6 @@ private const val EMPTY_README = """<body><h1>No ReadMe available.</h1></body>""
 fun buildAboutView(inflater: LayoutInflater, container: ViewGroup, fullRepoName: String): View {
     val view = inflater.inflate(R.layout.repo_content_readme, container, false)
     //Fix the fight between the refreshLayout swipe and the webview scroll
-    //TODO NestedScrollView?
     val refreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.readme_swiperefresh)
     val webView = view.findViewById<WebView>(R.id.readme_webview)
 //    webView.setBackgroundColor(Color.TRANSPARENT)
@@ -57,7 +56,7 @@ private fun requestAboutData(fullRepoName: String, rootView: SwipeRefreshLayout)
         when {
             isStarred.isSuccessful -> setAsStarred(starredView, fullRepoName)
             isStarred.code() == 404 -> setAsUnstarred(starredView, fullRepoName)
-            else -> TODO()
+            else -> showErrorOnSnackbar(starredView, isStarred.message())
         }
 
         val repoDetails = gitHubService.repoDetails(fullRepoName).awaitResult()
