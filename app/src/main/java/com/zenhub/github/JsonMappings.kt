@@ -17,7 +17,8 @@ class RepositoryDetails(val name: String, val description: String, val stargazer
                         val pushed_at: String, val language: String, val size: Long)
 
 class User(val login: String, val avatar_url: String, val name: String,
-           val public_repos: Int, val public_gists: Int,
+           val public_repos: Int, val total_private_repos: Int,
+           val public_gists: Int, val private_gists: Int,
            val followers: Int, val following: Int,
            val created_at: String)
 

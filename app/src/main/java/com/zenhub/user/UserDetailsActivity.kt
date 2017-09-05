@@ -1,5 +1,6 @@
 package com.zenhub.user
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.widget.DrawerLayout
 import android.support.v4.widget.SwipeRefreshLayout
@@ -42,6 +43,10 @@ class UserDetailsActivity : BaseActivity() {
             it.addItemDecoration(DividerItemDecoration(it.context, layoutManager.orientation))
         }
 
+        findViewById<TextView>(R.id.repos_value).setOnClickListener {
+            startActivity(Intent(this, OwnReposActivity::class.java))
+        }
+
         requestDataRefresh()
     }
 
@@ -67,7 +72,8 @@ class UserDetailsActivity : BaseActivity() {
                     drawerLayout.findViewById<TextView>(R.id.username).text = user.name
                     val joined = avatarView.resources.getString(R.string.user_joined, user.created_at.asFuzzyDate())
                     drawerLayout.findViewById<TextView>(R.id.joined).text = joined
-                    drawerLayout.findViewById<TextView>(R.id.repos_value).text = user.public_repos.toString()
+                    val totalRepos = user.public_repos + user.total_private_repos
+                    drawerLayout.findViewById<TextView>(R.id.repos_value).text = totalRepos.toString()
                     drawerLayout.findViewById<TextView>(R.id.followers_value).text = user.followers.toString()
                     drawerLayout.findViewById<TextView>(R.id.following_value).text = user.following.toString()
                     drawerLayout.findViewById<TextView>(R.id.gists_value).text = user.public_gists.toString()
