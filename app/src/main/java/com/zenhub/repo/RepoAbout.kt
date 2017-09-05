@@ -23,7 +23,7 @@ import ru.gildor.coroutines.retrofit.awaitResult
 
 private const val STYLESHEET = """
     <style>
-        body {color: #ffffff; background-color: #303030;}
+        body {color: #ffffff; background-color: #FF424242;}
         a {color: #458588;}
         pre {overflow: auto; width: 99%; background-color: #424242;}
     </style>"""
@@ -35,7 +35,6 @@ fun buildAboutView(inflater: LayoutInflater, container: ViewGroup, fullRepoName:
     //Fix the fight between the refreshLayout swipe and the webview scroll
     val refreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.readme_swiperefresh)
     val webView = view.findViewById<WebView>(R.id.readme_webview)
-//    webView.setBackgroundColor(Color.TRANSPARENT)
     refreshLayout.viewTreeObserver.addOnScrollChangedListener {
         refreshLayout.isEnabled = webView.scrollY == 0
     }
