@@ -11,7 +11,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <include layout="@layout/progress_bar_overlay" />
@@ -37,7 +37,22 @@
                     app:layout_constraintEnd_toStartOf="@+id/starred"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="The description of the chosen repo" />
+                    tools:text="The description of the chosen repo that can overflow to more than 1 line" />
+
+                <TextView
+                    android:id="@+id/homepage"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:autoLink="web"
+                    android:maxLines="2"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    app:layout_constraintEnd_toStartOf="@+id/stargazers_count"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/description"
+                    tools:text="http://www.some-site.com" />
 
                 <ImageView
                     android:id="@+id/starred"
@@ -49,21 +64,6 @@
                     android:src="@drawable/ic_star_border_white_24px"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/homepage"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:autoLink="web"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    app:layout_constraintEnd_toStartOf="@+id/starred"
-                    app:layout_constraintHorizontal_chainStyle="spread_inside"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/description"
-                    tools:text="http://www.some-site.com" />
 
                 <TextView
                     android:id="@+id/language"
@@ -100,7 +100,6 @@
                     android:layout_marginTop="8dp"
                     android:text="@string/repo_size"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    app:layout_constraintBottom_toTopOf="@id/pushed_time"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/homepage" />
 
@@ -109,11 +108,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    app:layout_constraintBottom_toTopOf="@id/pushed_time_value"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/size"
                     app:layout_constraintStart_toEndOf="@+id/size"
-                    app:layout_constraintTop_toBottomOf="@+id/homepage"
                     tools:text="234KB" />
 
                 <TextView
@@ -134,14 +131,11 @@
                     android:id="@+id/pushed_time_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
                     android:textStyle="italic"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/pushed_time"
                     app:layout_constraintStart_toEndOf="@+id/pushed_time"
-                    app:layout_constraintTop_toBottomOf="@+id/size_value"
                     tools:text="5 hours ago" />
 
             </android.support.constraint.ConstraintLayout>
@@ -172,7 +166,7 @@
                     android:id="@+id/readme_webview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/cardview_dark_background"/>
+                    android:background="@color/cardview_dark_background" />
             </LinearLayout>
         </android.support.v7.widget.CardView>
 

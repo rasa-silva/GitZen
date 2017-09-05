@@ -23,7 +23,7 @@ import ru.gildor.coroutines.retrofit.awaitResult
 
 private const val STYLESHEET = """
     <style>
-        body {color: #ffffff; background-color: #FF424242;}
+        body {color: #ffffff; background-color: #424242;}
         a {color: #458588;}
         pre {overflow: auto; width: 99%; background-color: #424242;}
     </style>"""
