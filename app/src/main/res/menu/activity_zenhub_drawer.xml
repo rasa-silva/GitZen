@@ -8,6 +8,10 @@
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_home_white_24px"
             android:title="@string/nav_home" />
+        <item
+            android:id="@+id/nav_search"
+            android:icon="@drawable/ic_search_white_24px"
+            android:title="@string/nav_search" />
     </group>
     <group android:id="@+id/repos_group">
         <item

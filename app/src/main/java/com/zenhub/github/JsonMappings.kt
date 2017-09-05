@@ -72,3 +72,6 @@ class EventDeserializer : JsonDeserializer<ReceivedEvent> {
         return ReceivedEvent(type, eventActor, repo, created_at, eventPayload)
     }
 }
+
+//Search
+class RepositorySearch(val total_count: Int, val items: List<Repository>)

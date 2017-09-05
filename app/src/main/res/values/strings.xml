@@ -6,6 +6,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="unknown_user_name">Unknown User</string>
     <string name="nav_home">Home</string>
+    <string name="nav_search">Search</string>
     <string name="nav_repos">Repositories</string>
     <string name="nav_starred">Starred</string>
     <string name="nav_settings">Settings</string>
@@ -54,5 +55,9 @@
 
     <!-- Commit Details Activity -->
     <string name="commit_details_stats">by %1$s, touching %2$d files</string>
+
+    <!-- Search -->
+    <string name="search_hint">Search GitHub</string>
+    <string name="search_result_count">%1$d Results</string>
 
 </resources>

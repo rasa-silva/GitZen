@@ -99,4 +99,10 @@ interface GitHubService {
     @GET("repos/{fullname}/commits/{sha}")
     fun commit(@Path("fullname", encoded = true) fullname: String,
                @Path("sha") sha: String): Call<CommitDetails>
+
+    @GET("search/repositories")
+    fun searchRepos(@Query("q") query: String): Call<RepositorySearch>
+
+    @GET
+    fun searchReposPaginate(@Url url: String): Call<RepositorySearch>
 }

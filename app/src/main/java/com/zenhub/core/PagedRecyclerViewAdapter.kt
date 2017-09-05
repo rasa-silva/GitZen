@@ -100,7 +100,7 @@ abstract class PagedRecyclerViewAdapter<in T>(ctx: Context,
         val linkHeader = response.header("Link") ?: return 1 to ""
         val nextAndLastUrls = linkHeader.split(';', ',')
         val lastUrl = nextAndLastUrls[2].trim(' ', '<', '>')
-        val lastPage = lastUrl.substringAfterLast("?page=").toInt()
+        val lastPage = lastUrl.substringAfterLast("page=").toInt()
         return lastPage to lastUrl
     }
 

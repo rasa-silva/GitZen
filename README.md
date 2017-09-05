@@ -12,6 +12,7 @@ A minimalist GitHub client for Android written in Kotlin.
  * Repo file browsing
  * Repo commits list with paging (only default branch for now)
  * Commit details including files diff
+ * Search for repositories
  
 
 The source code is available on https://github.com/rasa-silva/ZenHub feel free to contribute/fork.
