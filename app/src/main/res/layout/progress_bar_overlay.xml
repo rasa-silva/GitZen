@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:alpha="0.4"
     android:animateLayoutChanges="true"
-    android:clickable="true"
     android:visibility="gone">
 
     <ProgressBar
