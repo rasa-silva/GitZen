@@ -11,6 +11,7 @@ import com.zenhub.Application
 import com.zenhub.R
 import com.zenhub.github.gitHubService
 import com.zenhub.showErrorOnSnackbar
+import kotlinx.android.synthetic.main.repo_list_activity.*
 import kotlinx.android.synthetic.main.toolbar.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
@@ -42,6 +43,8 @@ class RepoListActivity : AppCompatActivity() {
             it.adapter = adapter
             it.addItemDecoration(DividerItemDecoration(it.context, layoutManager.orientation))
         }
+
+        swiperefresh.setOnRefreshListener { requestDataRefresh() }
 
         requestDataRefresh()
     }
