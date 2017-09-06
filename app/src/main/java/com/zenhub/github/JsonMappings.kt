@@ -76,3 +76,4 @@ class EventDeserializer : JsonDeserializer<ReceivedEvent> {
 
 //Search
 class RepositorySearch(val total_count: Int, val items: List<Repository>)
+class UserSearch(val total_count: Int, val items: List<User>)

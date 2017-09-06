@@ -33,8 +33,10 @@ class Application : android.app.Application() {
     }
 }
 
-class RoundedTransformation(private val radius: Float? = null, private val margin: Float = 0f) : Transformation {
+object RoundedTransformation : Transformation {
 
+    private val radius: Float? = null
+    private val margin: Float = 0f
     private val key = "rounded(radius=$radius, margin=$margin)"
 
     override fun transform(source: Bitmap): Bitmap {

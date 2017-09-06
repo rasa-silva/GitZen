@@ -59,5 +59,9 @@
     <!-- Search -->
     <string name="search_hint">Search GitHub</string>
     <string name="search_result_count">%1$d Results</string>
+    <string-array name="search_sources">
+        <item>Repos</item>
+        <item>Users</item>
+    </string-array>
 
 </resources>

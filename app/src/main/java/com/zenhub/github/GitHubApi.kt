@@ -2,13 +2,15 @@ package com.zenhub.github
 
 import com.google.gson.GsonBuilder
 import com.zenhub.Application
-import com.zenhub.auth.LoggedUser
-import okhttp3.*
+import com.zenhub.core.LoggingInterceptor
+import com.zenhub.core.OAuthTokenInterceptor
+import okhttp3.Cache
+import okhttp3.OkHttpClient
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
-import retrofit2.http.Headers
 
 val GSON = GsonBuilder()
         .registerTypeAdapter(ReceivedEvent::class.java, EventDeserializer())
@@ -25,22 +27,7 @@ val gitHubService = Retrofit.Builder()
         .build()
         .create(GitHubService::class.java)
 
-class OAuthTokenInterceptor : Interceptor {
 
-    private val AUTH_HEADER = "Authorization"
-    private val token: String? by lazy { LoggedUser.getToken() }
-
-    override fun intercept(chain: Interceptor.Chain): Response {
-        val oldReq = chain.request()
-        val newReq = if (oldReq.header(AUTH_HEADER).isNullOrBlank() && token != null) {
-            oldReq.newBuilder().addHeader(AUTH_HEADER, "token $token").build()
-        } else {
-            oldReq
-        }
-
-        return chain.proceed(newReq)
-    }
-}
 
 interface GitHubService {
 
@@ -105,4 +92,10 @@ interface GitHubService {
 
     @GET
     fun searchReposPaginate(@Url url: String): Call<RepositorySearch>
+
+    @GET("search/users")
+    fun searchUsers(@Query("q") query: String): Call<UserSearch>
+
+    @GET
+    fun searchUsersPaginate(@Url url: String): Call<UserSearch>
 }

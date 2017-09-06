@@ -64,10 +64,9 @@ class UserDetailsActivity : BaseActivity() {
                 is Result.Ok -> {
                     val user = userDetails.value
                     val avatarView = drawerLayout.findViewById<ImageView>(R.id.avatar)
-                    val roundedTransformation = RoundedTransformation()
-                    Application.picasso.load(user.avatar_url).transform(roundedTransformation).into(avatarView)
+                    Application.picasso.load(user.avatar_url).transform(RoundedTransformation).into(avatarView)
                     val navDrawerAvatar = drawerLayout.findViewById<ImageView>(R.id.nav_avatar)
-                    Application.picasso.load(user.avatar_url).transform(roundedTransformation).into(navDrawerAvatar)
+                    Application.picasso.load(user.avatar_url).transform(RoundedTransformation).into(navDrawerAvatar)
                     drawerLayout.findViewById<TextView>(R.id.userid).text = user.login
                     drawerLayout.findViewById<TextView>(R.id.nav_user).text = user.login
                     drawerLayout.findViewById<TextView>(R.id.username).text = user.name
@@ -107,7 +106,7 @@ class EventListAdapter(activity: UserDetailsActivity) : PagedRecyclerViewAdapter
         val event = model ?: return
 
         Application.picasso.load(model.actor.avatar_url)
-                .transform(RoundedTransformation())
+                .transform(RoundedTransformation)
                 .into(itemView.findViewById<ImageView>(R.id.avatar))
         itemView.findViewById<TextView>(R.id.actor).text = event.actor.display_login
         itemView.findViewById<TextView>(R.id.created_at).text = event.created_at.asFuzzyDate()

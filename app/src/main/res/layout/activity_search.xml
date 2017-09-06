@@ -8,15 +8,27 @@
 
     <include layout="@layout/toolbar" />
 
-    <TextView
-        android:id="@+id/header"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:text="@string/search_result_count"
-        android:textAlignment="viewEnd"
-        android:textStyle="italic"
-        tools:text="10 Results" />
+        android:layout_height="wrap_content">
+
+        <include layout="@layout/progress_bar_overlay" />
+
+        <Spinner
+            android:id="@+id/search_src"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="@string/search_result_count"
+            android:textAlignment="viewEnd"
+            android:textStyle="italic"
+            tools:text="10 Results" />
+    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list"

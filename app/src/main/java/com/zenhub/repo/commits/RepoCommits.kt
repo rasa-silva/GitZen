@@ -65,7 +65,7 @@ class CommitsRecyclerViewAdapter(private val fullRepoName: String,
         val avatarView = itemView.findViewById<ImageView>(R.id.avatar)
         commit.committer?.let {
             Application.picasso.load(it.avatar_url)
-                    .transform(RoundedTransformation()).into(avatarView)
+                    .transform(RoundedTransformation).into(avatarView)
         }
 
         itemView.findViewById<TextView>(R.id.commit_message).text = commit.commit.message
