@@ -2,7 +2,6 @@ package com.zenhub.auth
 
 import android.accounts.Account
 import android.accounts.AccountManager
-import android.annotation.SuppressLint
 import com.zenhub.Application
 
 object LoggedUser {
@@ -23,7 +22,6 @@ object LoggedUser {
         am.setAuthToken(account, "GitHub", token)
     }
 
-    @SuppressLint("MissingPermission")
     fun getToken(): String? {
         val am = AccountManager.get(Application.context)
         return am.blockingGetAuthToken(account, "GitHub", true)
