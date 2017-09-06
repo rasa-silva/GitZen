@@ -65,14 +65,14 @@ fun showErrorOnSnackbar(rootView: View, error: String) {
     } else {
         error
     }
-    val snackbar = Snackbar.make(rootView, errorMessage, Snackbar.LENGTH_INDEFINITE)
+    val snackbar = Snackbar.make(rootView, errorMessage, Snackbar.LENGTH_LONG)
     snackbar.view.setBackgroundResource(R.color.errorBackground)
     snackbar.show()
 }
 
 fun showExceptionOnSnackbar(rootView: View, t: Throwable) {
     Log.e(Application.LOGTAG, "Failed response: $t")
-    val snackbar = Snackbar.make(rootView, t.localizedMessage, Snackbar.LENGTH_INDEFINITE)
+    val snackbar = Snackbar.make(rootView, t.localizedMessage, Snackbar.LENGTH_LONG)
     snackbar.view.setBackgroundResource(R.color.errorBackground)
     snackbar.show()
 }
