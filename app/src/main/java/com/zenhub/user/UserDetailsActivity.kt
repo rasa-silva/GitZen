@@ -74,17 +74,21 @@ class UserDetailsActivity : BaseActivity() {
             progressBar.visibility = View.VISIBLE
             val drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
 
+            LoggedUser.account?.let {
+                val result = gitHubService.userDetails(it.name).awaitResult()
+                if (result is Result.Ok) {
+                    val navDrawerAvatar = drawerLayout.findViewById<ImageView>(R.id.nav_avatar)
+                    Application.picasso.load(result.value.avatar_url).transform(RoundedTransformation).into(navDrawerAvatar)
+                    drawerLayout.findViewById<TextView>(R.id.nav_user).text = result.value.login
+                }
+            }
+
             val userDetails = gitHubService.userDetails(user).awaitResult()
             when (userDetails) {
                 is Result.Ok -> {
                     val user = userDetails.value
                     val avatarView = drawerLayout.findViewById<ImageView>(R.id.avatar)
                     Application.picasso.load(user.avatar_url).transform(RoundedTransformation).into(avatarView)
-                    if (userDetails.value.login == LoggedUser.account?.name) {
-                        val navDrawerAvatar = drawerLayout.findViewById<ImageView>(R.id.nav_avatar)
-                        Application.picasso.load(user.avatar_url).transform(RoundedTransformation).into(navDrawerAvatar)
-                        drawerLayout.findViewById<TextView>(R.id.nav_user).text = user.login
-                    }
                     drawerLayout.findViewById<TextView>(R.id.userid).text = user.login
                     drawerLayout.findViewById<TextView>(R.id.username).text = user.name
                     val joined = avatarView.resources.getString(R.string.user_joined, user.created_at.asFuzzyDate())
