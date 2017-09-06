@@ -7,171 +7,175 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <include layout="@layout/progress_bar_overlay" />
-
-        <android.support.v7.widget.CardView
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardUseCompatPadding="true">
+            android:orientation="vertical">
 
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/userBio"
+            <include layout="@layout/progress_bar_overlay" />
+
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:cardUseCompatPadding="true">
 
-                <TextView
-                    android:id="@+id/description"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    app:layout_constraintEnd_toStartOf="@+id/starred"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="The description of the chosen repo that can overflow to more than 1 line" />
-
-                <TextView
-                    android:id="@+id/homepage"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:autoLink="web"
-                    android:maxLines="2"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    app:layout_constraintEnd_toStartOf="@+id/stargazers_count"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/description"
-                    tools:text="http://www.some-site.com" />
-
-                <ImageView
-                    android:id="@+id/starred"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginTop="8dp"
-                    android:contentDescription="@string/starred_image_desc"
-                    android:src="@drawable/ic_star_border_white_24px"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/language"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginTop="8dp"
-                    android:padding="4sp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/stargazers_count"
-                    tools:text="Kotlin" />
-
-                <TextView
-                    android:id="@+id/stargazers_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="0dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    app:layout_constraintEnd_toEndOf="@+id/starred"
-                    app:layout_constraintStart_toStartOf="@+id/starred"
-                    app:layout_constraintTop_toBottomOf="@+id/starred"
-                    tools:text="123" />
-
-                <TextView
-                    android:id="@+id/size"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/repo_size"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    app:layout_constraintBottom_toTopOf="@+id/pushed_time"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/homepage" />
-
-                <TextView
-                    android:id="@+id/size_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    app:layout_constraintBaseline_toBaselineOf="@+id/size"
-                    app:layout_constraintStart_toEndOf="@+id/size"
-                    tools:text="234KB" />
-
-                <TextView
-                    android:id="@+id/pushed_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/last_pushed"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    android:textStyle="italic"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/size" />
-
-                <TextView
-                    android:id="@+id/pushed_time_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    android:textStyle="italic"
-                    app:layout_constraintBaseline_toBaselineOf="@+id/pushed_time"
-                    app:layout_constraintStart_toEndOf="@+id/pushed_time"
-                    tools:text="5 hours ago" />
-
-            </android.support.constraint.ConstraintLayout>
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardUseCompatPadding="true">
-
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/readme_title"
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/userBio"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="8sp"
-                    android:text="@string/readme_title"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                    tools:text="ReadMe" />
+                    android:layout_height="wrap_content">
 
-                <WebView
-                    android:id="@+id/readme_webview"
+                    <TextView
+                        android:id="@+id/description"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        app:layout_constraintEnd_toStartOf="@+id/starred"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="The description of the chosen repo that can overflow to more than 1 line" />
+
+                    <TextView
+                        android:id="@+id/homepage"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:autoLink="web"
+                        android:maxLines="2"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        app:layout_constraintEnd_toStartOf="@+id/stargazers_count"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/description"
+                        tools:text="http://www.some-site.com" />
+
+                    <ImageView
+                        android:id="@+id/starred"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginTop="8dp"
+                        android:contentDescription="@string/starred_image_desc"
+                        android:src="@drawable/ic_star_border_white_24px"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/language"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginTop="8dp"
+                        android:padding="4sp"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/stargazers_count"
+                        tools:text="Kotlin" />
+
+                    <TextView
+                        android:id="@+id/stargazers_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="0dp"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        app:layout_constraintEnd_toEndOf="@+id/starred"
+                        app:layout_constraintStart_toStartOf="@+id/starred"
+                        app:layout_constraintTop_toBottomOf="@+id/starred"
+                        tools:text="123" />
+
+                    <TextView
+                        android:id="@+id/size"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/repo_size"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        app:layout_constraintBottom_toTopOf="@+id/pushed_time"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/homepage" />
+
+                    <TextView
+                        android:id="@+id/size_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        app:layout_constraintBaseline_toBaselineOf="@+id/size"
+                        app:layout_constraintStart_toEndOf="@+id/size"
+                        tools:text="234KB" />
+
+                    <TextView
+                        android:id="@+id/pushed_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/last_pushed"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        android:textStyle="italic"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/size" />
+
+                    <TextView
+                        android:id="@+id/pushed_time_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        android:textStyle="italic"
+                        app:layout_constraintBaseline_toBaselineOf="@+id/pushed_time"
+                        app:layout_constraintStart_toEndOf="@+id/pushed_time"
+                        tools:text="5 hours ago" />
+
+                </android.support.constraint.ConstraintLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardUseCompatPadding="true">
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    xmlns:tools="http://schemas.android.com/tools"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/cardview_dark_background" />
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
+                    android:orientation="vertical">
 
-    </LinearLayout>
+                    <TextView
+                        android:id="@+id/readme_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="8sp"
+                        android:text="@string/readme_title"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                        tools:text="ReadMe" />
 
+                    <WebView
+                        android:id="@+id/readme_webview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/cardview_dark_background" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+    </ScrollView>
 </android.support.v4.widget.SwipeRefreshLayout>
