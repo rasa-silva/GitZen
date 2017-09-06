@@ -21,6 +21,7 @@ import com.zenhub.core.PagedRecyclerViewAdapter
 import com.zenhub.core.asFuzzyDate
 import com.zenhub.github.*
 import com.zenhub.showErrorOnSnackbar
+import kotlinx.android.synthetic.main.zenhub_content.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import ru.gildor.coroutines.retrofit.Result
@@ -43,9 +44,19 @@ class UserDetailsActivity : BaseActivity() {
             it.addItemDecoration(DividerItemDecoration(it.context, layoutManager.orientation))
         }
 
-        findViewById<TextView>(R.id.repos_value).setOnClickListener {
+        repos_value.setOnClickListener {
             val intent = Intent(this, RepoListActivity::class.java)
-            startActivity(intent.putExtra("LIST_TYPE", REPO_LIST_TYPE.OWN))
+            startActivity(intent.putExtra("LIST_TYPE", RepoListType.OWN))
+        }
+
+        followers_value.setOnClickListener {
+            val intent = Intent(this, UserListActivity::class.java)
+            startActivity(intent.putExtra("LIST_TYPE", UserListType.FOLLOWERS))
+        }
+
+        following_value.setOnClickListener {
+            val intent = Intent(this, UserListActivity::class.java)
+            startActivity(intent.putExtra("LIST_TYPE", UserListType.FOLLOWING))
         }
 
         requestDataRefresh()

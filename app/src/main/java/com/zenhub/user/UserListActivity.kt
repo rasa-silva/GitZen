@@ -17,24 +17,25 @@ import kotlinx.coroutines.experimental.launch
 import ru.gildor.coroutines.retrofit.Result
 import ru.gildor.coroutines.retrofit.awaitResult
 
-enum class RepoListType {OWN, STARRED, SEARCHED }
 
-class RepoListActivity : AppCompatActivity() {
+enum class UserListType {FOLLOWERS, FOLLOWING, SEARCHED }
+
+class UserListActivity : AppCompatActivity() {
 
     private val recyclerView by lazy { findViewById<RecyclerView>(R.id.list) }
-    private val listType by lazy { intent.getSerializableExtra("LIST_TYPE") as RepoListType }
-    private val adapter by lazy { RepoListAdapter(recyclerView, listType) }
+    private val listType by lazy { intent.getSerializableExtra("LIST_TYPE") as UserListType }
+    private val adapter by lazy { UserListAdapter(recyclerView, listType) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.repo_list_activity)
+        setContentView(R.layout.activity_user_list)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        title = if (listType == RepoListType.OWN)
-            resources.getString(R.string.title_activity_own_repos)
+        title = if (listType == UserListType.FOLLOWING)
+            resources.getString(R.string.title_activity_following)
         else
-            resources.getString(R.string.title_activity_starred_repos)
+            resources.getString(R.string.title_activity_followers)
 
         recyclerView.let {
             val layoutManager = LinearLayoutManager(it.context)
@@ -48,9 +49,9 @@ class RepoListActivity : AppCompatActivity() {
 
     private fun requestDataRefresh() {
         launch(UI) {
-            Log.d(Application.LOGTAG, "Refreshing starred list...")
-            val result = if (listType == RepoListType.OWN) gitHubService.listRepos().awaitResult()
-            else gitHubService.listStarred().awaitResult()
+            Log.d(Application.LOGTAG, "Refreshing user list...")
+            val result = if (listType == UserListType.FOLLOWING) gitHubService.listFollowing().awaitResult()
+            else gitHubService.listFollowers().awaitResult()
             when (result) {
                 is Result.Ok -> adapter.updateDataSet(result)
                 is Result.Error -> showErrorOnSnackbar(recyclerView, result.response.message())

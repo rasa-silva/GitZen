@@ -11,8 +11,8 @@ import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import com.zenhub.R
 import com.zenhub.search.SearchActivity
-import com.zenhub.user.REPO_LIST_TYPE
 import com.zenhub.user.RepoListActivity
+import com.zenhub.user.RepoListType
 import com.zenhub.user.UserDetailsActivity
 
 abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -48,8 +48,8 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_home -> startActivity(Intent(this, UserDetailsActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
-            R.id.nav_repos -> startActivity(Intent(this, RepoListActivity::class.java).putExtra("LIST_TYPE", REPO_LIST_TYPE.OWN))
-            R.id.nav_starred -> startActivity(Intent(this, RepoListActivity::class.java).putExtra("LIST_TYPE", REPO_LIST_TYPE.STARRED))
+            R.id.nav_repos -> startActivity(Intent(this, RepoListActivity::class.java).putExtra("LIST_TYPE", RepoListType.OWN))
+            R.id.nav_starred -> startActivity(Intent(this, RepoListActivity::class.java).putExtra("LIST_TYPE", RepoListType.STARRED))
             R.id.nav_search -> startActivity(Intent(this, SearchActivity::class.java))
         }
 

@@ -53,6 +53,18 @@ interface GitHubService {
     @GET("user/starred")
     fun listStarred(): Call<List<Repository>>
 
+    @GET
+    fun listStarredPaginate(@Url url: String): Call<List<Repository>>
+
+    @GET("user/followers")
+    fun listFollowers(): Call<List<User>>
+
+    @GET("user/following")
+    fun listFollowing(): Call<List<User>>
+
+    @GET
+    fun listUsersPaginate(@Url url: String): Call<List<User>>
+
     @GET("user/starred/{fullname}")
     fun isStarred(@Path("fullname", encoded = true) fullname: String): Call<Void>
 
@@ -62,9 +74,6 @@ interface GitHubService {
 
     @DELETE("user/starred/{fullname}")
     fun unstarRepo(@Path("fullname", encoded = true) fullname: String): Call<Void>
-
-    @GET
-    fun listStarredPaginate(@Url url: String): Call<List<Repository>>
 
     @GET("repos/{fullname}")
     fun repoDetails(@Path("fullname", encoded = true) fullname: String): Call<RepositoryDetails>

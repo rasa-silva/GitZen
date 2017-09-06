@@ -56,6 +56,10 @@
     <!-- Commit Details Activity -->
     <string name="commit_details_stats">por %1$s, alterando %2$d ficheiros</string>
 
+    <!-- User List Activity -->
+    <string name="title_activity_followers">Seguidores</string>
+    <string name="title_activity_following">Seguindo</string>
+
     <!-- Search -->
     <string name="search_hint">Procurar no GitHub</string>
     <string name="search_result_count">%1$d Resultados</string>

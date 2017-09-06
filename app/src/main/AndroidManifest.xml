@@ -20,34 +20,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".user.UserDetailsActivity"
-            android:label="@string/app_name" />
-        <activity
-            android:name=".user.RepoListActivity"
-            android:parentActivityName=".user.UserDetailsActivity" />
-        <activity
-            android:name=".repo.RepoActivity"
-            android:label="@string/title_activity_repo"
-            android:parentActivityName=".user.UserDetailsActivity" />
-        <activity
-            android:name=".repo.commits.RepoCommitDetails"
-            android:parentActivityName=".repo.RepoActivity" />
-        <activity android:name=".repo.contents.FileContentsActivity" />
-        <activity
-            android:name=".auth.LoginActivity"
-            android:label="@string/title_activity_login"
-            android:parentActivityName=".user.UserDetailsActivity" />
-
-        <service android:name=".auth.AuthenticatorService">
-            <intent-filter>
-                <action android:name="android.accounts.AccountAuthenticator" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.accounts.AccountAuthenticator"
-                android:resource="@xml/authenticator" />
-        </service>
 
         <activity android:name=".LauncherActivity">
             <intent-filter>
@@ -55,6 +27,31 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".user.UserDetailsActivity"
+            android:label="@string/app_name" />
+
+        <activity
+            android:name=".user.RepoListActivity"
+            android:parentActivityName=".user.UserDetailsActivity" />
+
+        <activity
+            android:name=".repo.RepoActivity"
+            android:label="@string/title_activity_repo"
+            android:parentActivityName=".user.UserDetailsActivity" />
+
+        <activity
+            android:name=".repo.commits.RepoCommitDetails"
+            android:parentActivityName=".repo.RepoActivity" />
+
+        <activity android:name=".repo.contents.FileContentsActivity" />
+
+        <activity
+            android:name=".auth.LoginActivity"
+            android:label="@string/title_activity_login"
+            android:parentActivityName=".user.UserDetailsActivity" />
+
         <activity
             android:name=".search.SearchActivity"
             android:label="@string/search_hint"
@@ -68,10 +65,25 @@
                 android:resource="@xml/searchable" />
         </activity>
 
+        <activity
+            android:name=".user.UserListActivity"
+            android:parentActivityName=".user.UserDetailsActivity" />
+
+        <service android:name=".auth.AuthenticatorService">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
+
         <provider
             android:name=".search.RecentSearchesProvider"
             android:authorities="com.zenhub.search.RecentSearchesProvider"
             android:exported="false" />
+
     </application>
 
 </manifest>

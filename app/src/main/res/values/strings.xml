@@ -56,6 +56,10 @@
     <!-- Commit Details Activity -->
     <string name="commit_details_stats">by %1$s, touching %2$d files</string>
 
+    <!-- User List Activity -->
+    <string name="title_activity_followers">Followers</string>
+    <string name="title_activity_following">Following</string>
+
     <!-- Search -->
     <string name="search_hint">Search GitHub</string>
     <string name="search_result_count">%1$d Results</string>
