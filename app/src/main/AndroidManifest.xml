@@ -28,7 +28,8 @@
             android:parentActivityName=".user.UserDetailsActivity" />
         <activity
             android:name=".repo.RepoActivity"
-            android:label="@string/title_activity_repo" />
+            android:label="@string/title_activity_repo"
+            android:parentActivityName=".user.UserDetailsActivity" />
         <activity
             android:name=".repo.commits.RepoCommitDetails"
             android:parentActivityName=".repo.RepoActivity" />

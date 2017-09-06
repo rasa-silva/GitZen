@@ -22,6 +22,7 @@ class RepoActivity : AppCompatActivity() {
         setContentView(R.layout.repo_activity)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val fullRepoName = intent.getStringExtra("REPO_FULL_NAME")
         supportActionBar?.title = fullRepoName
@@ -44,10 +45,6 @@ class RepoActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return super.onOptionsItemSelected(item)
     }
-
-//    override fun getParentActivityIntent(): Intent {
-//        return Intent(this, )
-//    }
 }
 
 class RepoDetailsPagerAdapter(context: Activity,
