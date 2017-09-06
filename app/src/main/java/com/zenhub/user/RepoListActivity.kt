@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView
 import android.util.Log
 import com.zenhub.Application
 import com.zenhub.R
+import com.zenhub.auth.LoggedUser
 import com.zenhub.github.gitHubService
 import com.zenhub.showErrorOnSnackbar
 import kotlinx.android.synthetic.main.repo_list_activity.*
@@ -25,6 +26,7 @@ class RepoListActivity : AppCompatActivity() {
     private val recyclerView by lazy { findViewById<RecyclerView>(R.id.list) }
     private val listType by lazy { intent.getSerializableExtra("LIST_TYPE") as RepoListType }
     private val adapter by lazy { RepoListAdapter(recyclerView, listType) }
+    private val user by lazy { intent.getStringExtra("USER") ?: LoggedUser.account?.name.orEmpty() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,8 +54,8 @@ class RepoListActivity : AppCompatActivity() {
     private fun requestDataRefresh() {
         launch(UI) {
             Log.d(Application.LOGTAG, "Refreshing starred list...")
-            val result = if (listType == RepoListType.OWN) gitHubService.listRepos().awaitResult()
-            else gitHubService.listStarred().awaitResult()
+            val result = if (listType == RepoListType.OWN) gitHubService.listRepos(user).awaitResult()
+            else gitHubService.listStarred(user).awaitResult()
             when (result) {
                 is Result.Ok -> adapter.updateDataSet(result)
                 is Result.Error -> showErrorOnSnackbar(recyclerView, result.response.message())

@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView
 import android.util.Log
 import com.zenhub.Application
 import com.zenhub.R
+import com.zenhub.auth.LoggedUser
 import com.zenhub.github.gitHubService
 import com.zenhub.showErrorOnSnackbar
 import kotlinx.android.synthetic.main.activity_user_list.*
@@ -26,6 +27,7 @@ class UserListActivity : AppCompatActivity() {
     private val recyclerView by lazy { findViewById<RecyclerView>(R.id.list) }
     private val listType by lazy { intent.getSerializableExtra("LIST_TYPE") as UserListType }
     private val adapter by lazy { UserListAdapter(recyclerView, listType) }
+    private val user by lazy { intent.getStringExtra("USER") ?: LoggedUser.account?.name.orEmpty() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,8 +55,8 @@ class UserListActivity : AppCompatActivity() {
     private fun requestDataRefresh() {
         launch(UI) {
             Log.d(Application.LOGTAG, "Refreshing user list...")
-            val result = if (listType == UserListType.FOLLOWING) gitHubService.listFollowing().awaitResult()
-            else gitHubService.listFollowers().awaitResult()
+            val result = if (listType == UserListType.FOLLOWING) gitHubService.listFollowing(user).awaitResult()
+            else gitHubService.listFollowers(user).awaitResult()
             when (result) {
                 is Result.Ok -> adapter.updateDataSet(result)
                 is Result.Error -> showErrorOnSnackbar(recyclerView, result.response.message())

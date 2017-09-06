@@ -1,5 +1,7 @@
 package com.zenhub.user
 
+import android.content.Intent
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
@@ -26,6 +28,12 @@ class UserListAdapter(private val recyclerView: RecyclerView,
         itemView.findViewById<TextView>(R.id.login).text = user.login
         val avatar = itemView.findViewById<ImageView>(R.id.avatar)
         Application.picasso.load(user.avatar_url).transform(RoundedTransformation).into(avatar)
+
+        itemView.setOnClickListener {
+            val intent = Intent(Application.context, UserDetailsActivity::class.java)
+            intent.putExtra("USER", user.login)
+            ContextCompat.startActivity(Application.context, intent, null)
+        }
     }
 
     override fun doPageRequest(url: String) {

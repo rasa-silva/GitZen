@@ -35,8 +35,8 @@ interface GitHubService {
     fun createToken(@Header("Authorization") authorization: String,
                     @Body tokenRequest: TokenRequest): Call<TokenResponse>
 
-    @GET("user")
-    fun userDetails(): Call<User>
+    @GET("users/{user}")
+    fun userDetails(@Path("user") user: String): Call<User>
 
     @GET("users/{user}/received_events")
     fun receivedEvents(@Path("user") user: String): Call<List<ReceivedEvent>>
@@ -44,23 +44,23 @@ interface GitHubService {
     @GET
     fun receivedEventsPaginate(@Url url: String): Call<List<ReceivedEvent>>
 
-    @GET("user/repos")
-    fun listRepos(): Call<List<Repository>>
+    @GET("users/{user}/repos")
+    fun listRepos(@Path("user") user: String): Call<List<Repository>>
 
     @GET
     fun listReposPaginate(@Url url: String): Call<List<Repository>>
 
-    @GET("user/starred")
-    fun listStarred(): Call<List<Repository>>
+    @GET("users/{user}/starred")
+    fun listStarred(@Path("user") user: String): Call<List<Repository>>
 
     @GET
     fun listStarredPaginate(@Url url: String): Call<List<Repository>>
 
-    @GET("user/followers")
-    fun listFollowers(): Call<List<User>>
+    @GET("users/{user}/followers")
+    fun listFollowers(@Path("user") user: String): Call<List<User>>
 
-    @GET("user/following")
-    fun listFollowing(): Call<List<User>>
+    @GET("users/{user}/following")
+    fun listFollowing(@Path("user") user: String): Call<List<User>>
 
     @GET
     fun listUsersPaginate(@Url url: String): Call<List<User>>

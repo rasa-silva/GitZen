@@ -31,6 +31,7 @@ class UserDetailsActivity : BaseActivity() {
 
     private val recyclerView by lazy { findViewById<RecyclerView>(R.id.list) }
     private val adapter by lazy { EventListAdapter(this) }
+    private val user by lazy { intent.getStringExtra("USER") ?: LoggedUser.account?.name.orEmpty() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,17 +47,20 @@ class UserDetailsActivity : BaseActivity() {
 
         repos_value.setOnClickListener {
             val intent = Intent(this, RepoListActivity::class.java)
-            startActivity(intent.putExtra("LIST_TYPE", RepoListType.OWN))
+            intent.putExtra("LIST_TYPE", RepoListType.OWN).putExtra("USER", user)
+            startActivity(intent)
         }
 
         followers_value.setOnClickListener {
             val intent = Intent(this, UserListActivity::class.java)
-            startActivity(intent.putExtra("LIST_TYPE", UserListType.FOLLOWERS))
+            intent.putExtra("LIST_TYPE", UserListType.FOLLOWERS).putExtra("USER", user)
+            startActivity(intent)
         }
 
         following_value.setOnClickListener {
             val intent = Intent(this, UserListActivity::class.java)
-            startActivity(intent.putExtra("LIST_TYPE", UserListType.FOLLOWING))
+            intent.putExtra("LIST_TYPE", UserListType.FOLLOWING).putExtra("USER", user)
+            startActivity(intent)
         }
 
         requestDataRefresh()
@@ -70,16 +74,18 @@ class UserDetailsActivity : BaseActivity() {
             progressBar.visibility = View.VISIBLE
             val drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
 
-            val userDetails = gitHubService.userDetails().awaitResult()
+            val userDetails = gitHubService.userDetails(user).awaitResult()
             when (userDetails) {
                 is Result.Ok -> {
                     val user = userDetails.value
                     val avatarView = drawerLayout.findViewById<ImageView>(R.id.avatar)
                     Application.picasso.load(user.avatar_url).transform(RoundedTransformation).into(avatarView)
-                    val navDrawerAvatar = drawerLayout.findViewById<ImageView>(R.id.nav_avatar)
-                    Application.picasso.load(user.avatar_url).transform(RoundedTransformation).into(navDrawerAvatar)
+                    if (userDetails.value.login == LoggedUser.account?.name) {
+                        val navDrawerAvatar = drawerLayout.findViewById<ImageView>(R.id.nav_avatar)
+                        Application.picasso.load(user.avatar_url).transform(RoundedTransformation).into(navDrawerAvatar)
+                        drawerLayout.findViewById<TextView>(R.id.nav_user).text = user.login
+                    }
                     drawerLayout.findViewById<TextView>(R.id.userid).text = user.login
-                    drawerLayout.findViewById<TextView>(R.id.nav_user).text = user.login
                     drawerLayout.findViewById<TextView>(R.id.username).text = user.name
                     val joined = avatarView.resources.getString(R.string.user_joined, user.created_at.asFuzzyDate())
                     drawerLayout.findViewById<TextView>(R.id.joined).text = joined
@@ -93,14 +99,11 @@ class UserDetailsActivity : BaseActivity() {
                 is Result.Exception -> Log.d(Application.LOGTAG, "Failed events call", userDetails.exception)
             }
 
-            LoggedUser.account?.name?.let {
-
-                val events = gitHubService.receivedEvents(it).awaitResult()
-                when (events) {
-                    is Result.Ok -> adapter.updateDataSet(events)
-                    is Result.Error -> showErrorOnSnackbar(drawerLayout, events.response.message())
-                    is Result.Exception -> Log.d(Application.LOGTAG, "Failed events call", events.exception)
-                }
+            val events = gitHubService.receivedEvents(user).awaitResult()
+            when (events) {
+                is Result.Ok -> adapter.updateDataSet(events)
+                is Result.Error -> showErrorOnSnackbar(drawerLayout, events.response.message())
+                is Result.Exception -> Log.d(Application.LOGTAG, "Failed events call", events.exception)
             }
 
             drawerLayout.findViewById<SwipeRefreshLayout>(R.id.swiperefresh).isRefreshing = false
