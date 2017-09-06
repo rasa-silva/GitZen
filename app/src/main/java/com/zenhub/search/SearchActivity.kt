@@ -17,23 +17,27 @@ import android.widget.*
 import com.zenhub.*
 import com.zenhub.core.PagedRecyclerViewAdapter
 import com.zenhub.core.asFuzzyDate
-import com.zenhub.github.*
+import com.zenhub.github.Repository
+import com.zenhub.github.User
+import com.zenhub.github.getLanguageColor
+import com.zenhub.github.gitHubService
 import com.zenhub.repo.RepoActivity
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import ru.gildor.coroutines.retrofit.Result
 import ru.gildor.coroutines.retrofit.awaitResult
 
-
 class SearchActivity : AppCompatActivity() {
 
     private val recyclerView by lazy { findViewById<RecyclerView>(R.id.list) }
     private val header by lazy { findViewById<TextView>(R.id.header) }
-//    private val adapter by lazy { SearchListAdapter(this) }
 
     private enum class SourceType {REPOS, USERS }
 
     private var source = SourceType.REPOS
+
+    private val repoAdapter by lazy { RepoSearchAdapter(this) }
+    private val userAdapter by lazy { UserSearchAdapter(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +49,6 @@ class SearchActivity : AppCompatActivity() {
 
         setupSearchSourceSpinner()
 
-        setListAdapter()
         recyclerView.let {
             val layoutManager = LinearLayoutManager(it.context)
             it.layoutManager = layoutManager
@@ -56,13 +59,6 @@ class SearchActivity : AppCompatActivity() {
 
         handleIntent()
 
-    }
-
-    private fun setListAdapter() {
-        recyclerView.adapter = when (source) {
-            SourceType.REPOS -> RepoSearchAdapter(this)
-            SourceType.USERS -> UserSearchAdapter(this)
-        }
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -96,7 +92,10 @@ class SearchActivity : AppCompatActivity() {
                     else -> SourceType.REPOS
                 }
 
-                setListAdapter()
+                recyclerView.adapter = when (source) {
+                    SourceType.REPOS -> repoAdapter
+                    SourceType.USERS -> userAdapter
+                }
             }
         }
     }
@@ -116,41 +115,38 @@ class SearchActivity : AppCompatActivity() {
             val progressBar = findViewById<FrameLayout>(R.id.progress_overlay)
             progressBar.visibility = View.VISIBLE
 
-            val call = when (source) {
-                SourceType.REPOS -> gitHubService.searchRepos(query.toString())
-                SourceType.USERS -> gitHubService.searchUsers(query.toString())
-            }
-
-            val result = call.awaitResult()
-
-            when (result) {
-                is Result.Ok -> {
-                    when (source) {
-                        SearchActivity.SourceType.REPOS -> {
-                            val repos = result.value as RepositorySearch
-                            header.text = header.resources.getString(R.string.search_result_count, repos.total_count)
-                            val mappedResult = Result.Ok(repos.items, result.response)
+            when (source) {
+                SourceType.REPOS -> {
+                    val result = gitHubService.searchRepos(query.toString()).awaitResult()
+                    when (result) {
+                        is Result.Ok -> {
+                            header.text = header.resources.getString(R.string.search_result_count, result.value.total_count)
+                            val mappedResult = Result.Ok(result.value.items, result.response)
                             val adapter = recyclerView.adapter as RepoSearchAdapter
                             adapter.updateDataSet(mappedResult)
                         }
-                        SearchActivity.SourceType.USERS -> {
-                            val users = result.value as UserSearch
-                            header.text = header.resources.getString(R.string.search_result_count, users.total_count)
-                            val mappedResult = Result.Ok(users.items, result.response)
+                        is Result.Error -> showErrorOnSnackbar(recyclerView, result.response.message())
+                        is Result.Exception -> showExceptionOnSnackbar(recyclerView, result.exception)
+                    }
+                }
+                SourceType.USERS -> {
+                    val result = gitHubService.searchUsers(query.toString()).awaitResult()
+                    when (result) {
+                        is Result.Ok -> {
+                            header.text = header.resources.getString(R.string.search_result_count, result.value.total_count)
+                            val mappedResult = Result.Ok(result.value.items, result.response)
                             val adapter = recyclerView.adapter as UserSearchAdapter
                             adapter.updateDataSet(mappedResult)
                         }
+                        is Result.Error -> showErrorOnSnackbar(recyclerView, result.response.message())
+                        is Result.Exception -> showExceptionOnSnackbar(recyclerView, result.exception)
                     }
-
                 }
-                is Result.Error -> showErrorOnSnackbar(recyclerView, result.response.message())
-                is Result.Exception -> showExceptionOnSnackbar(recyclerView, result.exception)
             }
 
             progressBar.visibility = View.GONE
         }
     }
-
 }
 
 class RepoSearchAdapter(private val activity: SearchActivity) : PagedRecyclerViewAdapter<Repository?>(activity, R.layout.repo_list_item) {
