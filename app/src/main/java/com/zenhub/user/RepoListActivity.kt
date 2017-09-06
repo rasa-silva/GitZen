@@ -19,6 +19,7 @@ import com.zenhub.core.PagedRecyclerViewAdapter
 import com.zenhub.core.asFuzzyDate
 import com.zenhub.github.Repository
 import com.zenhub.github.getLanguageColor
+import com.zenhub.github.gitHubService
 import com.zenhub.repo.RepoActivity
 import com.zenhub.showErrorOnSnackbar
 import kotlinx.coroutines.experimental.android.UI
@@ -27,18 +28,25 @@ import retrofit2.Call
 import ru.gildor.coroutines.retrofit.Result
 import ru.gildor.coroutines.retrofit.awaitResult
 
-abstract class RepoListActivity : AppCompatActivity() {
+enum class REPO_LIST_TYPE {OWN, STARRED }
+
+class RepoListActivity : AppCompatActivity() {
 
     private val recyclerView by lazy { findViewById<RecyclerView>(R.id.list) }
     private val adapter by lazy { RepoListAdapter(this) }
+    private val listType by lazy { intent.getSerializableExtra("LIST_TYPE") as REPO_LIST_TYPE }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.repo_list_activity)
-        //super.onCreateDrawer()
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        title = if (listType == REPO_LIST_TYPE.OWN)
+            resources.getString(R.string.title_activity_own_repos)
+        else
+            resources.getString(R.string.title_activity_starred_repos)
 
         recyclerView.let {
             val layoutManager = LinearLayoutManager(it.context)
@@ -67,8 +75,16 @@ abstract class RepoListActivity : AppCompatActivity() {
         }
     }
 
-    abstract fun requestInitial(): Call<List<Repository>>
-    abstract fun requestPage(url: String) : Call<List<Repository>>
+    private fun requestInitial(): Call<List<Repository>> {
+        return if (listType == REPO_LIST_TYPE.OWN) gitHubService.listRepos()
+        else gitHubService.listStarred()
+    }
+
+    fun requestPage(url: String): Call<List<Repository>> {
+        return if (listType == REPO_LIST_TYPE.OWN) gitHubService.listReposPaginate(url)
+        else gitHubService.listStarredPaginate(url)
+
+    }
 }
 
 class RepoListAdapter(private val activity: RepoListActivity) : PagedRecyclerViewAdapter<Repository?>(activity, R.layout.repo_list_item) {

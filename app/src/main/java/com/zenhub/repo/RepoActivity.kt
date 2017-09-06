@@ -44,6 +44,10 @@ class RepoActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return super.onOptionsItemSelected(item)
     }
+
+//    override fun getParentActivityIntent(): Intent {
+//        return Intent(this, )
+//    }
 }
 
 class RepoDetailsPagerAdapter(context: Activity,

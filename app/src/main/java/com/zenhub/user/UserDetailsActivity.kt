@@ -44,7 +44,8 @@ class UserDetailsActivity : BaseActivity() {
         }
 
         findViewById<TextView>(R.id.repos_value).setOnClickListener {
-            startActivity(Intent(this, OwnReposActivity::class.java))
+            val intent = Intent(this, RepoListActivity::class.java)
+            startActivity(intent.putExtra("LIST_TYPE", REPO_LIST_TYPE.OWN))
         }
 
         requestDataRefresh()
