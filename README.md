@@ -3,29 +3,45 @@
 A minimalist GitHub client for Android written in Kotlin.
 
 ## Features:
- * OAuth via Android Account Manager
- * User overview
- * Own repository list with paging
- * Starred repository list with paging
- * Star/Unstar repo
- * Repo overview with README.md
- * Repo file browsing
- * Repo commits list with paging (only default branch for now)
+ * OAuth login (via Android Account Manager)
+ * User
+    * Bio
+    * Number of repos, followers, following and gists
+    * Received event list
+    * Followers user list
+    * Following user list
+    * Follow/Unfollow user
+ * Owned repository list
+ * Starred repository list
+ * Repository
+    * Overview with README.md support
+    * Star/Unstar repo
+    * Repo file browsing
+    * Repo commits list (only default branch for now)
  * Commit details including files diff
- * Search for repositories
+ * Search
+    * Repositories
+    * Users
+    
+_Note: All lists have lazy paging if supported by the API_
+
  
+## Upcoming features
+ * Light/Dark theme selection
+ * Gists
+ * Follow/Unfollow users
+ * Issue management
+ * Sorting on searches
+ * More... (_check the issue tracker_)
 
-The source code is available on https://github.com/rasa-silva/ZenHub feel free to contribute/fork.
+## Non features
+ * Multiple users
+ * Enterprise
+ * Repo Statistics, Deployments, Invitations
+ * Migrations
+ * Others?
 
+The project is open source and 100% Kotlin.
+Source available at https://github.com/rasa-silva/ZenHub 
 
-The feature set will target my own use/preferences and will not be a "fully featured" GitHub client.
-
-Will not implement/merge:
-  * Multiple users
-  * Enterprise
-  * Repo 
-    * Statistics
-    * Deployments
-    * Invitations
-  * Migrations
-  * Others?
+Feel free to contribute/fork!
