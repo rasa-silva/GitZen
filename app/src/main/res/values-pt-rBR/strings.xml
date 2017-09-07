@@ -69,4 +69,10 @@
     <string name="search_hint">Procurar no GitHub</string>
     <string name="search_result_count">%1$d Resultados</string>
 
+
+    <!-- About -->
+    <string name="application_info_title">Informação da applicação</string>
+    <string name="app_version">Versão</string>
+    <string name="used_libraries_title">Livrarias usadas</string>
+
 </resources>

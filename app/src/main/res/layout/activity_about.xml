@@ -23,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="8sp"
-                android:text="Application Info"
+                android:text="@string/application_info_title"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
@@ -32,7 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="Version"
+                android:text="@string/app_version"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textStyle="bold"
                 app:layout_constraintBaseline_toBaselineOf="@+id/app_version_value"
@@ -99,7 +99,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="8sp"
-                android:text="Used libraries"
+                android:text="@string/used_libraries_title"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
@@ -109,12 +109,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:autoLink="web"
-                android:text="https://developer.android.com/topic/libraries/support-library"
+                android:text="@string/supportlib_link"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/title_used_libs"
-                tools:ignore="HardcodedText" />
+                app:layout_constraintTop_toBottomOf="@+id/title_used_libs" />
 
             <TextView
                 android:id="@+id/kotlin"
@@ -122,12 +120,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:autoLink="web"
-                android:text="https://kotlinlang.org"
+                android:text="@string/kotlin_link"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/support_lib"
-                tools:ignore="HardcodedText" />
+                app:layout_constraintTop_toBottomOf="@+id/support_lib" />
 
             <TextView
                 android:id="@+id/kotlin_coroutines"
@@ -135,12 +131,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:autoLink="web"
-                android:text="https://github.com/Kotlin/kotlinx.coroutines"
+                android:text="@string/kotlin_coroutines_link"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/kotlin"
-                tools:ignore="HardcodedText" />
+                app:layout_constraintTop_toBottomOf="@+id/kotlin" />
 
             <TextView
                 android:id="@+id/retrofit"
@@ -148,12 +142,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:autoLink="web"
-                android:text="https://square.github.io/retrofit/"
+                android:text="@string/retrofit_link"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/kotlin_coroutines"
-                tools:ignore="HardcodedText" />
+                app:layout_constraintTop_toBottomOf="@+id/kotlin_coroutines" />
 
             <TextView
                 android:id="@+id/picasso"
@@ -161,12 +153,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:autoLink="web"
-                android:text="https://square.github.io/picasso/"
+                android:text="@string/picasso_link"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/retrofit"
-                tools:ignore="HardcodedText" />
+                app:layout_constraintTop_toBottomOf="@+id/retrofit" />
 
             <TextView
                 android:id="@+id/highlightjs"
@@ -174,25 +164,23 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:autoLink="web"
-                android:text="https://github.com/PDDStudio/highlightjs-android"
+                android:text="@string/highlightjs_link"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/picasso"
-                tools:ignore="HardcodedText" />
+                app:layout_constraintTop_toBottomOf="@+id/picasso" />
 
             <TextView
-                android:id="@+id/kotlin-coroutines-retrofit"
+                android:id="@+id/kotlin_coroutines_retrofit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:autoLink="web"
-                android:text="https://github.com/gildor/kotlin-coroutines-retrofit"
+                android:text="@string/coroutines_retrofit_link"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/highlightjs"
-                tools:ignore="HardcodedText" />
+                app:layout_constraintTop_toBottomOf="@+id/highlightjs" />
 
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>

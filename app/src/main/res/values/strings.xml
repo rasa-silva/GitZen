@@ -73,4 +73,15 @@
         <item>Users</item>
     </string-array>
 
+    <!-- About -->
+    <string name="application_info_title">Application Info</string>
+    <string name="app_version">Version</string>
+    <string name="used_libraries_title">Used libraries</string>
+    <string name="supportlib_link"><a href="https://developer.android.com/topic/libraries/support-library">support-library</a></string>
+    <string name="kotlin_link"><a href="https://kotlinlang.org">kotlinlang.org</a></string>
+    <string name="kotlin_coroutines_link"><a href="https://github.com/Kotlin/kotlinx.coroutines">kotlinx.coroutines</a></string>
+    <string name="retrofit_link"><a href="https://square.github.io/retrofit/">square.github.io/retrofit</a></string>
+    <string name="picasso_link"><a href="https://square.github.io/picasso/">square.github.io/picasso</a></string>
+    <string name="highlightjs_link"><a href="https://github.com/PDDStudio/highlightjs-android">highlightjs-android</a></string>
+    <string name="coroutines_retrofit_link"><a href="https://github.com/gildor/kotlin-coroutines-retrofit">kotlin-coroutines-retrofit</a></string>
 </resources>
