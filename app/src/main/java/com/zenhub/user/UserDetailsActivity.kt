@@ -19,7 +19,8 @@ import com.zenhub.auth.LoggedUser
 import com.zenhub.core.BaseActivity
 import com.zenhub.core.PagedRecyclerViewAdapter
 import com.zenhub.core.asFuzzyDate
-import com.zenhub.github.*
+import com.zenhub.github.gitHubService
+import com.zenhub.github.mappings.*
 import com.zenhub.showErrorOnSnackbar
 import kotlinx.android.synthetic.main.zenhub_content.*
 import kotlinx.coroutines.experimental.android.UI
@@ -147,6 +148,22 @@ class EventListAdapter(activity: UserDetailsActivity) : PagedRecyclerViewAdapter
             }
             UnsupportedEvent -> {
                 msg.text = msg.resources.getString(R.string.unsupported_event, event.type)
+            }
+            is CreateEvent -> {
+                msg.text = msg.resources.getString(R.string.create_event,
+                        event.payload.ref_type, event.payload.ref, event.repo)
+            }
+            is DeleteEvent -> {
+                msg.text = msg.resources.getString(R.string.delete_event,
+                        event.payload.ref_type, event.payload.ref, event.repo)
+            }
+            is IssueCommentEvent -> {
+                msg.text = msg.resources.getString(R.string.issue_comment,
+                        event.payload.action, event.payload.number, event.repo)
+            }
+            is PushEvent -> {
+                msg.text = msg.resources.getString(R.string.push_event,
+                        event.payload.ref, event.repo)
             }
         }
     }

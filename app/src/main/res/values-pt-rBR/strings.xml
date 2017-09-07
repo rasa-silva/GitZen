@@ -47,11 +47,15 @@
 
     <!-- Received Events -->
     <string name="events_title">Eventos recebidos</string>
+    <string name="unsupported_event">Evento não suportado %1$s.</string>
     <string name="watch_event">%1$s watching %2$s.</string>
     <string name="fork_event">forked %1$s.</string>
     <string name="pullrequest_event">%1$s pull request #%2$d on %3$s.</string>
-    <string name="issues_event">%1$s issue #%2$d on %3$s.</string>
-    <string name="unsupported_event">Evento não suportado %1$s.</string>
+    <string name="issues_event">%1$s issue #%2$d em %3$s.</string>
+    <string name="create_event">criou %1$s %2$s em %3$s.</string>
+    <string name="delete_event">apagou %1$s %2$s em %3$s.</string>
+    <string name="issue_comment">%1$s a comment on issue#%2$d on %3$s.</string>
+    <string name="push_event">pushed to %1$s on %2$s.</string>
 
     <!-- Commit Details Activity -->
     <string name="commit_details_stats">por %1$s, alterando %2$d ficheiros</string>

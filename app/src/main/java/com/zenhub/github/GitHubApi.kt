@@ -4,6 +4,8 @@ import com.google.gson.GsonBuilder
 import com.zenhub.Application
 import com.zenhub.core.LoggingInterceptor
 import com.zenhub.core.OAuthTokenInterceptor
+import com.zenhub.github.mappings.EventDeserializer
+import com.zenhub.github.mappings.ReceivedEvent
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
