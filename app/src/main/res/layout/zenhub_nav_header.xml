@@ -7,14 +7,13 @@
     android:layout_marginTop="32dp"
     android:gravity="bottom"
     android:orientation="horizontal"
-    android:padding="8dp"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+    android:padding="8dp">
 
     <ImageView
         android:id="@+id/nav_avatar"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:contentDescription="User avatar"
+        android:contentDescription="@string/avatar_image"
         app:srcCompat="@drawable/ic_account_circle_white_24px" />
 
     <TextView

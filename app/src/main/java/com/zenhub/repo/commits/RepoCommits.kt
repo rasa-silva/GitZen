@@ -52,7 +52,7 @@ private fun requestDataRefresh(fullRepoName: String, container: ViewGroup, adapt
             is Result.Exception -> showExceptionOnSnackbar(container, result.exception)
         }
 
-        container.findViewById<SwipeRefreshLayout>(R.id.commits_swiperefresh).isRefreshing = false
+        container.findViewById<SwipeRefreshLayout>(R.id.commits_swiperefresh)?.isRefreshing = false
     }
 }
 

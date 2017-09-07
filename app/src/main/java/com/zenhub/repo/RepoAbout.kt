@@ -1,6 +1,7 @@
 package com.zenhub.repo
 
 import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.content.res.AppCompatResources
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -101,7 +102,7 @@ private fun requestAboutData(fullRepoName: String, rootView: SwipeRefreshLayout)
 }
 
 private fun setAsStarred(view: ImageView, fullRepoName: String) {
-    val drawable = view.resources.getDrawable(R.drawable.ic_star_white_24px, null)
+    val drawable = AppCompatResources.getDrawable(view.context, R.drawable.ic_star_white_24px)
     view.setImageDrawable(drawable)
     view.setOnClickListener {
         launch(UI) {
@@ -117,7 +118,7 @@ private fun setAsStarred(view: ImageView, fullRepoName: String) {
 }
 
 private fun setAsUnstarred(view: ImageView, fullRepoName: String) {
-    val drawable = view.resources.getDrawable(R.drawable.ic_star_border_white_24px, null)
+    val drawable = AppCompatResources.getDrawable(view.context, R.drawable.ic_star_border_white_24px)
     view.setImageDrawable(drawable)
     view.setOnClickListener {
         launch(UI) {
