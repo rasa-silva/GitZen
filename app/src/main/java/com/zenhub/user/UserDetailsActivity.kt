@@ -12,20 +12,18 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
-import com.zenhub.Application
-import com.zenhub.R
-import com.zenhub.RoundedTransformation
+import com.zenhub.*
 import com.zenhub.auth.LoggedUser
 import com.zenhub.core.BaseActivity
 import com.zenhub.core.PagedRecyclerViewAdapter
 import com.zenhub.core.asFuzzyDate
 import com.zenhub.github.gitHubService
 import com.zenhub.github.mappings.*
-import com.zenhub.showErrorOnSnackbar
 import kotlinx.android.synthetic.main.zenhub_content.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import ru.gildor.coroutines.retrofit.Result
+import ru.gildor.coroutines.retrofit.awaitResponse
 import ru.gildor.coroutines.retrofit.awaitResult
 
 class UserDetailsActivity : BaseActivity() {
@@ -45,6 +43,8 @@ class UserDetailsActivity : BaseActivity() {
             it.adapter = adapter
             it.addItemDecoration(DividerItemDecoration(it.context, layoutManager.orientation))
         }
+
+        if (user == LoggedUser.account?.name) follow_switch.visibility = View.GONE
 
         repos_value.setOnClickListener {
             val intent = Intent(this, RepoListActivity::class.java)
@@ -102,6 +102,27 @@ class UserDetailsActivity : BaseActivity() {
                 }
                 is Result.Error -> showErrorOnSnackbar(drawerLayout, userDetails.response.message())
                 is Result.Exception -> Log.d(Application.LOGTAG, "Failed events call", userDetails.exception)
+            }
+
+            val isFollowing = gitHubService.isFollowing(user).awaitResponse()
+            when {
+                isFollowing.isSuccessful -> follow_switch.isChecked = true
+                isFollowing.code() == 404 -> follow_switch.isChecked = false
+                else -> showErrorOnSnackbar(follow_switch, isFollowing.message())
+            }
+
+            follow_switch.setOnCheckedChangeListener { button, isChecked ->
+                launch(UI) {
+                    if (isChecked) {
+                        val response = gitHubService.follow(user).awaitResponse()
+                        if (response.isSuccessful) showInfoOnSnackbar(button, "Started following $user")
+                        else showErrorOnSnackbar(button, response.message())
+                    } else {
+                        val response = gitHubService.unfollow(user).awaitResponse()
+                        if (response.isSuccessful) showInfoOnSnackbar(button, "Stopped following $user")
+                        else showErrorOnSnackbar(button, response.message())
+                    }
+                }
             }
 
             val events = gitHubService.receivedEvents(user).awaitResult()

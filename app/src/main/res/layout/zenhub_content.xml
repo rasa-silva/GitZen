@@ -180,6 +180,18 @@
                     app:layout_constraintTop_toBottomOf="@+id/gists_value"
                     tools:text="Gists" />
 
+                <Switch
+                    android:id="@+id/follow_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Following"
+                    app:layout_constraintBottom_toTopOf="@+id/joined"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
 
             </android.support.constraint.ConstraintLayout>
         </android.support.v7.widget.CardView>

@@ -109,4 +109,14 @@ interface GitHubService {
 
     @GET
     fun searchUsersPaginate(@Url url: String): Call<UserSearch>
+
+    @GET("user/following/{user}")
+    fun isFollowing(@Path("user") user: String): Call<Void>
+
+    @PUT("user/following/{user}")
+    fun follow(@Path("user") user: String): Call<Void>
+
+    @DELETE("user/following/{user}")
+    fun unfollow(@Path("user") user: String): Call<Void>
+
 }
