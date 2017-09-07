@@ -20,38 +20,31 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity android:name=".LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".user.UserDetailsActivity"
             android:label="@string/app_name" />
-
         <activity
             android:name=".user.RepoListActivity"
             android:parentActivityName=".user.UserDetailsActivity" />
-
         <activity
             android:name=".repo.RepoActivity"
             android:label="@string/title_activity_repo"
             android:parentActivityName=".user.UserDetailsActivity" />
-
         <activity
             android:name=".repo.commits.RepoCommitDetails"
             android:parentActivityName=".repo.RepoActivity" />
-
         <activity android:name=".repo.contents.FileContentsActivity" />
-
         <activity
             android:name=".auth.LoginActivity"
             android:label="@string/title_activity_login"
             android:parentActivityName=".user.UserDetailsActivity" />
-
         <activity
             android:name=".search.SearchActivity"
             android:label="@string/search_hint"
@@ -60,11 +53,11 @@
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-
         <activity
             android:name=".user.UserListActivity"
             android:parentActivityName=".user.UserDetailsActivity" />
@@ -84,6 +77,7 @@
             android:authorities="com.zenhub.search.RecentSearchesProvider"
             android:exported="false" />
 
+        <activity android:name=".config.AboutActivity"></activity>
     </application>
 
 </manifest>

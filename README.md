@@ -27,6 +27,7 @@ _Note: All lists have lazy paging if supported by the API_
 
  
 ## Upcoming features
+ * Use GraphQL
  * Light/Dark theme selection
  * Gists
  * Follow/Unfollow users

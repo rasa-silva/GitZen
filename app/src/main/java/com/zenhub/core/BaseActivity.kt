@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import com.zenhub.R
+import com.zenhub.config.AboutActivity
 import com.zenhub.search.SearchActivity
 import com.zenhub.user.RepoListActivity
 import com.zenhub.user.RepoListType
@@ -51,6 +52,7 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
             R.id.nav_repos -> startActivity(Intent(this, RepoListActivity::class.java).putExtra("LIST_TYPE", RepoListType.OWN))
             R.id.nav_starred -> startActivity(Intent(this, RepoListActivity::class.java).putExtra("LIST_TYPE", RepoListType.STARRED))
             R.id.nav_search -> startActivity(Intent(this, SearchActivity::class.java))
+            R.id.nav_about -> startActivity(Intent(this, AboutActivity::class.java))
         }
 
         drawerLayout.closeDrawer(GravityCompat.START)

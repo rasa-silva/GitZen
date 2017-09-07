@@ -10,6 +10,7 @@
     <string name="nav_repos">Repositories</string>
     <string name="nav_starred">Starred</string>
     <string name="nav_settings">Settings</string>
+    <string name="nav_about">About</string>
 
     <!-- Login Activity -->
     <string name="title_activity_login">Sign in</string>
