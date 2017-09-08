@@ -5,13 +5,14 @@
     android:id="@+id/repo_list_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="16sp">
 
     <TextView
         android:id="@+id/filename"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
         tools:text="filename" />
 
     <com.pddstudio.highlightjs.HighlightJsView

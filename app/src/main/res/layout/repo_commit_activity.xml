@@ -9,6 +9,8 @@
 
     <include layout="@layout/toolbar" />
 
+    <include layout="@layout/progress_bar_overlay" />
+
     <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/swiperefresh"
         android:layout_width="match_parent"
