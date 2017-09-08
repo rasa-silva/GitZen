@@ -18,9 +18,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.pddstudio.highlightjs.HighlightJsView
 import com.pddstudio.highlightjs.models.Language
-import com.pddstudio.highlightjs.models.Theme
 import com.zenhub.Application
 import com.zenhub.R
+import com.zenhub.config.getHighlightJsTheme
 import com.zenhub.github.CommitFile
 import com.zenhub.github.gitHubService
 import com.zenhub.showErrorOnSnackbar
@@ -120,7 +120,7 @@ class CommitFilesRecyclerViewAdapter : RecyclerView.Adapter<CommitFilesRecyclerV
 
         val patchView = view.findViewById<HighlightJsView>(R.id.patch)
         with(patchView) {
-            theme = Theme.GRUVBOX_DARK
+            theme = getHighlightJsTheme()
             highlightLanguage = Language.DIFF
             setZoomSupportEnabled(true)
             setBackgroundColor(android.graphics.Color.TRANSPARENT)

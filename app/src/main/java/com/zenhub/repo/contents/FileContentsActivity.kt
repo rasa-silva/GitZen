@@ -8,9 +8,9 @@ import android.support.v7.widget.Toolbar
 import android.util.Log
 import com.pddstudio.highlightjs.HighlightJsView
 import com.pddstudio.highlightjs.models.Language
-import com.pddstudio.highlightjs.models.Theme
 import com.zenhub.Application
 import com.zenhub.R
+import com.zenhub.config.getHighlightJsTheme
 import java.net.URL
 
 class FileContentsActivity : AppCompatActivity() {
@@ -33,7 +33,7 @@ class FileContentsActivity : AppCompatActivity() {
         }
 
         with(codeView) {
-            theme = Theme.TOMORROW_NIGHT_EIGHTIES
+            theme = getHighlightJsTheme()
             setShowLineNumbers(true)
             highlightLanguage = Language.AUTO_DETECT
             setZoomSupportEnabled(true)
