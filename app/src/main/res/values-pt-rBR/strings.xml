@@ -71,8 +71,13 @@
 
 
     <!-- About -->
+    <string name="title_activity_about">Acerca</string>
     <string name="application_info_title">Informação da applicação</string>
     <string name="app_version">Versão</string>
     <string name="used_libraries_title">Livrarias usadas</string>
+
+    <!-- Settings -->
+    <string name="title_activity_settings">Preferencias</string>
+    <string name="pref_use_dark_theme">Usar tema escuro</string>
 
 </resources>

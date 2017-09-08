@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatDelegate
 import android.util.Log
 import android.view.View
 import com.squareup.picasso.Picasso
@@ -14,10 +13,6 @@ import com.zenhub.github.GSON
 
 @SuppressLint("StaticFieldLeak")
 class Application : android.app.Application() {
-
-    init {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-    }
 
     override fun onCreate() {
         super.onCreate()

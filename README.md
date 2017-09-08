@@ -4,6 +4,7 @@ A minimalist GitHub client for Android written in Kotlin.
 
 ## Features:
  * OAuth login (via Android Account Manager)
+ * Dark/Light theme
  * User
     * Bio
     * Number of repos, followers, following and gists
@@ -28,9 +29,7 @@ _Note: All lists have lazy paging if supported by the API_
  
 ## Upcoming features
  * Use GraphQL
- * Light/Dark theme selection
  * Gists
- * Follow/Unfollow users
  * Issue management
  * Sorting on searches
  * More... (_check the issue tracker_)

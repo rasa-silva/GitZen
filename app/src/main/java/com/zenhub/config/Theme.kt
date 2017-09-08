@@ -25,3 +25,10 @@ fun getReadMeStylesheet(): String {
         STYLESHEET_LIGHT else STYLESHEET_DARK
 
 }
+
+fun switchTheme(usedDarkTheme: Boolean) {
+    if (usedDarkTheme)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+    else
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+}
