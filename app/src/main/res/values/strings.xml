@@ -89,4 +89,9 @@
     <!-- Settings -->
     <string name="title_activity_settings">Settings</string>
     <string name="pref_use_dark_theme">Use dark theme</string>
+
+    <!-- Gists -->
+    <string name="title_activity_gists">Gists</string>
+    <string name="title_activity_gist_details">Gist Details</string>
+    <string name="last_updated">Last updated %1$s</string>
 </resources>

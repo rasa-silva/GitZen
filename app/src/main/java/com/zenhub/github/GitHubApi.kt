@@ -4,8 +4,7 @@ import com.google.gson.GsonBuilder
 import com.zenhub.Application
 import com.zenhub.core.LoggingInterceptor
 import com.zenhub.core.OAuthTokenInterceptor
-import com.zenhub.github.mappings.EventDeserializer
-import com.zenhub.github.mappings.ReceivedEvent
+import com.zenhub.github.mappings.*
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
@@ -119,4 +118,12 @@ interface GitHubService {
     @DELETE("user/following/{user}")
     fun unfollow(@Path("user") user: String): Call<Void>
 
+    @GET("users/{user}/gists")
+    fun listGists(@Path("user") user: String): Call<List<Gist>>
+
+    @GET
+    fun listGistsPaginate(@Url url: String): Call<List<Gist>>
+
+    @GET
+    fun gist(@Url url: String): Call<Gist>
 }

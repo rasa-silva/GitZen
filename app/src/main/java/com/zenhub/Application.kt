@@ -11,8 +11,8 @@ import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
 import com.zenhub.config.SettingsActivity
 import com.zenhub.config.switchTheme
-import com.zenhub.github.ErrorMessage
 import com.zenhub.github.GSON
+import com.zenhub.github.mappings.ErrorMessage
 
 @SuppressLint("StaticFieldLeak")
 class Application : android.app.Application() {

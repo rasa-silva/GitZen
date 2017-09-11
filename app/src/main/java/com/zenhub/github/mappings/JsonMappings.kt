@@ -1,4 +1,4 @@
-package com.zenhub.github
+package com.zenhub.github.mappings
 
 class TokenRequest(val client_id: String, val client_secret: String, val scopes: List<String>, val note: String)
 class TokenResponse(val token: String)
@@ -13,7 +13,7 @@ class RepositoryDetails(val name: String, val description: String, val stargazer
 
 class User(val login: String, val avatar_url: String, val name: String,
            val public_repos: Int, val total_private_repos: Int,
-           val public_gists: Int, val private_gists: Int,
+           val public_gists: Int, val private_gists: Int?,
            val followers: Int, val following: Int,
            val created_at: String)
 
@@ -32,3 +32,6 @@ class ErrorMessage(val message: String)
 //Search
 class RepositorySearch(val total_count: Int, val items: List<Repository>)
 class UserSearch(val total_count: Int, val items: List<User>)
+
+class Gist(val description: String?, val updated_at: String, val url: String, val files: Map<String, GistFile>)
+class GistFile(val filename: String, val language: String, val size: Long, val raw_url: String)

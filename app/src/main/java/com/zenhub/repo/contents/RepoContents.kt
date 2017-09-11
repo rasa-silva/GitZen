@@ -14,8 +14,8 @@ import android.widget.TextView
 import com.zenhub.Application
 import com.zenhub.R
 import com.zenhub.core.asDigitalUnit
-import com.zenhub.github.RepoContentEntry
 import com.zenhub.github.gitHubService
+import com.zenhub.github.mappings.RepoContentEntry
 import com.zenhub.showErrorOnSnackbar
 import com.zenhub.showExceptionOnSnackbar
 import kotlinx.coroutines.experimental.android.UI

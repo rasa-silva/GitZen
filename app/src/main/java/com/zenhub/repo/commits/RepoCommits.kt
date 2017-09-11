@@ -16,8 +16,8 @@ import android.widget.TextView
 import com.zenhub.*
 import com.zenhub.core.PagedRecyclerViewAdapter
 import com.zenhub.core.asFuzzyDate
-import com.zenhub.github.Commit
 import com.zenhub.github.gitHubService
+import com.zenhub.github.mappings.Commit
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import ru.gildor.coroutines.retrofit.Result

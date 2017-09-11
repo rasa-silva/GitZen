@@ -61,7 +61,6 @@
         <activity
             android:name=".user.UserListActivity"
             android:parentActivityName=".user.UserDetailsActivity" />
-
         <activity
             android:name=".config.AboutActivity"
             android:label="@string/title_activity_about"
@@ -70,6 +69,13 @@
             android:name=".config.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".user.UserDetailsActivity" />
+        <activity
+            android:name=".gist.GistListActivity"
+            android:label="@string/title_activity_gists"
+            android:parentActivityName=".user.UserDetailsActivity" />
+
+        <activity android:name=".gist.GistDetailsActivity"
+            android:label="@string/title_activity_gist_details"/>
 
         <service android:name=".auth.AuthenticatorService">
             <intent-filter>

@@ -21,8 +21,8 @@ import com.pddstudio.highlightjs.models.Language
 import com.zenhub.Application
 import com.zenhub.R
 import com.zenhub.config.getHighlightJsTheme
-import com.zenhub.github.CommitFile
 import com.zenhub.github.gitHubService
+import com.zenhub.github.mappings.CommitFile
 import com.zenhub.showErrorOnSnackbar
 import com.zenhub.showExceptionOnSnackbar
 import kotlinx.android.synthetic.main.progress_bar_overlay.*

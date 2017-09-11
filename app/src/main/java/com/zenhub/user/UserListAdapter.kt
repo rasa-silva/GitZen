@@ -11,8 +11,8 @@ import com.zenhub.Application
 import com.zenhub.R
 import com.zenhub.RoundedTransformation
 import com.zenhub.core.PagedRecyclerViewAdapter
-import com.zenhub.github.User
 import com.zenhub.github.gitHubService
+import com.zenhub.github.mappings.User
 import com.zenhub.showErrorOnSnackbar
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch

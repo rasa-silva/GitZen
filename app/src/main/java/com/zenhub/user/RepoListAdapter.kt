@@ -10,9 +10,9 @@ import com.zenhub.Application
 import com.zenhub.R
 import com.zenhub.core.PagedRecyclerViewAdapter
 import com.zenhub.core.asFuzzyDate
-import com.zenhub.github.Repository
 import com.zenhub.github.getLanguageColor
 import com.zenhub.github.gitHubService
+import com.zenhub.github.mappings.Repository
 import com.zenhub.repo.RepoActivity
 import com.zenhub.showErrorOnSnackbar
 import kotlinx.coroutines.experimental.android.UI

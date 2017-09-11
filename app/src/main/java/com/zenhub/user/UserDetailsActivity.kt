@@ -17,6 +17,7 @@ import com.zenhub.auth.LoggedUser
 import com.zenhub.core.BaseActivity
 import com.zenhub.core.PagedRecyclerViewAdapter
 import com.zenhub.core.asFuzzyDate
+import com.zenhub.gist.GistListActivity
 import com.zenhub.github.gitHubService
 import com.zenhub.github.mappings.*
 import kotlinx.android.synthetic.main.zenhub_content.*
@@ -64,6 +65,12 @@ class UserDetailsActivity : BaseActivity() {
             startActivity(intent)
         }
 
+        gists_value.setOnClickListener {
+            val intent = Intent(this, GistListActivity::class.java)
+            intent.putExtra("USER", user)
+            startActivity(intent)
+        }
+
         requestDataRefresh()
     }
 
@@ -98,7 +105,8 @@ class UserDetailsActivity : BaseActivity() {
                     drawerLayout.findViewById<TextView>(R.id.repos_value).text = totalRepos.toString()
                     drawerLayout.findViewById<TextView>(R.id.followers_value).text = user.followers.toString()
                     drawerLayout.findViewById<TextView>(R.id.following_value).text = user.following.toString()
-                    drawerLayout.findViewById<TextView>(R.id.gists_value).text = user.public_gists.toString()
+                    val gists = user.public_gists + (user.private_gists ?: 0)
+                    drawerLayout.findViewById<TextView>(R.id.gists_value).text = gists.toString()
                 }
                 is Result.Error -> showErrorOnSnackbar(drawerLayout, userDetails.response.message())
                 is Result.Exception -> Log.d(Application.LOGTAG, "Failed events call", userDetails.exception)

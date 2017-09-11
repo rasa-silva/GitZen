@@ -77,7 +77,12 @@
     <string name="used_libraries_title">Livrarias usadas</string>
 
     <!-- Settings -->
-    <string name="title_activity_settings">Preferencias</string>
+    <string name="title_activity_settings">Preferências</string>
     <string name="pref_use_dark_theme">Usar tema escuro</string>
+
+    <!-- Gists -->
+    <string name="title_activity_gists">Gists</string>
+    <string name="title_activity_gist_details">Detalhes do Gist</string>
+    <string name="last_updated">Ultima atualização %1$s</string>
 
 </resources>

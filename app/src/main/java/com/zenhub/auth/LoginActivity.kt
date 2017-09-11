@@ -7,8 +7,8 @@ import android.os.Bundle
 import android.view.View
 import com.zenhub.*
 import com.zenhub.core.BaseActivity
-import com.zenhub.github.TokenRequest
 import com.zenhub.github.gitHubService
+import com.zenhub.github.mappings.TokenRequest
 import com.zenhub.user.UserDetailsActivity
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.experimental.android.UI
