@@ -8,6 +8,8 @@ import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.FrameLayout
 import com.zenhub.Application
 import com.zenhub.R
 import com.zenhub.core.asFuzzyDate
@@ -66,7 +68,7 @@ class GistDetailsActivity : AppCompatActivity() {
         launch(UI) {
             val response = gitHubService.deleteGist(id).awaitResponse()
             when {
-                response.isSuccessful -> showInfoOnSnackbar(recyclerView, "Deleted gist.")
+                response.isSuccessful -> showInfoOnSnackbar(recyclerView, "Gist deleted.")
                 else -> showErrorOnSnackbar(recyclerView, response.message())
             }
         }
@@ -75,6 +77,8 @@ class GistDetailsActivity : AppCompatActivity() {
     private fun requestDataRefresh() {
         launch(UI) {
             Log.d(Application.LOGTAG, "Fetching gist $url...")
+            val progressBar = findViewById<FrameLayout>(R.id.progress_overlay)
+            progressBar.visibility = View.VISIBLE
             val result = gitHubService.gist(url).awaitResult()
             when (result) {
                 is Result.Ok -> {
@@ -87,6 +91,9 @@ class GistDetailsActivity : AppCompatActivity() {
                 is Result.Error -> showErrorOnSnackbar(recyclerView, result.exception.localizedMessage)
                 is Result.Exception -> showErrorOnSnackbar(recyclerView, result.exception.localizedMessage)
             }
+
+            progressBar.visibility = View.GONE
+            swiperefresh.isRefreshing = false
         }
 
     }

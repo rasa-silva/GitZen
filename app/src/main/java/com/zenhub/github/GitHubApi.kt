@@ -129,4 +129,7 @@ interface GitHubService {
 
     @DELETE("gists/{id}")
     fun deleteGist(@Path("id") id: String): Call<Void>
+
+    @POST("/gists")
+    fun createGist(@Body gist: NewGist): Call<Void>
 }

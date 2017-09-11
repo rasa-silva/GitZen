@@ -33,5 +33,7 @@ class ErrorMessage(val message: String)
 class RepositorySearch(val total_count: Int, val items: List<Repository>)
 class UserSearch(val total_count: Int, val items: List<User>)
 
-class Gist(val description: String?, val updated_at: String, val url: String, val files: Map<String, GistFile>)
+class Gist(val description: String?, val updated_at: String, val public: Boolean, val url: String, val files: Map<String, GistFile>)
 class GistFile(val filename: String, val language: String, val size: Long, val raw_url: String)
+
+class NewGist(val description: String, val public: Boolean, val files: Map<String, Map<String, String>>)

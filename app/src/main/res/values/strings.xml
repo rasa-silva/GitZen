@@ -95,4 +95,9 @@
     <string name="title_activity_gist_details">Gist Details</string>
     <string name="last_updated">Last updated %1$s</string>
     <string name="gist_delete">Delete Gist</string>
+    <string name="gist_create">Create Gist</string>
+    <string name="gist_send">Send Gist</string>
+    <string name="public_gist">Public</string>
+    <string name="gist_description">Description</string>
+    <string name="gist_file_contents">File contents</string>
 </resources>

@@ -73,9 +73,13 @@
             android:name=".gist.GistListActivity"
             android:label="@string/title_activity_gists"
             android:parentActivityName=".user.UserDetailsActivity" />
+        <activity
+            android:name=".gist.GistDetailsActivity"
+            android:label="@string/title_activity_gist_details" />
 
-        <activity android:name=".gist.GistDetailsActivity"
-            android:label="@string/title_activity_gist_details"/>
+        <activity
+            android:name=".gist.NewGistActivity"
+            android:windowSoftInputMode="adjustResize" />
 
         <service android:name=".auth.AuthenticatorService">
             <intent-filter>
