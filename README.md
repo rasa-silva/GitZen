@@ -23,13 +23,16 @@ A minimalist GitHub client for Android written in Kotlin.
  * Search
     * Repositories
     * Users
+ * Gists
+    * View
+    * Create
+    * Delete
     
 _Note: All lists have lazy paging if supported by the API_
 
  
 ## Upcoming features
  * Use GraphQL
- * Gists
  * Issue management
  * Sorting on searches
  * More... (_check the issue tracker_)
