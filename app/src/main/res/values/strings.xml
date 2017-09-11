@@ -94,4 +94,5 @@
     <string name="title_activity_gists">Gists</string>
     <string name="title_activity_gist_details">Gist Details</string>
     <string name="last_updated">Last updated %1$s</string>
+    <string name="gist_delete">Delete Gist</string>
 </resources>

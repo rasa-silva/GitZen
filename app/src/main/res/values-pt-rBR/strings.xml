@@ -83,6 +83,6 @@
     <!-- Gists -->
     <string name="title_activity_gists">Gists</string>
     <string name="title_activity_gist_details">Detalhes do Gist</string>
-    <string name="last_updated">Ultima atualização %1$s</string>
-
+    <string name="last_updated">Última atualização %1$s</string>
+    <string name="gist_delete">Apagar Gist</string>
 </resources>

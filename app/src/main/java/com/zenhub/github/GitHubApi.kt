@@ -126,4 +126,7 @@ interface GitHubService {
 
     @GET
     fun gist(@Url url: String): Call<Gist>
+
+    @DELETE("gists/{id}")
+    fun deleteGist(@Path("id") id: String): Call<Void>
 }

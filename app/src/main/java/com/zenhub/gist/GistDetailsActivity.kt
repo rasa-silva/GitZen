@@ -6,21 +6,26 @@ import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import com.zenhub.Application
 import com.zenhub.R
 import com.zenhub.core.asFuzzyDate
 import com.zenhub.github.gitHubService
 import com.zenhub.showErrorOnSnackbar
+import com.zenhub.showInfoOnSnackbar
 import kotlinx.android.synthetic.main.activity_gist_details.*
 import kotlinx.android.synthetic.main.toolbar.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import ru.gildor.coroutines.retrofit.Result
+import ru.gildor.coroutines.retrofit.awaitResponse
 import ru.gildor.coroutines.retrofit.awaitResult
 
 class GistDetailsActivity : AppCompatActivity() {
 
     private val url by lazy { intent.getStringExtra("URL") }
+    private val id by lazy { url.substringAfterLast('/') }
     private val recyclerView by lazy { findViewById<RecyclerView>(R.id.list) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,6 +44,32 @@ class GistDetailsActivity : AppCompatActivity() {
         swiperefresh.setOnRefreshListener { requestDataRefresh() }
 
         requestDataRefresh()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.gist_details_options, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_delete -> {
+                deleteGist()
+                return true
+            }
+
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun deleteGist() {
+        launch(UI) {
+            val response = gitHubService.deleteGist(id).awaitResponse()
+            when {
+                response.isSuccessful -> showInfoOnSnackbar(recyclerView, "Deleted gist.")
+                else -> showErrorOnSnackbar(recyclerView, response.message())
+            }
+        }
     }
 
     private fun requestDataRefresh() {
