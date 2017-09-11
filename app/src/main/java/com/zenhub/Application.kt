@@ -3,11 +3,14 @@ package com.zenhub
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
+import android.preference.PreferenceManager
 import android.support.design.widget.Snackbar
 import android.util.Log
 import android.view.View
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
+import com.zenhub.config.SettingsActivity
+import com.zenhub.config.switchTheme
 import com.zenhub.github.ErrorMessage
 import com.zenhub.github.GSON
 
@@ -19,6 +22,11 @@ class Application : android.app.Application() {
         context = applicationContext
         picasso = Picasso.with(context)
 //        picasso.setIndicatorsEnabled(true)
+
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        val useDarkTheme = prefs.getBoolean(SettingsActivity.KEY_PREF_DARK_THEME, true)
+        switchTheme(useDarkTheme)
     }
 
     companion object {

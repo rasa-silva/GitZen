@@ -19,10 +19,9 @@ import com.zenhub.user.UserDetailsActivity
 
 abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    private lateinit var drawerLayout: DrawerLayout
+    private val drawerLayout by lazy { findViewById<DrawerLayout>(R.id.drawer_layout) }
 
     protected fun onCreateDrawer() {
-        drawerLayout = findViewById(R.id.drawer_layout)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
 
         setSupportActionBar(toolbar)
