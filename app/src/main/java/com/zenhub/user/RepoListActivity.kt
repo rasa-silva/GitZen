@@ -35,6 +35,7 @@ class RepoListActivity : AppCompatActivity() {
     private val adapter by lazy { RepoListAdapter(recyclerView, listType) }
     private val user by lazy { intent.getStringExtra("USER") ?: LoggedUser.account?.name.orEmpty() }
     var sortBy = GitHubService.REPO_LIST_SORTING.pushed
+    var starredSortBy = GitHubService.STARRED_REPO_LIST_SORTING.updated
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,8 +61,9 @@ class RepoListActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        if (listType == RepoListType.OWN) {
-            menuInflater.inflate(R.menu.repo_list_options, menu)
+        when (listType) {
+            RepoListType.OWN, RepoListType.STARRED -> menuInflater.inflate(R.menu.repo_list_options, menu)
+            RepoListType.SEARCHED -> {}
         }
 
         return super.onCreateOptionsMenu(menu)
@@ -70,7 +72,8 @@ class RepoListActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_sort -> {
-                SortByDialogFragment().show(fragmentManager, "sortBy")
+                val fragment = if (listType == RepoListType.OWN) SortByDialogFragment() else StarredSortByDialogFragment()
+                    fragment.show(fragmentManager, "sortBy")
                 return true
             }
 
@@ -84,11 +87,17 @@ class RepoListActivity : AppCompatActivity() {
         requestDataRefresh()
     }
 
+    fun switchOrdering(ordering: GitHubService.STARRED_REPO_LIST_SORTING) {
+        Log.d(Application.LOGTAG, "Switched ordering to $ordering")
+        starredSortBy = ordering
+        requestDataRefresh()
+    }
+
     private fun requestDataRefresh() {
         launch(UI) {
             Log.d(Application.LOGTAG, "Refreshing starred list...")
             val result = if (listType == RepoListType.OWN) gitHubService.listRepos(user, sortBy).awaitResult()
-            else gitHubService.listStarred(user).awaitResult()
+            else gitHubService.listStarred(user, starredSortBy).awaitResult()
             when (result) {
                 is Result.Ok -> adapter.updateDataSet(result)
                 is Result.Error -> showErrorOnSnackbar(recyclerView, result.response.message())
@@ -116,6 +125,30 @@ class SortByDialogFragment : DialogFragment() {
                 .setTitle(getString(R.string.repo_list_sort_dialog_title))
                 .setSingleChoiceItems(values, selected.ordinal,
                         { _, selectedIndex -> selected = GitHubService.REPO_LIST_SORTING.values()[selectedIndex] })
+                .setPositiveButton(android.R.string.ok,
+                        { _, _ -> activity.switchOrdering(selected) })
+                .setNegativeButton(android.R.string.cancel, {_, _ -> })
+                .create()
+    }
+}
+
+class StarredSortByDialogFragment : DialogFragment() {
+
+    private val values = GitHubService.STARRED_REPO_LIST_SORTING.values().map { it.desc }.toTypedArray()
+    private lateinit var activity: RepoListActivity
+    private lateinit var selected: GitHubService.STARRED_REPO_LIST_SORTING
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        activity = context as RepoListActivity
+        selected = activity.starredSortBy
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return AlertDialog.Builder(activity)
+                .setTitle(getString(R.string.repo_list_sort_dialog_title))
+                .setSingleChoiceItems(values, selected.ordinal,
+                        { _, selectedIndex -> selected = GitHubService.STARRED_REPO_LIST_SORTING.values()[selectedIndex] })
                 .setPositiveButton(android.R.string.ok,
                         { _, _ -> activity.switchOrdering(selected) })
                 .setNegativeButton(android.R.string.cancel, {_, _ -> })

@@ -26,7 +26,6 @@ val gitHubService = Retrofit.Builder()
         .create(GitHubService::class.java)
 
 
-
 interface GitHubService {
 
     @POST("authorizations")
@@ -50,8 +49,10 @@ interface GitHubService {
     @GET
     fun listReposPaginate(@Url url: String): Call<List<Repository>>
 
+    enum class STARRED_REPO_LIST_SORTING(val desc: String) {created("Created"), updated("Updated") }
+
     @GET("users/{user}/starred")
-    fun listStarred(@Path("user") user: String): Call<List<Repository>>
+    fun listStarred(@Path("user") user: String, @Query("sort") sort: STARRED_REPO_LIST_SORTING): Call<List<Repository>>
 
     @GET
     fun listStarredPaginate(@Url url: String): Call<List<Repository>>
