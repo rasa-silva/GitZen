@@ -1,15 +1,22 @@
 package com.zenhub.user
 
+import android.app.Dialog
+import android.app.DialogFragment
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import com.zenhub.Application
 import com.zenhub.R
 import com.zenhub.auth.LoggedUser
+import com.zenhub.github.GitHubService
 import com.zenhub.github.gitHubService
 import com.zenhub.showErrorOnSnackbar
 import kotlinx.android.synthetic.main.repo_list_activity.*
@@ -27,6 +34,7 @@ class RepoListActivity : AppCompatActivity() {
     private val listType by lazy { intent.getSerializableExtra("LIST_TYPE") as RepoListType }
     private val adapter by lazy { RepoListAdapter(recyclerView, listType) }
     private val user by lazy { intent.getStringExtra("USER") ?: LoggedUser.account?.name.orEmpty() }
+    var sortBy = GitHubService.REPO_LIST_SORTING.pushed
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,10 +59,35 @@ class RepoListActivity : AppCompatActivity() {
         requestDataRefresh()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        if (listType == RepoListType.OWN) {
+            menuInflater.inflate(R.menu.repo_list_options, menu)
+        }
+
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_sort -> {
+                SortByDialogFragment().show(fragmentManager, "sortBy")
+                return true
+            }
+
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    fun switchOrdering(ordering: GitHubService.REPO_LIST_SORTING) {
+        Log.d(Application.LOGTAG, "Switched ordering to $ordering")
+        sortBy = ordering
+        requestDataRefresh()
+    }
+
     private fun requestDataRefresh() {
         launch(UI) {
             Log.d(Application.LOGTAG, "Refreshing starred list...")
-            val result = if (listType == RepoListType.OWN) gitHubService.listRepos(user).awaitResult()
+            val result = if (listType == RepoListType.OWN) gitHubService.listRepos(user, sortBy).awaitResult()
             else gitHubService.listStarred(user).awaitResult()
             when (result) {
                 is Result.Ok -> adapter.updateDataSet(result)
@@ -63,5 +96,29 @@ class RepoListActivity : AppCompatActivity() {
             }
             findViewById<SwipeRefreshLayout>(R.id.swiperefresh).isRefreshing = false
         }
+    }
+}
+
+class SortByDialogFragment : DialogFragment() {
+
+    private val values = GitHubService.REPO_LIST_SORTING.values().map { it.desc }.toTypedArray()
+    private lateinit var activity: RepoListActivity
+    private lateinit var selected: GitHubService.REPO_LIST_SORTING
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        activity = context as RepoListActivity
+        selected = activity.sortBy
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return AlertDialog.Builder(activity)
+                .setTitle(getString(R.string.repo_list_sort_dialog_title))
+                .setSingleChoiceItems(values, selected.ordinal,
+                        { _, selectedIndex -> selected = GitHubService.REPO_LIST_SORTING.values()[selectedIndex] })
+                .setPositiveButton(android.R.string.ok,
+                        { _, _ -> activity.switchOrdering(selected) })
+                .setNegativeButton(android.R.string.cancel, {_, _ -> })
+                .create()
     }
 }

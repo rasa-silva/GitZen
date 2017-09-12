@@ -23,6 +23,8 @@
     <!-- Repo list Activities -->
     <string name="title_activity_own_repos">Repositories</string>
     <string name="title_activity_starred_repos">Starred Repositories</string>
+    <string name="repo_list_sortby">Sort by</string>
+    <string name="repo_list_sort_dialog_title">Select sorting order</string>
     <string name="repo_stars"><i>%1$d stars</i></string>
 
     <!-- Main Repo Activity -->

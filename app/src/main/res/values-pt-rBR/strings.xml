@@ -23,6 +23,8 @@
     <!-- Repo list Activities -->
     <string name="title_activity_own_repos">Meu Repositório</string>
     <string name="title_activity_starred_repos">Repositórios Favoritos</string>
+    <string name="repo_list_sortby">Ordenar por</string>
+    <string name="repo_list_sort_dialog_title">Selecione ordenação</string>
     <string name="repo_stars">%1$d estrelas</string>
 
     <!-- Main Repo Activity -->

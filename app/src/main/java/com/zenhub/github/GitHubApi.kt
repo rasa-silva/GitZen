@@ -42,8 +42,10 @@ interface GitHubService {
     @GET
     fun receivedEventsPaginate(@Url url: String): Call<List<ReceivedEvent>>
 
+    enum class REPO_LIST_SORTING(val desc: String) {created("Created"), updated("Updated"), pushed("Pushed"), full_name("Fullname") }
+
     @GET("users/{user}/repos")
-    fun listRepos(@Path("user") user: String): Call<List<Repository>>
+    fun listRepos(@Path("user") user: String, @Query("sort") sort: REPO_LIST_SORTING): Call<List<Repository>>
 
     @GET
     fun listReposPaginate(@Url url: String): Call<List<Repository>>
