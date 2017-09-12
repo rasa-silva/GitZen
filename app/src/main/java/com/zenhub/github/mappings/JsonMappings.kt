@@ -1,5 +1,7 @@
 package com.zenhub.github.mappings
 
+import java.io.Serializable
+
 class TokenRequest(val client_id: String, val client_secret: String, val scopes: List<String>, val note: String)
 class TokenResponse(val token: String)
 
@@ -33,7 +35,9 @@ class ErrorMessage(val message: String)
 class RepositorySearch(val total_count: Int, val items: List<Repository>)
 class UserSearch(val total_count: Int, val items: List<User>)
 
-class Gist(val description: String?, val updated_at: String, val public: Boolean, val url: String, val files: Map<String, GistFile>)
-class GistFile(val filename: String, val language: String, val size: Long, val raw_url: String)
-
+//Gists
+class Gist(val description: String?, val id: String,
+           val updated_at: String, val public: Boolean,
+           val url: String, val files: Map<String, GistFile>) : Serializable
+class GistFile(val filename: String, val language: String, val size: Long, val raw_url: String): Serializable
 class NewGist(val description: String, val public: Boolean, val files: Map<String, Map<String, String>>)

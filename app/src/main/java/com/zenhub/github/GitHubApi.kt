@@ -1,11 +1,9 @@
 package com.zenhub.github
 
 import com.google.gson.GsonBuilder
-import com.zenhub.Application
 import com.zenhub.core.LoggingInterceptor
 import com.zenhub.core.OAuthTokenInterceptor
 import com.zenhub.github.mappings.*
-import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -21,7 +19,6 @@ val gitHubService = Retrofit.Builder()
         .baseUrl("https://api.github.com/")
         .addConverterFactory(GsonConverterFactory.create(GSON))
         .client(OkHttpClient.Builder()
-                .cache(Cache(Application.context.cacheDir, 1024 * 1024L).apply { evictAll() })
                 .addInterceptor(OAuthTokenInterceptor())
                 .addInterceptor(LoggingInterceptor())
                 .build())
@@ -131,5 +128,5 @@ interface GitHubService {
     fun deleteGist(@Path("id") id: String): Call<Void>
 
     @POST("/gists")
-    fun createGist(@Body gist: NewGist): Call<Void>
+    fun createGist(@Body gist: NewGist): Call<Gist>
 }

@@ -1,5 +1,6 @@
 package com.zenhub.gist
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
@@ -15,7 +16,6 @@ import com.zenhub.R
 import com.zenhub.core.asFuzzyDate
 import com.zenhub.github.gitHubService
 import com.zenhub.showErrorOnSnackbar
-import com.zenhub.showInfoOnSnackbar
 import kotlinx.android.synthetic.main.activity_gist_details.*
 import kotlinx.android.synthetic.main.toolbar.*
 import kotlinx.coroutines.experimental.android.UI
@@ -68,7 +68,10 @@ class GistDetailsActivity : AppCompatActivity() {
         launch(UI) {
             val response = gitHubService.deleteGist(id).awaitResponse()
             when {
-                response.isSuccessful -> showInfoOnSnackbar(recyclerView, "Gist deleted.")
+                response.isSuccessful -> {
+                    setResult(GistListActivity.RESULT_GIST_DELETED, Intent())
+                    finish()
+                }
                 else -> showErrorOnSnackbar(recyclerView, response.message())
             }
         }

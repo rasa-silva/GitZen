@@ -1,7 +1,6 @@
 package com.zenhub.gist
 
 import android.content.Intent
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
@@ -18,7 +17,9 @@ import kotlinx.coroutines.experimental.launch
 import ru.gildor.coroutines.retrofit.Result
 import ru.gildor.coroutines.retrofit.awaitResult
 
-class GistListAdapter(private val recyclerView: RecyclerView) : PagedRecyclerViewAdapter<Gist?>(recyclerView.context, R.layout.gists_item) {
+class GistListAdapter(private val activity: GistListActivity) : PagedRecyclerViewAdapter<Gist?>(activity, R.layout.gists_item) {
+
+    private val recyclerView = activity.findViewById<RecyclerView>(R.id.list)
 
     override fun bindData(itemView: View, model: Gist?) {
         val gist = model ?: return
@@ -33,7 +34,7 @@ class GistListAdapter(private val recyclerView: RecyclerView) : PagedRecyclerVie
         itemView.setOnClickListener {
             val intent = Intent(Application.context, GistDetailsActivity::class.java)
             intent.putExtra("URL", gist.url)
-            ContextCompat.startActivity(Application.context, intent, null)
+            activity.startActivityForResult(intent, GistListActivity.REQ_GIST_DETAILS)
         }
     }
 
