@@ -41,18 +41,18 @@ interface GitHubService {
     @GET
     fun receivedEventsPaginate(@Url url: String): Call<List<ReceivedEvent>>
 
-    enum class REPO_LIST_SORTING(val desc: String) {created("Created"), updated("Updated"), pushed("Pushed"), full_name("Fullname") }
+    enum class RepoListSorting(val desc: String) {created("Created"), updated("Updated"), pushed("Pushed"), full_name("Fullname") }
 
     @GET("users/{user}/repos")
-    fun listRepos(@Path("user") user: String, @Query("sort") sort: REPO_LIST_SORTING): Call<List<Repository>>
+    fun listRepos(@Path("user") user: String, @Query("sort") sort: RepoListSorting): Call<List<Repository>>
 
     @GET
     fun listReposPaginate(@Url url: String): Call<List<Repository>>
 
-    enum class STARRED_REPO_LIST_SORTING(val desc: String) {created("Created"), updated("Updated") }
+    enum class StarredReposListSorting(val desc: String) {created("Created"), updated("Updated") }
 
     @GET("users/{user}/starred")
-    fun listStarred(@Path("user") user: String, @Query("sort") sort: STARRED_REPO_LIST_SORTING): Call<List<Repository>>
+    fun listStarred(@Path("user") user: String, @Query("sort") sort: StarredReposListSorting): Call<List<Repository>>
 
     @GET
     fun listStarredPaginate(@Url url: String): Call<List<Repository>>
@@ -97,14 +97,16 @@ interface GitHubService {
     fun commit(@Path("fullname", encoded = true) fullname: String,
                @Path("sha") sha: String): Call<CommitDetails>
 
+    enum class RepoSearchSorting {stars, forks, updated}
     @GET("search/repositories")
-    fun searchRepos(@Query("q") query: String): Call<RepositorySearch>
+    fun searchRepos(@Query("q") query: String, @Query("sort") sort: RepoSearchSorting?): Call<RepositorySearch>
 
     @GET
     fun searchReposPaginate(@Url url: String): Call<RepositorySearch>
 
+    enum class UserSearchSorting {followers, repositories, joined}
     @GET("search/users")
-    fun searchUsers(@Query("q") query: String): Call<UserSearch>
+    fun searchUsers(@Query("q") query: String, @Query("sort") sort: UserSearchSorting?): Call<UserSearch>
 
     @GET
     fun searchUsersPaginate(@Url url: String): Call<UserSearch>

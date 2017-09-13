@@ -74,6 +74,18 @@
         <item>Repos</item>
         <item>Users</item>
     </string-array>
+    <string-array name="search_repos_sortby">
+        <item>Best match</item>
+        <item>Stars</item>
+        <item>Forks</item>
+        <item>Updated</item>
+    </string-array>
+    <string-array name="search_users_sortby">
+        <item>Best match</item>
+        <item>Followers</item>
+        <item>Repositories</item>
+        <item>Joined</item>
+    </string-array>
 
     <!-- About -->
     <string name="title_activity_about">About</string>

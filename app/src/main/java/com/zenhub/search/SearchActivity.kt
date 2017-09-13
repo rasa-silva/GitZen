@@ -6,8 +6,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.provider.SearchRecentSuggestions
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.*
-import android.support.v7.widget.SearchView
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
@@ -15,6 +16,7 @@ import android.view.View
 import android.widget.*
 import com.zenhub.Application
 import com.zenhub.R
+import com.zenhub.github.GitHubService
 import com.zenhub.github.gitHubService
 import com.zenhub.showErrorOnSnackbar
 import com.zenhub.showExceptionOnSnackbar
@@ -30,6 +32,8 @@ import ru.gildor.coroutines.retrofit.awaitResult
 class SearchActivity : AppCompatActivity() {
 
     private val recyclerView by lazy { findViewById<RecyclerView>(R.id.list) }
+    private val searchSrcSpinner by lazy { findViewById<Spinner>(R.id.search_src) }
+    private val sortBySpinner by lazy { findViewById<Spinner>(R.id.sortby) }
     private val header by lazy { findViewById<TextView>(R.id.header) }
 
     private enum class SourceType {REPOS, USERS }
@@ -50,6 +54,7 @@ class SearchActivity : AppCompatActivity() {
         setupSearchSourceSpinner()
 
         recyclerView.let {
+            it.adapter = repoAdapter
             val layoutManager = LinearLayoutManager(it.context)
             it.layoutManager = layoutManager
             it.addItemDecoration(DividerItemDecoration(it.context, layoutManager.orientation))
@@ -79,22 +84,28 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun setupSearchSourceSpinner() {
-        val spinner = findViewById<Spinner>(R.id.search_src)
-        spinner.adapter = ArrayAdapter.createFromResource(this, R.array.search_sources, R.layout.support_simple_spinner_dropdown_item)
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        searchSrcSpinner.adapter = ArrayAdapter.createFromResource(this, R.array.search_sources, R.layout.support_simple_spinner_dropdown_item)
+        searchSrcSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 Log.d(Application.LOGTAG, "Nothing selected")
             }
 
             override fun onItemSelected(parent: AdapterView<*>, view: View, pos: Int, id: Long) {
-                source = when (pos) {
-                    1 -> SourceType.USERS
-                    else -> SourceType.REPOS
-                }
-
-                recyclerView.adapter = when (source) {
-                    SourceType.REPOS -> repoAdapter
-                    SourceType.USERS -> userAdapter
+                when (pos) {
+                    1 -> {
+                        source = SourceType.USERS
+                        recyclerView.adapter = userAdapter
+                        sortBySpinner.adapter = ArrayAdapter.createFromResource(view.context,
+                                R.array.search_users_sortby,
+                                R.layout.support_simple_spinner_dropdown_item)
+                    }
+                    else -> {
+                        source = SourceType.REPOS
+                        recyclerView.adapter = repoAdapter
+                        sortBySpinner.adapter = ArrayAdapter.createFromResource(view.context,
+                                R.array.search_repos_sortby,
+                                R.layout.support_simple_spinner_dropdown_item)
+                    }
                 }
             }
         }
@@ -117,7 +128,9 @@ class SearchActivity : AppCompatActivity() {
 
             when (source) {
                 SourceType.REPOS -> {
-                    val result = gitHubService.searchRepos(query.toString()).awaitResult()
+                    val sortByIndex = sortBySpinner.selectedItemPosition
+                    val sorting = if (sortByIndex == 0) null else GitHubService.RepoSearchSorting.values()[sortByIndex - 1]
+                    val result = gitHubService.searchRepos(query.toString(), sorting).awaitResult()
                     when (result) {
                         is Result.Ok -> {
                             header.text = header.resources.getString(R.string.search_result_count, result.value.total_count)
@@ -130,7 +143,9 @@ class SearchActivity : AppCompatActivity() {
                     }
                 }
                 SourceType.USERS -> {
-                    val result = gitHubService.searchUsers(query.toString()).awaitResult()
+                    val sortByIndex = sortBySpinner.selectedItemPosition
+                    val sorting = if (sortByIndex == 0) null else GitHubService.UserSearchSorting.values()[sortByIndex - 1]
+                    val result = gitHubService.searchUsers(query.toString(), sorting).awaitResult()
                     when (result) {
                         is Result.Ok -> {
                             header.text = header.resources.getString(R.string.search_result_count, result.value.total_count)
