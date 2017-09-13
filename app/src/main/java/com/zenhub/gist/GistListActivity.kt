@@ -66,9 +66,9 @@ class GistListActivity : AppCompatActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == Companion.REQ_CREATE_GIST && resultCode == Activity.RESULT_OK) {
-            val gist = data.getSerializableExtra("GIST") as Gist
+            val gist = data?.getSerializableExtra("GIST") as Gist
             Log.d(Application.LOGTAG, "Gist with id ${gist.id} created.")
             showInfoOnSnackbar(recyclerView, "Gist created.")
             requestDataRefresh()

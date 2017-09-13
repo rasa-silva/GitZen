@@ -1,53 +1,53 @@
-# Add project specific ProGuard rules here.
-# By default, the flags in this file are appended to flags specified
-# in C:\Data\Android\Sdk/tools/proguard/proguard-android.txt
-# You can edit the include path and order by changing the proguardFiles
-# directive in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
-
-# Add any project specific keep options here:
-
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
-
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
--keepattributes SourceFile,LineNumberTable
-
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
-
-# Platform calls Class.forName on types which do not exist on Android to determine platform.
--dontnote retrofit2.Platform
-# Platform used when running on Java 8 VMs. Will not be used at runtime.
--dontwarn retrofit2.Platform$Java8
-
--dontwarn javax.annotation.**
+-dontobfuscate
 
 # Retain generic type information for use by reflection by converters and adapters.
 -keepattributes Signature
 # Retain declared checked exceptions for use by a Proxy instance.
 -keepattributes Exceptions
 
+# OkHttp + Retrofit
 -dontwarn okio.**
 -dontwarn com.squareup.okhttp.**
+-dontwarn javax.annotation.**
+-dontnote retrofit2.Platform
+-dontwarn retrofit2.Platform$Java8
 
-# Gson specific classes
--keep class sun.misc.Unsafe { *; }
+################
+# OLD CONFIG
+################
+## Uncomment this to preserve the line number information for
+## debugging stack traces.
+#-keepattributes SourceFile,LineNumberTable
+#
+## If you keep the line number information, uncomment this to
+## hide the original source file name.
+##-renamesourcefileattribute SourceFile
+#
+## Retain generic type information for use by reflection by converters and adapters.
+#-keepattributes Signature
+## Retain declared checked exceptions for use by a Proxy instance.
+#-keepattributes Exceptions
+#
+#-keepclassmembernames class kotlinx.** {
+#    volatile <fields>;
+#}
+#
+## OkHttp + Retrofit
+#-dontwarn okio.**
+#-dontwarn com.squareup.okhttp.**
+#-dontnote retrofit2.Platform
+#-dontwarn retrofit2.Platform$Java8
+#-dontwarn javax.annotation.**
+#
+## Gson specific classes
+#-keep class sun.misc.Unsafe { *; }
 #-keep class com.google.gson.stream.** { *; }
-
-# Application classes that will be serialized/deserialized over Gson
--keep class com.zenhub.github.** { *; }
-
-# Prevent proguard from stripping interface information from TypeAdapterFactory,
-# JsonSerializer, JsonDeserializer instances (so they can be used in @JsonAdapter)
--keep class * implements com.google.gson.TypeAdapterFactory
--keep class * implements com.google.gson.JsonSerializer
--keep class * implements com.google.gson.JsonDeserializer
+#
+## Application classes that will be serialized/deserialized over Gson
+#-keep class com.zenhub.github.** { *; }
+#
+## Prevent proguard from stripping interface information from TypeAdapterFactory,
+## JsonSerializer, JsonDeserializer instances (so they can be used in @JsonAdapter)
+#-keep class * implements com.google.gson.TypeAdapterFactory
+#-keep class * implements com.google.gson.JsonSerializer
+#-keep class * implements com.google.gson.JsonDeserializer
