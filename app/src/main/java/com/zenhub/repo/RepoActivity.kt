@@ -1,19 +1,17 @@
 package com.zenhub.repo
 
-import android.app.Activity
 import android.os.Bundle
 import android.support.design.widget.TabLayout
-import android.support.v4.view.PagerAdapter
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.view.LayoutInflater
 import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
 import com.zenhub.R
-import com.zenhub.repo.commits.buildCommitsView
-import com.zenhub.repo.contents.buildContentsView
+import com.zenhub.repo.commits.CommitsFragment
+import com.zenhub.repo.contents.ContentsFragment
 
 class RepoActivity : AppCompatActivity() {
 
@@ -28,7 +26,7 @@ class RepoActivity : AppCompatActivity() {
         supportActionBar?.title = fullRepoName
 
         val viewPager = findViewById<ViewPager>(R.id.pager)
-        viewPager.adapter = RepoDetailsPagerAdapter(this, viewPager, fullRepoName)
+        viewPager.adapter = RepoDetailsPagerAdapter(fullRepoName, supportFragmentManager)
         val tabLayout = findViewById<TabLayout>(R.id.tablayout)
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -47,30 +45,20 @@ class RepoActivity : AppCompatActivity() {
     }
 }
 
-class RepoDetailsPagerAdapter(context: Activity,
-                              container: ViewPager,
-                              fullRepoName: String) : PagerAdapter() {
+class RepoDetailsPagerAdapter(private val fullRepoName: String, fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
-    private val inflater = LayoutInflater.from(context)
-    private val readMeView = buildAboutView(inflater, container, fullRepoName)
-    private val commitsView = buildCommitsView(inflater, container, fullRepoName)
-    private val contentsView = buildContentsView(inflater, container, fullRepoName)
+    override fun getItem(position: Int): Fragment {
+        val fragment = when (position) {
+            0 -> AboutFragment()
+            1 -> CommitsFragment()
+            else -> ContentsFragment()
+        }
 
-    override fun isViewFromObject(view: View?, obj: Any?) = view == obj
+        val args = Bundle()
+        args.putString("REPO_NAME", fullRepoName)
+        fragment.arguments = args
+        return fragment
+    }
 
     override fun getCount() = 3
-
-    override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val layout = when (position) {
-            0 -> readMeView
-            1 -> commitsView
-            else -> contentsView
-        }
-        container.addView(layout)
-        return layout
-    }
-
-    override fun destroyItem(container: ViewGroup?, position: Int, view: Any?) {
-        container?.removeView(view as View?)
-    }
 }
