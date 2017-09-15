@@ -13,11 +13,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.ImageView
+import android.widget.Spinner
 import android.widget.TextView
 import com.zenhub.*
 import com.zenhub.core.PagedRecyclerViewAdapter
 import com.zenhub.core.asFuzzyDate
+import com.zenhub.github.extractPaginationInfo
 import com.zenhub.github.gitHubService
 import com.zenhub.github.mappings.Commit
 import kotlinx.coroutines.experimental.android.UI
@@ -52,17 +55,10 @@ class CommitsFragment : Fragment() {
     private fun requestDataRefresh(container: ViewGroup, adapter: CommitsRecyclerViewAdapter) {
         launch(UI) {
             Log.d(Application.LOGTAG, "Refreshing repo branches...")
-//            val branches = gitHubService.branches(fullRepoName).awaitResult()
-//            when (branches) {
-//                is Result.Ok -> {
-//                    //TODO update Spinner "branches_list"
-//                    //TODO How to deal with knowing the default branch?...
-//                    //TODO The contents tab also needs to switch between branches...
-//                    //TODO Request the repo details again on each tab to get the default_branch until we change to GraphQL?
-//                }
-//                is Result.Error -> showErrorOnSnackbar(container, branches.response.message())
-//                is Result.Exception -> showExceptionOnSnackbar(container, branches.exception)
-//            }
+            val branches = fetchBranches(container)
+            val branchesSpinner = container.findViewById<Spinner>(R.id.branches_list)
+            branchesSpinner.adapter = ArrayAdapter<String>(container.context, R.layout.support_simple_spinner_dropdown_item, branches)
+            //TODO The contents tab also needs to switch between branches...
 
             Log.d(Application.LOGTAG, "Refreshing repo commits...")
             val result = gitHubService.commits(fullRepoName, null).awaitResult()
@@ -111,5 +107,30 @@ class CommitsFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private suspend fun fetchBranches(rootView: View): MutableList<String> {
+        val names = mutableListOf("<default>")
+
+        val branches = gitHubService.branches(fullRepoName).awaitResult() as? Result.Ok ?: return names
+        names.addAll(branches.value.map { it.name })
+        val (lastPage, templateUrl) = extractPaginationInfo(branches.response)
+
+        if (lastPage == 1) return names
+
+        var currentPage = 2
+        while (lastPage >= currentPage) {
+            val url = templateUrl.replaceAfterLast("?page=", currentPage.toString())
+            val paging = gitHubService.branchesPaginate(url).awaitResult()
+            when (paging) {
+                is Result.Ok -> names.addAll(paging.value.map { it.name })
+                is Result.Error -> showErrorOnSnackbar(rootView, paging.response.message())
+                is Result.Exception -> showExceptionOnSnackbar(rootView, paging.exception)
+            }
+
+            currentPage++
+        }
+
+        return names
     }
 }

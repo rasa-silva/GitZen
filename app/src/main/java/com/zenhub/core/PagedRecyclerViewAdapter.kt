@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.zenhub.R
-import okhttp3.Response
+import com.zenhub.github.extractPaginationInfo
 import ru.gildor.coroutines.retrofit.Result
 
 
@@ -94,14 +94,6 @@ abstract class PagedRecyclerViewAdapter<in T>(ctx: Context,
         dataSet.addAll(newDataSet.map { ModelHolder(TYPE_VIEW, it) })
         notifyDataSetChanged()
         isLoading = false
-    }
-
-    private fun extractPaginationInfo(response: Response): Pair<Int, String> {
-        val linkHeader = response.header("Link") ?: return 1 to ""
-        val nextAndLastUrls = linkHeader.split(';', ',')
-        val lastUrl = nextAndLastUrls[2].trim(' ', '<', '>')
-        val lastPage = lastUrl.substringAfterLast("page=").toInt()
-        return lastPage to lastUrl
     }
 
     internal class Holder(itemView: View) : RecyclerView.ViewHolder(itemView)

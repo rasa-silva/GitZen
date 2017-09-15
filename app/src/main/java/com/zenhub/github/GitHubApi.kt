@@ -5,6 +5,7 @@ import com.zenhub.core.LoggingInterceptor
 import com.zenhub.core.OAuthTokenInterceptor
 import com.zenhub.github.mappings.*
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -25,6 +26,13 @@ val gitHubService = Retrofit.Builder()
         .build()
         .create(GitHubService::class.java)
 
+fun extractPaginationInfo(response: Response): Pair<Int, String> {
+    val linkHeader = response.header("Link") ?: return 1 to ""
+    val nextAndLastUrls = linkHeader.split(';', ',')
+    val lastUrl = nextAndLastUrls[2].trim(' ', '<', '>')
+    val lastPage = lastUrl.substringAfterLast("page=").toInt()
+    return lastPage to lastUrl
+}
 
 interface GitHubService {
 
@@ -83,8 +91,14 @@ interface GitHubService {
     @Headers("Accept: application/vnd.github.v3.html")
     fun repoReadme(@Path("fullname", encoded = true) fullname: String): Call<ResponseBody>
 
+    @GET("repos/{fullname}/branches")
+    fun branches(@Path("fullname", encoded = true) fullname: String): Call<List<Branch>>
+
+    @GET
+    fun branchesPaginate(@Url url: String): Call<List<Branch>>
+
     @GET("repos/{fullname}/commits")
-    fun commits(@Path("fullname", encoded = true) fullname: String): Call<List<Commit>>
+    fun commits(@Path("fullname", encoded = true) fullname: String, @Query("sha") branch: String? = null): Call<List<Commit>>
 
     @GET
     fun commitsPaginate(@Url url: String): Call<List<Commit>>
