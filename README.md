@@ -17,8 +17,8 @@ A minimalist GitHub client for Android written in Kotlin.
  * Repository
     * Overview with README.md support
     * Star/Unstar repo
-    * Repo file browsing
-    * Repo commits list (only default branch for now)
+    * Files browsing
+    * Commits list with branches list support
  * Commit details including files diff
  * Search
     * Repositories with sorting options
