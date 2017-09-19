@@ -1,6 +1,5 @@
 package com.zenhub.repo.commits
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -13,30 +12,30 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.ImageView
-import android.widget.Spinner
 import android.widget.TextView
 import com.zenhub.*
 import com.zenhub.core.PagedRecyclerViewAdapter
 import com.zenhub.core.asFuzzyDate
-import com.zenhub.github.extractPaginationInfo
 import com.zenhub.github.gitHubService
 import com.zenhub.github.mappings.Commit
+import com.zenhub.repo.BranchesListDialog
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import ru.gildor.coroutines.retrofit.Result
 import ru.gildor.coroutines.retrofit.awaitResult
 
-
 class CommitsFragment : Fragment() {
 
     private val fullRepoName by lazy { arguments.getString("REPO_NAME") }
+    private lateinit var branch : CharSequence
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        branch = resources.getText(R.string.default_branch)
+
         val view = inflater.inflate(R.layout.repo_content_commits, container, false)
         val recyclerView = view.findViewById<RecyclerView>(R.id.list)
-        val recyclerViewAdapter = CommitsRecyclerViewAdapter(fullRepoName, recyclerView.context, recyclerView)
+        val recyclerViewAdapter = CommitsRecyclerViewAdapter(fullRepoName, recyclerView)
         val refreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.commits_swiperefresh)
         refreshLayout?.setOnRefreshListener { requestDataRefresh(refreshLayout, recyclerViewAdapter) }
 
@@ -47,6 +46,17 @@ class CommitsFragment : Fragment() {
             it.addItemDecoration(DividerItemDecoration(it.context, layoutManager.orientation))
         }
 
+        val branches = view.findViewById<TextView>(R.id.branches)
+        val branchesListDialog = BranchesListDialog(context, fullRepoName) {
+            branch = it
+            branches.text = branch
+            recyclerView.requestFocus()
+            requestDataRefresh(refreshLayout, recyclerViewAdapter)
+        }
+
+        branches.text = branch
+        branches.setOnClickListener { branchesListDialog.show() }
+
         requestDataRefresh(refreshLayout, recyclerViewAdapter)
 
         return view
@@ -54,14 +64,12 @@ class CommitsFragment : Fragment() {
 
     private fun requestDataRefresh(container: ViewGroup, adapter: CommitsRecyclerViewAdapter) {
         launch(UI) {
-            Log.d(Application.LOGTAG, "Refreshing repo branches...")
-            val branches = fetchBranches(container)
-            val branchesSpinner = container.findViewById<Spinner>(R.id.branches_list)
-            branchesSpinner.adapter = ArrayAdapter<String>(container.context, R.layout.support_simple_spinner_dropdown_item, branches)
             //TODO The contents tab also needs to switch between branches...
 
             Log.d(Application.LOGTAG, "Refreshing repo commits...")
-            val result = gitHubService.commits(fullRepoName, null).awaitResult()
+            val defaultBranch = container.resources.getText(R.string.default_branch)
+            val sha = if (branch == defaultBranch) null else branch
+            val result = gitHubService.commits(fullRepoName, sha?.toString()).awaitResult()
             when (result) {
                 is Result.Ok -> adapter.updateDataSet(result)
                 is Result.Error -> showErrorOnSnackbar(container, result.response.message())
@@ -73,8 +81,7 @@ class CommitsFragment : Fragment() {
     }
 
     class CommitsRecyclerViewAdapter(private val fullRepoName: String,
-                                     private val ctx: Context,
-                                     private val recyclerView: RecyclerView) : PagedRecyclerViewAdapter<Commit?>(ctx, R.layout.repo_content_commits_item) {
+                                     private val recyclerView: RecyclerView) : PagedRecyclerViewAdapter<Commit?>(recyclerView.context, R.layout.repo_content_commits_item) {
         override fun bindData(itemView: View, model: Commit?) {
             val commit = model ?: return
 
@@ -89,10 +96,10 @@ class CommitsFragment : Fragment() {
             itemView.findViewById<TextView>(R.id.pushed_time).text = commit.commit.committer.date.asFuzzyDate()
 
             itemView.setOnClickListener {
-                val intent = Intent(ctx, RepoCommitDetails::class.java)
+                val intent = Intent(recyclerView.context, RepoCommitDetails::class.java)
                 intent.putExtra("REPO_FULL_NAME", fullRepoName)
                 intent.putExtra("COMMIT_SHA", commit.sha)
-                ContextCompat.startActivity(ctx, intent, null)
+                ContextCompat.startActivity(recyclerView.context, intent, null)
             }
         }
 
@@ -107,30 +114,5 @@ class CommitsFragment : Fragment() {
                 }
             }
         }
-    }
-
-    private suspend fun fetchBranches(rootView: View): MutableList<String> {
-        val names = mutableListOf("<default>")
-
-        val branches = gitHubService.branches(fullRepoName).awaitResult() as? Result.Ok ?: return names
-        names.addAll(branches.value.map { it.name })
-        val (lastPage, templateUrl) = extractPaginationInfo(branches.response)
-
-        if (lastPage == 1) return names
-
-        var currentPage = 2
-        while (lastPage >= currentPage) {
-            val url = templateUrl.replaceAfterLast("?page=", currentPage.toString())
-            val paging = gitHubService.branchesPaginate(url).awaitResult()
-            when (paging) {
-                is Result.Ok -> names.addAll(paging.value.map { it.name })
-                is Result.Error -> showErrorOnSnackbar(rootView, paging.response.message())
-                is Result.Exception -> showExceptionOnSnackbar(rootView, paging.exception)
-            }
-
-            currentPage++
-        }
-
-        return names
     }
 }

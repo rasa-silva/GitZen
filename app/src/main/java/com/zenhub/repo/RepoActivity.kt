@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.view.MenuItem
 import com.zenhub.R
 import com.zenhub.repo.commits.CommitsFragment
 import com.zenhub.repo.contents.ContentsFragment
@@ -39,19 +38,19 @@ class RepoActivity : AppCompatActivity() {
             }
         })
     }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return super.onOptionsItemSelected(item)
-    }
 }
 
 class RepoDetailsPagerAdapter(private val fullRepoName: String, fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
+    private val about by lazy { AboutFragment() }
+    private val commits by lazy { CommitsFragment() }
+    private val contents by lazy { ContentsFragment() }
+
     override fun getItem(position: Int): Fragment {
         val fragment = when (position) {
-            0 -> AboutFragment()
-            1 -> CommitsFragment()
-            else -> ContentsFragment()
+            0 -> about
+            1 -> commits
+            else -> contents
         }
 
         val args = Bundle()

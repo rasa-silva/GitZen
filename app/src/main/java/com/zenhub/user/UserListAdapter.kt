@@ -30,9 +30,9 @@ class UserListAdapter(private val recyclerView: RecyclerView,
         Application.picasso.load(user.avatar_url).transform(RoundedTransformation).into(avatar)
 
         itemView.setOnClickListener {
-            val intent = Intent(Application.context, UserDetailsActivity::class.java)
+            val intent = Intent(recyclerView.context, UserDetailsActivity::class.java)
             intent.putExtra("USER", user.login)
-            ContextCompat.startActivity(Application.context, intent, null)
+            ContextCompat.startActivity(recyclerView.context, intent, null)
         }
     }
 

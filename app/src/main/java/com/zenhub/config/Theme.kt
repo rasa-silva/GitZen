@@ -1,7 +1,9 @@
 package com.zenhub.config
 
 import android.support.v7.app.AppCompatDelegate
+import android.webkit.WebView
 import com.pddstudio.highlightjs.models.Theme
+import com.zenhub.Application
 
 fun getHighlightJsTheme(): Theme {
     return if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_NO)
@@ -27,6 +29,8 @@ fun getReadMeStylesheet(): String {
 }
 
 fun switchTheme(usedDarkTheme: Boolean) {
+    WebView(Application.context) //Try workaround for webviews problem with DayNight mode
+
     if (usedDarkTheme)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
     else

@@ -32,7 +32,7 @@ class GistListAdapter(private val activity: GistListActivity) : PagedRecyclerVie
         itemView.findViewById<TextView>(R.id.updated_at).text = gist.updated_at.asFuzzyDate()
 
         itemView.setOnClickListener {
-            val intent = Intent(Application.context, GistDetailsActivity::class.java)
+            val intent = Intent(recyclerView.context, GistDetailsActivity::class.java)
             intent.putExtra("URL", gist.url)
             activity.startActivityForResult(intent, GistListActivity.REQ_GIST_DETAILS)
         }

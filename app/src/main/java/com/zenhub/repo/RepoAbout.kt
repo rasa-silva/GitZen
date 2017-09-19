@@ -3,7 +3,6 @@ package com.zenhub.repo
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.content.res.AppCompatResources
 import android.util.Log
 import android.view.LayoutInflater
@@ -42,11 +41,6 @@ class AboutFragment : Fragment() {
         refreshLayout?.setOnRefreshListener { requestAboutData(fullRepoName, refreshLayout) }
         requestAboutData(fullRepoName, refreshLayout)
         return view
-    }
-
-    override fun onStart() {
-        super.onStart()
-        (activity as AppCompatActivity).delegate.applyDayNight() //Trying to workaround DayNight bug with webviews...
     }
 
     private fun requestAboutData(fullRepoName: String, rootView: SwipeRefreshLayout) {

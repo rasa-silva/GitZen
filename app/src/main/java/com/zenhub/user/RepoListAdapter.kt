@@ -36,9 +36,9 @@ class RepoListAdapter(private val recyclerView: RecyclerView,
         languageTextView.background = getLanguageColor(starredRepo.language)
 
         itemView.setOnClickListener {
-            val intent = Intent(Application.context, RepoActivity::class.java)
+            val intent = Intent(recyclerView.context, RepoActivity::class.java)
             intent.putExtra("REPO_FULL_NAME", repoNameView.text.toString())
-            ContextCompat.startActivity(Application.context, intent, null)
+            ContextCompat.startActivity(recyclerView.context, intent, null)
         }
     }
 
