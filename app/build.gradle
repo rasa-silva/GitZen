@@ -24,8 +24,8 @@ android {
         applicationId "com.zenhub"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 10600
-        versionName "1.6.0"
+        versionCode 10700
+        versionName "1.7.0"
         buildConfigField("String", "GITHUB_CLIENT_ID", keystoreProperties['clientId'])
         buildConfigField("String", "GITHUB_SECRET", keystoreProperties['clientSecret'])
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
