@@ -31,6 +31,7 @@
     <string name="title_activity_repo">Repository Details</string>
     <string name="repo_tab_about">About</string>
     <string name="repo_tab_commits">Commits</string>
+    <string name="repo_tab_issues">Issues</string>
     <string name="repo_tab_files">Files</string>
     <string name="select_branch">Branch</string>
     <string name="default_branch"><i>default branch</i></string>

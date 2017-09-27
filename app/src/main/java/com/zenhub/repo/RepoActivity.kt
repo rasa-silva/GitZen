@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar
 import com.zenhub.R
 import com.zenhub.repo.commits.CommitsFragment
 import com.zenhub.repo.contents.ContentsFragment
+import com.zenhub.repo.issues.IssuesFragment
 
 class RepoActivity : AppCompatActivity() {
 
@@ -44,12 +45,14 @@ class RepoDetailsPagerAdapter(private val fullRepoName: String, fm: FragmentMana
 
     private val about by lazy { AboutFragment() }
     private val commits by lazy { CommitsFragment() }
+    private val issues by lazy { IssuesFragment() }
     private val contents by lazy { ContentsFragment() }
 
     override fun getItem(position: Int): Fragment {
         val fragment = when (position) {
             0 -> about
             1 -> commits
+            2 -> issues
             else -> contents
         }
 
@@ -59,5 +62,5 @@ class RepoDetailsPagerAdapter(private val fullRepoName: String, fm: FragmentMana
         return fragment
     }
 
-    override fun getCount() = 3
+    override fun getCount() = 4
 }
