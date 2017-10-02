@@ -26,7 +26,7 @@ class RepoIssuesResponse(val data: RepoWithIssues)
 
 suspend fun fetchRepoIssues(owner: String, repo: String, from: String = ""): Result<RepoIssuesResponse> {
 
-    val cursor = if(from.isBlank()) "" else """, after: \"$from\""""
+    val cursor = if (from.isBlank()) "" else """, after: \"$from\""""
 
     val query = """{
 "query": "query {
@@ -59,9 +59,9 @@ suspend fun fetchRepoIssues(owner: String, repo: String, from: String = ""): Res
     val response = doRequest(query)
     val json = response.body()?.string()
     return if (response.isSuccessful)
-        Ok(GSON.fromJson(json, RepoIssuesResponse::class.java))
+        Result.Ok(GSON.fromJson(json, RepoIssuesResponse::class.java))
     else
-        Fail(json ?: response.message())
+        Result.Fail(json ?: response.message())
 }
 
 const private val BASE_URL = "https://api.github.com/graphql"
@@ -97,6 +97,7 @@ suspend fun Call.await(): Response {
     }
 }
 
-sealed class Result<out T>
-class Ok<out T>(val value: T) : Result<T>()
-class Fail<out T>(val error: String) : Result<T>()
+sealed class Result<out T> {
+    class Ok<out T>(val value: T) : Result<T>()
+    class Fail<out T>(val error: String) : Result<T>()
+}

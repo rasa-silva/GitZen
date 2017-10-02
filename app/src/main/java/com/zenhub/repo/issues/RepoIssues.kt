@@ -15,9 +15,8 @@ import com.zenhub.Application
 import com.zenhub.R
 import com.zenhub.core.GraphQLPagedViewAdapter
 import com.zenhub.core.asFuzzyDate
-import com.zenhub.github.Fail
 import com.zenhub.github.Issue
-import com.zenhub.github.Ok
+import com.zenhub.github.Result
 import com.zenhub.github.fetchRepoIssues
 import com.zenhub.showErrorOnSnackbar
 import kotlinx.coroutines.experimental.CommonPool
@@ -54,11 +53,11 @@ class IssuesFragment : Fragment() {
             Log.d(Application.LOGTAG, "Refreshing repo issues...")
             val result = fetchRepoIssues(owner, repo)
             when (result) {
-                is Ok -> {
+                is Result.Ok -> {
                     val issues = result.value.data.repository.issues
                     adapter.updateDataSet(issues.pageInfo, issues.nodes)
                 }
-                is Fail -> showErrorOnSnackbar(swipeRefresh, result.error)
+                is Result.Fail -> showErrorOnSnackbar(swipeRefresh, result.error)
             }
 
             swipeRefresh.post { swipeRefresh.isRefreshing = false }
@@ -79,11 +78,11 @@ class IssuesFragment : Fragment() {
             launch(CommonPool) {
                 val result = fetchRepoIssues(owner, repo, endCursor)
                 when (result) {
-                    is Ok -> {
+                    is Result.Ok -> {
                         val issues = result.value.data.repository.issues
                         updateDataSet(issues.pageInfo, issues.nodes, true)
                     }
-                    is Fail -> showErrorOnSnackbar(recyclerView, result.error)
+                    is Result.Fail -> showErrorOnSnackbar(recyclerView, result.error)
                 }
             }
         }

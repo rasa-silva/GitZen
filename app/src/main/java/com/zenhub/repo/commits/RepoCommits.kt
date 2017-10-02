@@ -64,8 +64,6 @@ class CommitsFragment : Fragment() {
 
     private fun requestDataRefresh(container: ViewGroup, adapter: CommitsRecyclerViewAdapter) {
         launch(UI) {
-            //TODO The contents tab also needs to switch between branches...
-
             Log.d(Application.LOGTAG, "Refreshing repo commits...")
             val defaultBranch = container.resources.getText(R.string.default_branch)
             val sha = if (branch == defaultBranch) null else branch

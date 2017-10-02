@@ -61,7 +61,7 @@ class ContentsFragment : Fragment() {
     private fun requestData(path: String, parentView: View, adapter: ContentsRecyclerViewAdapter) {
         launch(UI) {
             Log.d(Application.LOGTAG, "Refreshing repo contents...")
-
+            //TODO The contents tab also needs to switch between branches...
             val response = gitHubService.repoContents(fullRepoName, path).awaitResult()
             when (response) {
                 is Result.Ok -> {
