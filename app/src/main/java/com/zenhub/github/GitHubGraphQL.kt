@@ -18,6 +18,8 @@ class Issue(val number: Int, val title: String,
             val state: IssueState, val body: String,
             val updatedAt: String, val author: Author, val labels: LabelConnection)
 
+enum class IssueOrderField { CREATED_AT, UPDATED_AT, COMMENTS }
+
 class IssueConnection(val totalCount: Int, val pageInfo: PageInfo, val nodes: List<Issue>)
 
 class RepositoryType(val issues: IssueConnection)
@@ -26,14 +28,16 @@ class RepoWithIssues(val repository: RepositoryType)
 
 class RepoIssuesResponse(val data: RepoWithIssues)
 
-suspend fun fetchRepoIssues(owner: String, repo: String, from: String = ""): Result<RepoIssuesResponse> {
+suspend fun fetchRepoIssues(owner: String, repo: String,
+                            orderField: IssueOrderField, from: String = ""): Result<RepoIssuesResponse> {
 
     val cursor = if (from.isBlank()) "" else """, after: \"$from\""""
+    val orderBy = """, orderBy: {field: ${orderField.name} direction: DESC}"""
 
     val query = """{
 "query": "query {
   repository(owner: \"$owner\", name:\"$repo\") {
-    issues(first:20 $cursor) {
+    issues(first:20 $cursor $orderBy) {
       totalCount
       pageInfo {
         hasNextPage
