@@ -32,7 +32,7 @@ class IssuesFragment : Fragment() {
         val view = inflater.inflate(R.layout.repo_issues, container, false)
         val recyclerView = view.findViewById<RecyclerView>(R.id.list)
         val recyclerViewAdapter = IssuesViewAdapter(owner, repo, recyclerView)
-        val refreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.commits_swiperefresh)
+        val refreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.issues_swiperefresh)
         refreshLayout?.setOnRefreshListener { requestDataRefresh(refreshLayout, recyclerViewAdapter) }
 
         recyclerView.let {
@@ -70,8 +70,10 @@ class IssuesFragment : Fragment() {
 
         override fun bindData(itemView: View, model: Issue?) {
             val issue = model ?: return
+            itemView.findViewById<TextView>(R.id.number).text = "${issue.number}."
             itemView.findViewById<TextView>(R.id.description).text = issue.title
             itemView.findViewById<TextView>(R.id.updated_at).text = issue.updatedAt.asFuzzyDate()
+            itemView.findViewById<TextView>(R.id.author).text = issue.author.login
         }
 
         override fun doPageRequest(endCursor: String) {

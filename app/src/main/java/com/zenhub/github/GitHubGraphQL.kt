@@ -8,13 +8,15 @@ enum class IssueState { OPEN, CLOSED }
 
 class PageInfo(val hasNextPage: Boolean, val endCursor: String)
 
+class Author(val login: String)
+
 class Label(val color: String, val name: String)
 
 class LabelConnection(val nodes: List<Label>)
 
 class Issue(val number: Int, val title: String,
             val state: IssueState, val body: String,
-            val updatedAt: String, val labels: LabelConnection)
+            val updatedAt: String, val author: Author, val labels: LabelConnection)
 
 class IssueConnection(val totalCount: Int, val pageInfo: PageInfo, val nodes: List<Issue>)
 
@@ -42,6 +44,9 @@ suspend fun fetchRepoIssues(owner: String, repo: String, from: String = ""): Res
         title
         state
         updatedAt
+        author {
+          login
+        }
         labels(first:20) {
           nodes {
             name
