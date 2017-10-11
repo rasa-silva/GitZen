@@ -29,6 +29,7 @@ class IssuesFragment : Fragment() {
 
     private val owner by lazy { arguments.getString("REPO_NAME").substringBefore('/') }
     private val repo by lazy { arguments.getString("REPO_NAME").substringAfter('/') }
+    var orderBy = IssueOrderField.UPDATED_AT
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
@@ -60,7 +61,9 @@ class IssuesFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_sort -> {
-                IssuesSortDialogFragment().show(fragmentManager, "sort")
+                val fragment = IssuesSortDialogFragment()
+                fragment.setParent(this)
+                fragment.show(fragmentManager, "sort")
                 return true
             }
 
@@ -68,10 +71,17 @@ class IssuesFragment : Fragment() {
         }
     }
 
+    fun onParametersChanged(show: IssueState, sortBy: IssueOrderField) {
+        orderBy = sortBy
+        val refreshLayout = view?.findViewById<SwipeRefreshLayout>(R.id.issues_swiperefresh) ?: return
+        val recyclerView = view?.findViewById<RecyclerView>(R.id.list) ?: return
+        requestDataRefresh(refreshLayout, recyclerView.adapter as IssuesViewAdapter)
+    }
+
     private fun requestDataRefresh(swipeRefresh: SwipeRefreshLayout, adapter: IssuesViewAdapter) {
         launch(CommonPool) {
             Log.d(Application.LOGTAG, "Refreshing repo issues...")
-            val result = fetchRepoIssues(owner, repo, IssueOrderField.UPDATED_AT)
+            val result = fetchRepoIssues(owner, repo, orderBy)
             when (result) {
                 is Result.Ok -> {
                     val issues = result.value.data.repository.issues
@@ -118,14 +128,14 @@ enum class IssueState { OPEN, CLOSED, BOTH }
 
 class IssuesSortDialogFragment : DialogFragment() {
 
+    private lateinit var fragment: IssuesFragment
+    private lateinit var sortBy: IssueOrderField
     private var show = IssueState.OPEN
-    private var sortBy = IssueOrderField.UPDATED_AT
 
-//    override fun onAttach(context: Context) {
-//        super.onAttach(context)
-//        fragment = context as IssuesFragment
-//        selected = activity.sortBy
-//    }
+    fun setParent(parent: IssuesFragment) {
+        fragment = parent
+        sortBy = fragment.orderBy
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = activity.layoutInflater.inflate(R.layout.dialog_issues_filters, null)
@@ -137,16 +147,22 @@ class IssuesSortDialogFragment : DialogFragment() {
         view.findViewById<RadioButton>(R.id.radio_both).setOnClickListener { show = IssueState.BOTH }
 
         val updatedAt = view.findViewById<RadioButton>(R.id.radio_updatedAt)
-        updatedAt.isChecked = true
+        if(sortBy == IssueOrderField.UPDATED_AT) updatedAt.isChecked = true
         updatedAt.setOnClickListener { sortBy = IssueOrderField.UPDATED_AT }
-        view.findViewById<RadioButton>(R.id.radio_createdAt).setOnClickListener { sortBy = IssueOrderField.CREATED_AT }
-        view.findViewById<RadioButton>(R.id.radio_comments).setOnClickListener { sortBy = IssueOrderField.COMMENTS }
+
+        val createdAt = view.findViewById<RadioButton>(R.id.radio_createdAt)
+        if(sortBy == IssueOrderField.CREATED_AT) createdAt.isChecked = true
+        createdAt.setOnClickListener { sortBy = IssueOrderField.CREATED_AT }
+
+        val comments = view.findViewById<RadioButton>(R.id.radio_comments)
+        if(sortBy == IssueOrderField.COMMENTS) comments.isChecked = true
+        comments.setOnClickListener { sortBy = IssueOrderField.COMMENTS }
 
         return AlertDialog.Builder(context)
                 .setTitle("Filtering & Sorting")
                 .setView(view)
-//                .setPositiveButton(android.R.string.ok,
-//                        { _, _ -> activity.switchOrdering(selected) })
+                .setPositiveButton(android.R.string.ok,
+                        { _, _ -> fragment.onParametersChanged(show, sortBy) })
                 .setNegativeButton(android.R.string.cancel, { _, _ -> })
                 .create()
     }
