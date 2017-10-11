@@ -30,13 +30,14 @@ class IssuesFragment : Fragment() {
     private val owner by lazy { arguments.getString("REPO_NAME").substringBefore('/') }
     private val repo by lazy { arguments.getString("REPO_NAME").substringAfter('/') }
     var orderBy = IssueOrderField.UPDATED_AT
+    var show = IssueState.OPEN
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
 
         val view = inflater.inflate(R.layout.repo_issues, container, false)
         val recyclerView = view.findViewById<RecyclerView>(R.id.list)
-        val recyclerViewAdapter = IssuesViewAdapter(owner, repo, recyclerView)
+        val recyclerViewAdapter = IssuesViewAdapter(this, owner, repo, recyclerView)
         val refreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.issues_swiperefresh)
         refreshLayout?.setOnRefreshListener { requestDataRefresh(refreshLayout, recyclerViewAdapter) }
 
@@ -71,7 +72,8 @@ class IssuesFragment : Fragment() {
         }
     }
 
-    fun onParametersChanged(show: IssueState, sortBy: IssueOrderField) {
+    fun onParametersChanged(showStates: IssueState, sortBy: IssueOrderField) {
+        show = showStates
         orderBy = sortBy
         val refreshLayout = view?.findViewById<SwipeRefreshLayout>(R.id.issues_swiperefresh) ?: return
         val recyclerView = view?.findViewById<RecyclerView>(R.id.list) ?: return
@@ -81,7 +83,12 @@ class IssuesFragment : Fragment() {
     private fun requestDataRefresh(swipeRefresh: SwipeRefreshLayout, adapter: IssuesViewAdapter) {
         launch(CommonPool) {
             Log.d(Application.LOGTAG, "Refreshing repo issues...")
-            val result = fetchRepoIssues(owner, repo, orderBy)
+            val states = when (show) {
+                IssueState.OPEN -> listOf(com.zenhub.github.IssueState.OPEN)
+                IssueState.CLOSED -> listOf(com.zenhub.github.IssueState.CLOSED)
+                IssueState.BOTH -> listOf(com.zenhub.github.IssueState.OPEN, com.zenhub.github.IssueState.CLOSED)
+            }
+            val result = fetchRepoIssues(owner, repo, orderBy, states)
             when (result) {
                 is Result.Ok -> {
                     val issues = result.value.data.repository.issues
@@ -97,7 +104,8 @@ class IssuesFragment : Fragment() {
 
 }
 
-class IssuesViewAdapter(private val owner: String,
+class IssuesViewAdapter(private val fragment: IssuesFragment,
+                        private val owner: String,
                         private val repo: String,
                         private val recyclerView: RecyclerView)
     : GraphQLPagedViewAdapter<Issue?>(recyclerView.context, R.layout.repo_issues_item) {
@@ -112,7 +120,12 @@ class IssuesViewAdapter(private val owner: String,
 
     override fun doPageRequest(endCursor: String) {
         launch(CommonPool) {
-            val result = fetchRepoIssues(owner, repo, IssueOrderField.UPDATED_AT, endCursor)
+            val states = when (fragment.show) {
+                IssueState.OPEN -> listOf(com.zenhub.github.IssueState.OPEN)
+                IssueState.CLOSED -> listOf(com.zenhub.github.IssueState.CLOSED)
+                IssueState.BOTH -> listOf(com.zenhub.github.IssueState.OPEN, com.zenhub.github.IssueState.CLOSED)
+            }
+            val result = fetchRepoIssues(owner, repo, fragment.orderBy, states, endCursor)
             when (result) {
                 is Result.Ok -> {
                     val issues = result.value.data.repository.issues
@@ -130,32 +143,39 @@ class IssuesSortDialogFragment : DialogFragment() {
 
     private lateinit var fragment: IssuesFragment
     private lateinit var sortBy: IssueOrderField
-    private var show = IssueState.OPEN
+    private lateinit var show: IssueState
 
     fun setParent(parent: IssuesFragment) {
         fragment = parent
         sortBy = fragment.orderBy
+        show = fragment.show
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = activity.layoutInflater.inflate(R.layout.dialog_issues_filters, null)
 
         val open = view.findViewById<RadioButton>(R.id.radio_open)
-        open.isChecked = true
+        if (show == IssueState.OPEN) open.isChecked = true
         open.setOnClickListener { show = IssueState.OPEN }
-        view.findViewById<RadioButton>(R.id.radio_closed).setOnClickListener { show = IssueState.CLOSED }
-        view.findViewById<RadioButton>(R.id.radio_both).setOnClickListener { show = IssueState.BOTH }
+
+        val closed = view.findViewById<RadioButton>(R.id.radio_closed)
+        if (show == IssueState.CLOSED) closed.isChecked = true
+        closed.setOnClickListener { show = IssueState.CLOSED }
+
+        val both = view.findViewById<RadioButton>(R.id.radio_both)
+        if (show == IssueState.BOTH) both.isChecked = true
+        both.setOnClickListener { show = IssueState.BOTH }
 
         val updatedAt = view.findViewById<RadioButton>(R.id.radio_updatedAt)
-        if(sortBy == IssueOrderField.UPDATED_AT) updatedAt.isChecked = true
+        if (sortBy == IssueOrderField.UPDATED_AT) updatedAt.isChecked = true
         updatedAt.setOnClickListener { sortBy = IssueOrderField.UPDATED_AT }
 
         val createdAt = view.findViewById<RadioButton>(R.id.radio_createdAt)
-        if(sortBy == IssueOrderField.CREATED_AT) createdAt.isChecked = true
+        if (sortBy == IssueOrderField.CREATED_AT) createdAt.isChecked = true
         createdAt.setOnClickListener { sortBy = IssueOrderField.CREATED_AT }
 
         val comments = view.findViewById<RadioButton>(R.id.radio_comments)
-        if(sortBy == IssueOrderField.COMMENTS) comments.isChecked = true
+        if (sortBy == IssueOrderField.COMMENTS) comments.isChecked = true
         comments.setOnClickListener { sortBy = IssueOrderField.COMMENTS }
 
         return AlertDialog.Builder(context)

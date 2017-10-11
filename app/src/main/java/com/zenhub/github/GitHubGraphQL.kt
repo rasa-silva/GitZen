@@ -29,15 +29,18 @@ class RepoWithIssues(val repository: RepositoryType)
 class RepoIssuesResponse(val data: RepoWithIssues)
 
 suspend fun fetchRepoIssues(owner: String, repo: String,
-                            orderField: IssueOrderField, from: String = ""): Result<RepoIssuesResponse> {
+                            orderField: IssueOrderField,
+                            states: List<IssueState>,
+                            from: String = ""): Result<RepoIssuesResponse> {
 
     val cursor = if (from.isBlank()) "" else """, after: \"$from\""""
     val orderBy = """, orderBy: {field: ${orderField.name} direction: DESC}"""
+    val withState = """, states: [${states.joinToString()}]"""
 
     val query = """{
 "query": "query {
   repository(owner: \"$owner\", name:\"$repo\") {
-    issues(first:20 $cursor $orderBy) {
+    issues(first:20 $cursor $orderBy $withState) {
       totalCount
       pageInfo {
         hasNextPage
