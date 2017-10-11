@@ -9,9 +9,7 @@ import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
 import com.zenhub.*
@@ -28,13 +26,15 @@ import ru.gildor.coroutines.retrofit.awaitResult
 class CommitsFragment : Fragment() {
 
     private val fullRepoName by lazy { arguments.getString("REPO_NAME") }
-    private lateinit var branch : CharSequence
+    private lateinit var branch: CharSequence
+    private lateinit var recyclerView: RecyclerView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         branch = resources.getText(R.string.default_branch)
 
         val view = inflater.inflate(R.layout.repo_content_commits, container, false)
-        val recyclerView = view.findViewById<RecyclerView>(R.id.list)
+        recyclerView = view.findViewById(R.id.list)
         val recyclerViewAdapter = CommitsRecyclerViewAdapter(fullRepoName, recyclerView)
         val refreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.commits_swiperefresh)
         refreshLayout?.setOnRefreshListener { requestDataRefresh(refreshLayout, recyclerViewAdapter) }
@@ -46,20 +46,29 @@ class CommitsFragment : Fragment() {
             it.addItemDecoration(DividerItemDecoration(it.context, layoutManager.orientation))
         }
 
-        val branches = view.findViewById<TextView>(R.id.branches)
-        val branchesListDialog = BranchesListDialog(context, fullRepoName) {
-            branch = it
-            branches.text = branch
-            recyclerView.requestFocus()
-            requestDataRefresh(refreshLayout, recyclerViewAdapter)
-        }
-
-        branches.text = branch
-        branches.setOnClickListener { branchesListDialog.show() }
-
         requestDataRefresh(refreshLayout, recyclerViewAdapter)
 
         return view
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.commits_list_options, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_branch -> {
+                BranchesListDialog(context, fullRepoName) {
+                    branch = it
+                    recyclerView.requestFocus()
+                    requestDataRefresh(recyclerView, recyclerView.adapter as CommitsRecyclerViewAdapter)
+                }.show()
+                return true
+            }
+
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun requestDataRefresh(container: ViewGroup, adapter: CommitsRecyclerViewAdapter) {
