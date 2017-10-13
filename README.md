@@ -1,4 +1,4 @@
-# ZenHub
+# GitZen
 
 A minimalist GitHub client for Android written in Kotlin.
 
