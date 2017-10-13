@@ -43,7 +43,4 @@ _Note: All lists have lazy paging if supported by the API_
  * Migrations
  * Others?
 
-The project is open source and 100% Kotlin.
-Source available at https://github.com/rasa-silva/ZenHub 
-
 Feel free to contribute/fork!
