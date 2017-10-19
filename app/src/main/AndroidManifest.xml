@@ -81,6 +81,8 @@
             android:name=".gist.NewGistActivity"
             android:windowSoftInputMode="adjustResize" />
 
+        <activity android:name=".repo.issues.IssueDetails" />
+
         <service android:name=".auth.AuthenticatorService">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />

@@ -3,20 +3,26 @@ package com.zenhub.github
 import kotlinx.coroutines.experimental.suspendCancellableCoroutine
 import okhttp3.*
 import java.io.IOException
+import java.io.Serializable
 
 enum class IssueState { OPEN, CLOSED }
 
 class PageInfo(val hasNextPage: Boolean, val endCursor: String)
 
-class Author(val login: String)
+class Author(val login: String) : Serializable
 
-class Label(val color: String, val name: String)
+class Label(val color: String, val name: String) : Serializable
 
-class LabelConnection(val nodes: List<Label>)
+class LabelConnection(val nodes: List<Label>) : Serializable
+
+class Comment(val author: Author, body: String, createdAt: String) : Serializable
+
+class CommentConnection(val nodes: List<Comment>) : Serializable
 
 class Issue(val number: Int, val title: String,
             val state: IssueState, val body: String,
-            val updatedAt: String, val author: Author, val labels: LabelConnection)
+            val updatedAt: String, val author: Author,
+            val labels: LabelConnection, val comments: CommentConnection) : Serializable
 
 enum class IssueOrderField { CREATED_AT, UPDATED_AT, COMMENTS }
 
@@ -42,25 +48,16 @@ suspend fun fetchRepoIssues(owner: String, repo: String,
   repository(owner: \"$owner\", name:\"$repo\") {
     issues(first:20 $cursor $orderBy $withState) {
       totalCount
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
+      pageInfo { hasNextPage endCursor }
       nodes {
         number
         title
         state
         updatedAt
-        author {
-          login
-        }
-        labels(first:20) {
-          nodes {
-            name
-            color
-          }
-        }
         body
+        author { login }
+        labels(first:20) { nodes { name color } }
+        comments(first:20) { nodes { author { login } body createdAt } }
       }
     }
   }

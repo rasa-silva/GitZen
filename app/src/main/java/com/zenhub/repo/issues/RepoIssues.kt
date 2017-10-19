@@ -1,9 +1,11 @@
 package com.zenhub.repo.issues
 
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.DividerItemDecoration
@@ -100,8 +102,6 @@ class IssuesFragment : Fragment() {
             swipeRefresh.post { swipeRefresh.isRefreshing = false }
         }
     }
-
-
 }
 
 class IssuesViewAdapter(private val fragment: IssuesFragment,
@@ -116,6 +116,13 @@ class IssuesViewAdapter(private val fragment: IssuesFragment,
         itemView.findViewById<TextView>(R.id.description).text = issue.title
         itemView.findViewById<TextView>(R.id.updated_at).text = issue.updatedAt.asFuzzyDate()
         itemView.findViewById<TextView>(R.id.author).text = issue.author.login
+        itemView.setOnClickListener {
+            val intent = Intent(recyclerView.context, IssueDetails::class.java)
+            intent.putExtra("ISSUE", issue)
+            intent.putExtra("OWNER", owner)
+            intent.putExtra("REPO", repo)
+            ContextCompat.startActivity(recyclerView.context, intent, null)
+        }
     }
 
     override fun doPageRequest(endCursor: String) {
