@@ -1,12 +1,19 @@
 package com.zenhub.repo.issues
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.util.TypedValue
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.TextView
 import com.zenhub.R
+import com.zenhub.core.asFuzzyDate
+import com.zenhub.github.Comment
 import com.zenhub.github.Issue
 import com.zenhub.github.IssueState
 
@@ -24,9 +31,6 @@ class IssueDetails : AppCompatActivity() {
 //        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "#${issue.number} of $owner / $repo"
 
-        val number = findViewById<TextView>(R.id.number)
-        number.text = issue.number.toString()
-
         val title = findViewById<TextView>(R.id.title)
         title.text = issue.title
 
@@ -41,11 +45,26 @@ class IssueDetails : AppCompatActivity() {
         body.text = issue.body
 
         val comments = findViewById<ListView>(R.id.comments)
+        val header = TextView(this)
+        header.text = "Comments"
+        header.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20F)
+        header.textAlignment = View.TEXT_ALIGNMENT_CENTER
+        comments.addHeaderView(header, null, false)
 
-        val elements = issue.comments.nodes.map { it.body }
-        val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, elements)
+        val adapter = IssueCommentAdapter(this)
         comments.adapter = adapter
-
+        adapter.addAll(issue.comments.nodes)
     }
+}
 
+class IssueCommentAdapter(private val ctx: Context) : ArrayAdapter<Comment>(ctx, android.R.layout.simple_list_item_1) {
+
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+        val view = convertView ?: LayoutInflater.from(ctx).inflate(R.layout.repo_issue_comment, parent, false)
+        val comment = getItem(position)
+        view.findViewById<TextView>(R.id.description).text = comment.body
+        view.findViewById<TextView>(R.id.author).text = comment.author.login
+        view.findViewById<TextView>(R.id.updated_at).text = comment.createdAt.asFuzzyDate()
+        return view
+    }
 }
