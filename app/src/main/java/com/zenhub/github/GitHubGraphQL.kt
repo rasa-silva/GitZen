@@ -15,7 +15,7 @@ class Label(val color: String, val name: String) : Serializable
 
 class LabelConnection(val nodes: List<Label>) : Serializable
 
-class Comment(val author: Author, body: String, createdAt: String) : Serializable
+class Comment(val author: Author, val body: String, val createdAt: String) : Serializable
 
 class CommentConnection(val nodes: List<Comment>) : Serializable
 

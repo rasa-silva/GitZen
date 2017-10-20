@@ -3,6 +3,8 @@ package com.zenhub.repo.issues
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.widget.ArrayAdapter
+import android.widget.ListView
 import android.widget.TextView
 import com.zenhub.R
 import com.zenhub.github.Issue
@@ -37,6 +39,13 @@ class IssueDetails : AppCompatActivity() {
 
         val body = findViewById<TextView>(R.id.body)
         body.text = issue.body
+
+        val comments = findViewById<ListView>(R.id.comments)
+
+        val elements = issue.comments.nodes.map { it.body }
+        val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, elements)
+        comments.adapter = adapter
+
     }
 
 }
